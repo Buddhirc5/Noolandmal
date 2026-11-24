@@ -24,7 +24,7 @@ export default async function Designs() {
       <div className="card divide-y divide-line">
         {cards.map(({ design, regions, layers }) => (
           <div key={design.id} className="flex flex-wrap items-center gap-4 p-3">
-            <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#F1ECE4]">
+            <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#F5F5F7]">
               {design.images[0] ? (
                 <Image src={design.images[0]} alt="" fill sizes="64px" className="object-cover" />
               ) : (

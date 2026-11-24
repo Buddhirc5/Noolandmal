@@ -1,24 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-  --color-green-900: #1f4d40;
-  --color-green-800: #275c4d;
-  --color-green-700: #2f6b5a;
-  --color-green-50: #eef4f1;
-  --color-ivory: #f8f5f0;
+  /* Black / white / pink theme. Token names kept from v1 so components don't change:
+     green-* = black scale (primary), gold-* = bright pink accent, rose-* = soft pinks. */
+  --color-green-900: #0a0a0a;
+  --color-green-800: #1c1c1e;
+  --color-green-700: #ce117d;
+  --color-green-50: #fff0f7;
+  --color-ivory: #ffffff;
   --color-paper: #ffffff;
-  --color-gold: #c9a66b;
-  --color-gold-600: #a8864d;
-  --color-gold-50: #f7f0e3;
-  --color-rose: #d9a5a0;
-  --color-rose-50: #f8ebe9;
-  --color-ink: #1b2a26;
-  --color-muted: #5f6e69;
-  --color-line: #e7e1d8;
-  --color-surface: #f4f2ee;
-  --color-surface-2: #ebe8e2;
-  --color-night: #14201c;
-  --color-danger: #b4232f;
+  --color-gold: #ce117d;
+  --color-gold-600: #880651;
+  --color-gold-50: #fff0f7;
+  --color-rose: #f960b8;
+  --color-rose-50: #ffe6f3;
+  --color-pink: #ce117d;
+  --color-pink-light: #fa90c9;
+  --color-mulberry: #520630;
+  --color-orchid: #880651;
+  --color-ink: #0a0a0a;
+  --color-muted: #5e5e66;
+  --color-line: #e8e8ec;
+  --color-surface: #f5f5f7;
+  --color-surface-2: #ebebef;
+  --color-night: #0a0a0a;
+  --color-danger: #c4162a;
   --color-success: #1f7a4d;
 
   --font-serif: var(--font-instrument), var(--font-serif-sinhala), var(--font-tamil), Georgia, serif;
@@ -59,13 +65,13 @@ body {
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-gold);
+  outline: 2px solid var(--color-pink);
   outline-offset: 3px;
   border-radius: 6px;
 }
 
 ::selection {
-  background: var(--color-gold-50);
+  background: var(--color-rose-50);
 }
 
 @utility eyebrow {
@@ -96,7 +102,7 @@ body {
   @apply btn text-ink hover:bg-surface;
 }
 @utility btn-gold {
-  @apply btn bg-gold text-ink hover:bg-[#d6b67e];
+  @apply btn bg-pink text-white hover:bg-orchid;
 }
 @utility btn-wa {
   @apply btn bg-[#1f7a4d] text-white hover:bg-[#186640];
@@ -114,32 +120,7 @@ body {
   @apply border-ink bg-ink text-white hover:border-ink;
 }
 @utility badge {
-    @apply inline-flex items-center rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[#8a4a44];
-  }
-@utility hairline {
-    @apply h-px w-full bg-gradient-to-r from-transparent via-gold/70 to-transparent;
-  }
-@utility prose-nm {
-  & h2 { @apply mt-10 mb-3 font-serif text-3xl font-semibold text-green-900; }
-  & h3 { @apply mt-6 mb-2 text-lg font-semibold text-green-900; }
-  & p { @apply my-3; }
-  & ul { @apply my-3 list-disc pl-5; }
-  & ol { @apply my-3 list-decimal pl-5; }
-  & a { @apply text-green-700 underline underline-offset-4; }
-
-    @apply text-[15px] leading-7 text-ink/90;
-  }
-@utility skeleton {
-    @apply animate-pulse rounded-xl bg-line/60;
-  }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
+  @apply inline-flex items-center rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-orchid;
 }
 
 /* Italic serif accent word inside sans headings: "does *everything*" */

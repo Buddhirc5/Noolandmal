@@ -1,6 +1,6 @@
 // Geometry for the Nool & Mal flower: five looped-thread petals (rings) around a gold centre.
-export const FLOWER_GREEN = "#1F4D40";
-export const FLOWER_GOLD = "#C9A66B";
+export const FLOWER_GREEN = "#0A0A0A";
+export const FLOWER_GOLD = "#CE117D";
 
 /** Returns SVG markup for the icon in a 48×48 box. */
 export function flowerSvgInner(stroke = FLOWER_GREEN, dot = FLOWER_GOLD, strokeWidth = 2): string {

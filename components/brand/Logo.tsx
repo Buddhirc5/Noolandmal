@@ -31,26 +31,26 @@ export function Logo({ variant = "horizontal", className, size = 36 }: { variant
     return (
       <div className={`inline-flex flex-col items-center text-center ${className ?? ""}`} aria-label="Nool & Mal — Made to order · Sri Lanka" role="img">
         <Flower size={size} stroke={stroke} dot={dot} />
-        <span className="mt-2 font-logo text-[2.6em] leading-[0.95] font-medium tracking-tight text-green-900">
+        <span className="mt-2 font-logo text-[2.6em] leading-[0.95] font-medium tracking-tight text-ink">
           Nool
           <br />
-          <span className="text-gold-600">&amp;</span> Mal
+          <span className="text-pink">&amp;</span> Mal
         </span>
         <span className="mt-3 flex w-full items-center gap-2" aria-hidden>
           <span className="h-px flex-1 bg-gold/70" />
           <span className="size-1.5 rounded-full bg-gold" />
           <span className="h-px flex-1 bg-gold/70" />
         </span>
-        <span className="mt-2 text-[0.8em] tracking-wide text-green-900">Made to order · Sri Lanka</span>
+        <span className="mt-2 text-[0.8em] tracking-wide text-ink">Made to order · Sri Lanka</span>
       </div>
     );
   }
 
   return (
-    <span className={`inline-flex items-center gap-2.5 ${mono ? "" : "text-green-900"} ${className ?? ""}`}>
+    <span className={`inline-flex items-center gap-2.5 ${mono ? "" : "text-ink"} ${className ?? ""}`}>
       <Flower size={size} stroke={stroke} dot={dot} />
       <span className="font-logo text-[1.6rem] leading-none font-semibold tracking-tight">
-        Nool <span className={mono ? "text-gold" : "text-gold-600"}>&amp;</span> Mal
+        Nool <span className="text-pink">&amp;</span> Mal
       </span>
     </span>
   );

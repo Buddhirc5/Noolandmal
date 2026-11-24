@@ -348,7 +348,7 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
 
       <aside className="space-y-4 xl:sticky xl:top-8 xl:self-start">
         <div className="card overflow-hidden">
-          <div className="relative aspect-[3/5] bg-[#F1ECE4]">
+          <div className="relative aspect-[3/5] bg-[#F5F5F7]">
             {raster.length ? (
               <RasterPreview layers={raster} colorOf={colorOf} />
             ) : (

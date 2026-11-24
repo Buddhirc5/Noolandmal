@@ -2,7 +2,7 @@
 import sharp from "sharp";
 import fs from "node:fs";
 
-const GREEN = "#1F4D40", GOLD = "#C9A66B";
+const GREEN = "#0A0A0A", GOLD = "#CE117D";
 const flower = (stroke, dot, sw = 2) =>
   [0, 72, 144, 216, 288].map((a) => `<ellipse cx="24" cy="14.2" rx="6.6" ry="9.4" transform="rotate(${a} 24 24)" fill="none" stroke="${stroke}" stroke-width="${sw}"/>`).join("") +
   `<circle cx="24" cy="24" r="2.6" fill="${dot}"/>`;
@@ -10,9 +10,9 @@ const svg = (bg, pad = 0, sw = 2) =>
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${-pad} ${-pad} ${48 + 2 * pad} ${48 + 2 * pad}">${bg ? `<rect x="${-pad}" y="${-pad}" width="${48 + 2 * pad}" height="${48 + 2 * pad}" rx="${(48 + 2 * pad) * 0.22}" fill="${bg}"/>` : ""}${flower(GREEN, GOLD, sw)}</svg>`;
 
 fs.mkdirSync("public", { recursive: true });
-fs.writeFileSync("public/icon.svg", svg("#F8F5F0", 2));
+fs.writeFileSync("public/icon.svg", svg("#FFFFFF", 2));
 fs.writeFileSync("public/brand/nool-mal-icon.svg", svg(null));
-const png = (size, pad, sw) => sharp(Buffer.from(svg("#F8F5F0", pad, sw))).resize(size, size).png().toBuffer();
+const png = (size, pad, sw) => sharp(Buffer.from(svg("#FFFFFF", pad, sw))).resize(size, size).png().toBuffer();
 fs.writeFileSync("public/apple-touch-icon.png", await png(180, 6, 2));
 fs.writeFileSync("public/icon-192.png", await png(192, 6, 2));
 fs.writeFileSync("public/icon-512.png", await png(512, 6, 2));

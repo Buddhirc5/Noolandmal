@@ -38,7 +38,7 @@ export default async function CatalogPage({ searchParams }: PageProps<"/admin/ca
           table="palette_colors"
           help="Curated swatches. Untick Active to hide a colour without deleting it."
           rows={c.palette}
-          blank={{ key: "", name: "", hex: "#C9A66B", sort: c.palette.length, active: true }}
+          blank={{ key: "", name: "", hex: "#CE117D", sort: c.palette.length, active: true }}
           cols={[
             { key: "key", label: "Key", type: "text", width: "150px" },
             { key: "name", label: "Name", type: "text" },

@@ -8,7 +8,7 @@ export interface Testimonial {
 }
 
 // [background, text] pairs that meet WCAG AA
-const TONES = [["#1F4D40", "#FFFFFF"], ["#F2D7D3", "#5A2A26"], ["#F1E3C8", "#4A3714"], ["#E6DCEA", "#3E2A47"]];
+const TONES = [["#0A0A0A", "#FFFFFF"], ["#FFD6EA", "#520630"], ["#CE117D", "#FFFFFF"], ["#FA90C9", "#520630"]];
 
 /** One large quote card with an avatar pill switcher (ceynk.lk style). */
 export function Testimonials({ items }: { items: Testimonial[] }) {

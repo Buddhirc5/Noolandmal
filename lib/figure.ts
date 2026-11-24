@@ -318,12 +318,12 @@ export function buildFigure(layers: FigureLayer[]): Shape[] {
   }
 
   const flower3d = has("flower-3d");
-  if (flower3d) front.push({ d: flower(126, 120, 9), region: flower3d.region_key, sheen: true }, { d: circle(126, 120, 3.5), region: null, fill: "#C9A66B" });
+  if (flower3d) front.push({ d: flower(126, 120, 9), region: flower3d.region_key, sheen: true }, { d: circle(126, 120, 3.5), region: null, fill: "#CE117D" });
 
   const belt = has("belt");
   if (belt) {
     front.push({ d: "M116,198 L184,198 L185,212 L115,212 Z", region: belt.region_key, sheen: true });
-    front.push({ d: "M144,197 L156,197 L156,213 L144,213 Z", region: null, fill: "#C9A66B", opacity: 0.9 });
+    front.push({ d: "M144,197 L156,197 L156,213 L144,213 Z", region: null, fill: "#CE117D", opacity: 0.9 });
   }
 
   const bow = has("bow");
