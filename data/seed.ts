@@ -63,7 +63,7 @@ export const palette: PaletteColor[] = paletteRaw.map(([key, name, hex], i) => (
 }));
 
 // ── Fabrics ─────────────────────────────────────────────────────────────
-const earthy = ["ivory", "cream", "beige", "cocoa", "maroon", "sage", "deep-green", "navy", "terracotta", "dusty-rose", "sky", "white", "black", "mustard", "grey"];
+const earthy = ["ivory", "cream", "beige", "cocoa", "maroon", "sage", "deep-green", "navy", "terracotta", "dusty-rose", "sky", "white", "black", "mustard", "grey", "blush", "lilac"];
 const fabricRaw: [string, string, string, number, string[] | null][] = [
   ["cotton", "Cotton", "Breathable, everyday comfort. Best for day wear and kids.", 0, null],
   ["linen", "Linen", "Cool and textured with a natural crease. Earthy tones only.", 1500, earthy],
@@ -71,6 +71,8 @@ const fabricRaw: [string, string, string, number, string[] | null][] = [
   ["jersey", "Stretch jersey", "Body-skimming stretch for column and bodycon styles.", 800, null],
   ["satin", "Satin", "Smooth with a soft sheen. Our most popular occasion fabric.", 2500, null],
   ["tulle", "Soft tulle", "Layered net over a satin base for volume and float.", 2000, null],
+  ["chiffon", "Chiffon", "Light, floaty and sheer, lined underneath. Drapes beautifully.", 1800, null],
+  ["organza", "Organza", "Crisp, sheer and airy. Holds a full skirt shape.", 2200, null],
   ["silk-blend", "Silk blend", "Luxurious lustre and drape for special occasions.", 5500, null],
   ["sequin-net", "Sequin net", "Hand-finished sequins on net. Limited colours.", 9000, ["black", "navy", "maroon", "deep-green", "mauve", "blush", "gold", "ivory", "aqua", "silver", "champagne", "emerald", "royal-blue"]],
   ["brocade", "Brocade", "Woven pattern with metallic thread, ideal for blouses.", 4500, ["deep-green", "maroon", "navy", "gold", "plum", "red", "mustard", "ivory"]],
@@ -221,8 +223,9 @@ export const sizes: SizeOption[] = [
 export const settings: Settings = {
   range_percent: 8,
   custom_color_fee: 1500,
-  standard_lead_days: 21,
-  rush_min_days: 7,
+  // Most pieces take 1 to 3 weeks; dates sooner than a week are a rush
+  standard_lead_days: 7,
+  rush_min_days: 3,
   rush_fee_percent: 20,
   advance_percent: 50,
   quote_valid_days: 7,
@@ -623,6 +626,46 @@ const designSeeds: DesignSeed[] = [
     },
     regions: [["main", "Dress", "navy"]],
   },
+  {
+    design: {
+      slug: "blush-draped-chiffon-gown",
+      name: "Blush Draped Chiffon Gown",
+      category: "dress",
+      occasions: ["Wedding", "Engagement", "Party"],
+      description:
+        "A floor-length chiffon gown with a soft cowl neckline, cap-sleeve shoulder straps and a fitted bodice. Fabric is gathered at the hip and falls in a cascading side drape.",
+      base_price: 21500,
+      fabric_metres: 5.5,
+      default_fabric: "chiffon",
+      fabric_keys: ["chiffon", "satin", "silk-blend", "crepe"],
+      addon_groups: ["length", "back", "lining"],
+      default_options: ["len-design", "back-zip", "lining-full"],
+      featured: true,
+      badge: "New",
+      photos: true,
+    },
+    regions: [["main", "Chiffon", "blush"]],
+  },
+  {
+    design: {
+      slug: "pearl-organza-midi-dress",
+      name: "Pearl Organza Midi Dress",
+      category: "dress",
+      occasions: ["Homecoming", "Party", "Engagement"],
+      description:
+        "A strapless organza midi with a structured bodice and a full, layered A-line skirt, finished with hand-sewn pearls scattered across the bodice and skirt.",
+      base_price: 18500,
+      fabric_metres: 4.5,
+      default_fabric: "organza",
+      fabric_keys: ["organza", "tulle", "satin"],
+      addon_groups: ["length", "back", "lining"],
+      default_options: ["len-design", "back-zip", "lining-full"],
+      featured: true,
+      badge: "New",
+      photos: true,
+    },
+    regions: [["main", "Organza", "blush"]],
+  },
 ];
 
 export const designs: Design[] = designSeeds.map((s, i) => {
@@ -663,6 +706,7 @@ const colourPhotos: Record<string, string[]> = {
   "mauve-lace-drape-saree": ["royal-blue", "emerald", "red", "champagne"],
   "noir-sequin-sash-gown": ["maroon", "emerald", "royal-blue", "gold"],
   "blush-leaf-tulle-gown": ["purple", "teal", "dusty-rose", "navy"],
+  "cocoa-linen-peplum-top": ["sage", "blush", "lilac", "sky"],
 };
 for (const d of designs) {
   const keys = colourPhotos[d.slug];

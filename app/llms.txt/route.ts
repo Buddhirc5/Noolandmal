@@ -21,7 +21,7 @@ export async function GET() {
     "1. Customise a design online (no account needed) and get a design code (e.g. NM-7K4Q2).",
     "2. Send the code on WhatsApp; the team replies with a final quotation, usually within a day.",
     `3. Pay a ${s.advance_percent}% advance by bank transfer and upload the slip; book a measurement appointment.`,
-    `4. Cutting, sewing and one fitting; typical lead time about ${Math.round(s.standard_lead_days / 7)} weeks. Rush orders carry a ${s.rush_fee_percent}% fee.`,
+    `4. Cutting, sewing and one fitting; most pieces take 1–3 weeks. Dates sooner than ${s.standard_lead_days} days carry a ${s.rush_fee_percent}% fee.`,
     "5. Pay the balance; collect or receive delivery.",
     "",
     "## Designs and starting prices (LKR)",

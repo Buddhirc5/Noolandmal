@@ -50,11 +50,11 @@ describe("computePrice", () => {
     const base = defaultSelections(design, regions, catalog);
     const relaxed = computePrice(catalog, design, { ...base, neededBy: "2027-01-31" }, today);
     expect(relaxed.rush).toBe(false);
-    const rushed = computePrice(catalog, design, { ...base, neededBy: "2026-12-04" }, today); // 10 days
+    const rushed = computePrice(catalog, design, { ...base, neededBy: "2026-11-29" }, today); // 5 days
     expect(rushed.rush).toBe(true);
     expect(rushed.tooSoon).toBe(false);
     expect(rushed.rushFee).toBe(round100(rushed.subtotal * 0.2));
-    const tooSoon = computePrice(catalog, design, { ...base, neededBy: "2026-11-27" }, today);
+    const tooSoon = computePrice(catalog, design, { ...base, neededBy: "2026-11-26" }, today); // 2 days
     expect(tooSoon.tooSoon).toBe(true);
   });
 });

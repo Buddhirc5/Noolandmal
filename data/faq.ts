@@ -8,7 +8,7 @@ export const faqs: { q: string; a: string; home?: boolean }[] = [
   },
   {
     q: "How long does tailoring take?",
-    a: "Our standard lead time is about 3 weeks from your measurement appointment, depending on how busy the studio is. The customiser shows an estimated ready date. Need it sooner? Choose your date — a rush fee applies for orders needed in less than 3 weeks, and we'll tell you honestly if it isn't possible.",
+    a: "Most pieces take 1 to 3 weeks from your measurement appointment — simple tops and frocks are quicker, detailed gowns and bridal sets take longer. The customiser shows an estimated ready date. Need it sooner? Choose your date — a rush fee applies for orders needed in less than a week, and we'll tell you honestly if it isn't possible.",
     home: true,
   },
   {
@@ -23,7 +23,7 @@ export const faqs: { q: string; a: string; home?: boolean }[] = [
   },
   {
     q: "How are measurements taken?",
-    a: "After your advance is confirmed, book a slot at our Colombo studio (or request a home visit in Colombo for a small fee). We take your measurements in person for the best fit, and schedule a fitting before finishing.",
+    a: "After your advance is confirmed, book a slot at our Kotte studio (or request a home visit in Colombo for a small fee). We take your measurements in person for the best fit, and schedule a fitting before finishing. You can check your size first on our size chart at /size-guide.",
   },
   {
     q: "Can you make a dress from a photo or Pinterest link?",

@@ -14,6 +14,7 @@ const MAP = {
   "84c03d88-image.jpg": ["mauve-lace-drape-saree", ["royal-blue", "emerald", "red", "champagne"]],
   "3f693e2c-image.jpg": ["noir-sequin-sash-gown", ["maroon", "emerald", "royal-blue", "gold"]],
   "5bc868bd-image.jpg": ["blush-leaf-tulle-gown", ["purple", "teal", "dusty-rose", "navy"]],
+  "f56d08b2-image.jpg": ["cocoa-linen-peplum-top", ["sage", "blush", "lilac", "sky"]],
 };
 const src = process.argv[2];
 if (!src) throw new Error("usage: split-colour-images.mjs <srcDir>");

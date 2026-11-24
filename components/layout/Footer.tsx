@@ -9,8 +9,8 @@ export async function Footer() {
   const t = await getT();
   const cols = [
     { title: t("footer.shop"), links: [["/collection", t("nav.collection")], ["/custom", t("nav.custom")], ["/pricing", t("nav.pricing")], ["/guides", "Guides"]] },
-    { title: t("footer.help"), links: [["/how-it-works", t("nav.how")], ["/faq", t("nav.faq")], ["/track", t("nav.track")], ["/contact", "Contact"]] },
-    { title: t("footer.company"), links: [["/#story", "Our story"], ["/terms", "Terms"], ["/privacy", "Privacy"], ["/account", t("nav.account")]] },
+    { title: t("footer.help"), links: [["/how-it-works", t("nav.how")], ["/faq", t("nav.faq")], ["/size-guide", "Size chart"], ["/track", t("nav.track")], ["/contact", "Contact"]] },
+    { title: t("footer.company"), links: [["/designer", site.designer], ["/terms", "Terms"], ["/privacy", "Privacy"], ["/account", t("nav.account")]] },
   ];
   return (
     <footer className="z-0 overflow-hidden bg-ink text-white md:sticky md:bottom-0">

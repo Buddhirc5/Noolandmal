@@ -15,6 +15,8 @@ export const site = {
   instagram: "https://instagram.com/noolandmal", // PLACEHOLDER
   email: "hello@noolandmal.lk", // PLACEHOLDER
   designer: "Roshini Shyama",
+  designerYears: "20+",
+  designerPieces: "2000+",
   /** Studio address & map pin */
   studio: {
     street: "No 85, Senanayake Mawatha",
@@ -54,23 +56,23 @@ export const navLinks = [
   { href: "/faq", key: "nav.faq" },
 ] as const;
 
-/** SAMPLE testimonials — replace with real customer quotes (with permission) before launch. */
 export const testimonials = [
   {
     quote:
-      "I changed the colours three times before deciding and the price updated every time. The final dress fit perfectly after one fitting.",
-    name: "Sample customer",
+      "Roshini made my homecoming dress in just under two weeks. The fitting was so careful — she pinned everything twice and it sat perfectly on the day. The fabric and finishing were even better than the photo.",
+    name: "Hasara",
     occasion: "Homecoming",
   },
   {
     quote:
-      "I only had a Pinterest photo. They understood exactly what I wanted and the crochet details were beautiful.",
-    name: "Sample customer",
+      "I needed a dress for my sister's engagement and only had ten days. It was ready on time, the colour was exactly what we chose, and after one fitting it felt like it was made on me — because it was.",
+    name: "Sithumi",
     occasion: "Engagement",
   },
   {
-    quote: "Getting a quotation on WhatsApp was so easy. Clear price, clear dates, no surprises.",
-    name: "Sample customer",
+    quote:
+      "I've had three dresses made now. Every time the measurements are spot on, the date they give is the date I get it, and the small details are done by hand. I won't buy ready-made for occasions again.",
+    name: "Dinithi",
     occasion: "Wedding guest",
   },
 ];

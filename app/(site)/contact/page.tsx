@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
 import { PageHeader } from "@/components/ui/PageHeader";
 import { site } from "@/config/site";
 import { waLink } from "@/lib/whatsapp";
@@ -28,11 +30,16 @@ export default function Contact() {
             <p className="mt-2 text-sm text-muted">Plus code {site.studio.plusCode} · {site.studio.hours}</p>
             <p className="mt-3 text-sm font-medium text-pink">Get directions</p>
           </a>
-          <div className="card p-6">
-            <p className="text-[13px] text-muted">Designer</p>
-            <p className="mt-1 text-xl font-semibold tracking-tight text-ink">{site.designer}</p>
-            <p className="mt-1 text-sm text-muted">Fashion design and crochet</p>
-          </div>
+          <Link href="/designer" className="card lift flex items-center gap-4 p-6">
+            <span className="relative size-16 shrink-0 overflow-hidden rounded-full bg-surface">
+              <Image src="/brand/roshini-shyama.webp" alt="" fill sizes="64px" className="object-cover object-top" />
+            </span>
+            <span>
+              <span className="block text-[13px] text-muted">Designer</span>
+              <span className="mt-0.5 block text-xl font-semibold tracking-tight text-ink">{site.designer}</span>
+              <span className="mt-0.5 block text-sm text-muted">{site.designerYears} years · {site.designerPieces} pieces made</span>
+            </span>
+          </Link>
         </div>
         <div className="relative min-h-[360px] overflow-hidden rounded-[28px] bg-surface">
           <iframe title={`Map to ${site.studio.street}`} src={embed} className="absolute inset-0 size-full border-0" loading="lazy" referrerPolicy="no-referrer-when-downgrade" />

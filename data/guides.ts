@@ -26,13 +26,13 @@ export const guides: Guide[] = [
         p: [
           "Fabric is the biggest variable. Cotton and crepe are the most affordable; satin, silk blends, brocade and hand-finished sequin net cost more — sometimes LKR 5,000–9,000 more for the same design.",
           "Details are priced by the work they take: a lace hem trim adds a few thousand rupees; bodice beadwork or hand embroidery can add LKR 6,000–8,500. Lining is priced by the metre of fabric a design uses.",
-          "Larger sizes need more fabric, and a date sooner than the normal three-week lead time usually carries a rush fee (ours is 20%).",
+          "Larger sizes need more fabric, and a date sooner than a week usually carries a rush fee (ours is 20%).",
         ],
       },
       {
         h: "How to keep it within budget",
         p: [
-          "Choose one statement detail instead of several. Cotton or crepe in a rich colour looks expensive without the satin price. And give yourself at least three weeks so you avoid rush fees.",
+          "Choose one statement detail instead of several. Cotton or crepe in a rich colour looks expensive without the satin price. And give yourself one to three weeks so you avoid rush fees.",
           "Our customiser shows the price change of every option before you choose it, so you can try combinations and see the total instantly.",
         ],
       },
@@ -47,7 +47,7 @@ export const guides: Guide[] = [
       {
         h: "Typical timeline",
         p: [
-          "Plan for about three weeks from your measurement appointment to a finished dress. Simple frocks and blouses can be quicker; bridal sets with hundreds of hand-placed flowers take longer.",
+          "Plan for one to three weeks from your measurement appointment to a finished dress. Simple frocks and blouses can be ready in about a week; detailed gowns and bridal sets take closer to three.",
           "Before that, allow a day or two for the quotation and for paying the advance, and book your measurement slot early — busy wedding months fill up.",
         ],
       },

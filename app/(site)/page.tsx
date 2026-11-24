@@ -152,19 +152,22 @@ export default async function HomePage() {
       <section id="story" className="container-x pt-24 md:pt-32">
         <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-surface" data-reveal="scale">
-            <Image src={img("botanical-bow-shoulder-mini", "detail")} alt="Shoulder bow on a botanical print dress" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
+            <Image src="/brand/roshini-shyama.webp" alt={`${site.designer}, designer and founder`} fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover object-top" />
           </div>
           <div>
             <SectionHeading eyebrow={t("story.eyebrow")} title={t("story.title")} align="left" />
             <p className="mt-6 text-[17px] leading-8 text-ink/80">{t("story.body")}</p>
+            <Link href="/designer" className="btn-secondary mt-6">
+              Meet {site.designer.split(" ")[0]}
+            </Link>
             <div className="mt-10 grid grid-cols-3 gap-4 border-t border-line pt-8">
               {[
-                ["100%", "Made to order"],
-                ["1", "Fitting included"],
-                ["3 wks", "Typical lead time"],
+                [site.designerYears, "Years of experience"],
+                [site.designerPieces, "Pieces made"],
+                ["1–3 wks", "Typical making time"],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <CountUp value={n} className="block text-[2.4rem] leading-none font-semibold tracking-[-0.03em] text-ink" />
+                  <CountUp value={n} className="block text-[2rem] sm:text-[2.4rem] leading-none font-semibold tracking-[-0.03em] text-ink" />
                   <p className="mt-2 text-[13px] text-muted">{l}</p>
                 </div>
               ))}

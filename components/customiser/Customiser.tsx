@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Check, ChevronDown, Minus, Plus } from "lucide-react";
 import { QuoteDialog } from "./QuoteDialog";
@@ -80,7 +81,9 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
   };
 
   const minDate = toISODate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1));
-  const ready = estimateReadyDate(today, catalog.settings.standard_lead_days, queueWeeks);
+  // most pieces take 1–3 weeks: earliest is the standard lead, latest two weeks after
+  const readyFrom = estimateReadyDate(today, catalog.settings.standard_lead_days, queueWeeks);
+  const readyTo = estimateReadyDate(today, catalog.settings.standard_lead_days + 14, queueWeeks);
   const fabrics = catalog.fabrics.filter((f) => f.active && design.fabric_keys.includes(f.key));
 
   return (
@@ -314,7 +317,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
           )}
 
           {/* Size */}
-          <Group title="Size">
+          <Group title="Size" action={<Link href="/size-guide" target="_blank" className="text-[14px] font-medium text-pink underline-offset-4 hover:underline">Size chart</Link>}>
             <div className="grid grid-cols-4 gap-2 sm:grid-cols-8" role="radiogroup" aria-label="Size">
               {catalog.sizes.map((s) => {
                 const on = sel.size === s.key;
@@ -366,7 +369,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
               </label>
             </div>
             <p className="mt-3 text-[13px] leading-5 text-muted">
-              Usually ready around {formatDate(ready)}.
+              Most pieces take 1–3 weeks, so usually ready between {formatDate(readyFrom)} and {formatDate(readyTo)}.
               {price.tooSoon
                 ? " That date is very close — we'll confirm on WhatsApp whether it's possible."
                 : price.rush
@@ -410,13 +413,16 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
   );
 }
 
-function Group({ title, children }: { title: string; children: React.ReactNode }) {
+function Group({ title, action, children }: { title: string; action?: React.ReactNode; children: React.ReactNode }) {
   const id = `g-${title.toLowerCase().replace(/\W+/g, "-")}`;
   return (
     <section className="mt-9" aria-labelledby={id}>
-      <h2 id={id} className="mb-4 text-[19px] font-semibold tracking-[-0.01em] text-ink">
-        {title}
-      </h2>
+      <div className="mb-4 flex items-baseline justify-between gap-3">
+        <h2 id={id} className="text-[19px] font-semibold tracking-[-0.01em] text-ink">
+          {title}
+        </h2>
+        {action}
+      </div>
       {children}
     </section>
   );

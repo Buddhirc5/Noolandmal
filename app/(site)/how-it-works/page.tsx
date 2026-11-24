@@ -20,7 +20,7 @@ export default async function HowItWorks() {
     ["Get your design code", "Tap “Get quote” to save your design and receive a code like NM-7K4Q2. Your design link works on any device, so you can share it with family before you decide.", img("botanical-bow-shoulder-mini", "angle")],
     ["Send it on WhatsApp", "WhatsApp opens with your code and a summary ready to send. We reply with your quotation, usually within a day.", img("champagne-lace-high-neck-saree", "front")],
     ["Pay the advance and book a fitting", `Accept the quote, pay a ${s.advance_percent}% advance by bank transfer using your code as the reference, and upload the slip. Then book a measurement appointment at the studio, or a home visit in Colombo.`, img("cocoa-linen-peplum-top", "front")],
-    ["We sew, you follow along", `Cutting, sewing and a fitting — follow each step on your order page. Standard lead time is about ${Math.round(s.standard_lead_days / 7)} weeks. Pay the balance, then collect or have it delivered.`, img("navy-silver-peplum-drape-saree", "angle")],
+    ["We sew, you follow along", `Cutting, sewing and a fitting — follow each step on your order page. Most pieces take 1–3 weeks to make. Pay the balance, then collect or have it delivered.`, img("navy-silver-peplum-drape-saree", "angle")],
   ] as const;
   return (
     <div className="container-x py-12 md:py-16">
