@@ -81,7 +81,7 @@ export default async function CollectionPage({ searchParams }: PageProps<"/colle
       {shown.length ? (
         <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {shown.map((c, i) => (
-            <DesignCard key={c.design.id} item={c} palette={catalog.palette} priority={i < 3} headingLevel="h2" />
+            <DesignCard key={c.design.id} item={c} palette={catalog.palette} priority={i < 2} headingLevel="h2" />
           ))}
         </div>
       ) : (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Logo } from "@/components/brand/Logo";
 import { site } from "@/config/site";
 import { getT } from "@/lib/i18n-server";
+import { LanguageToggle } from "./LanguageToggle";
 
 export async function Footer() {
   const t = await getT();
@@ -48,7 +49,10 @@ export async function Footer() {
       <div className="border-t border-line">
         <div className="container-x flex flex-col gap-2 py-6 text-xs text-muted sm:flex-row sm:justify-between">
           <p>© {new Date().getFullYear()} Nool &amp; Mal. {site.tagline}.</p>
-          <p>{site.studio.city}, Sri Lanka · {site.studio.hours}</p>
+          <div className="flex flex-wrap items-center gap-4">
+            <p>{site.studio.city}, Sri Lanka · {site.studio.hours}</p>
+            <LanguageToggle />
+          </div>
         </div>
       </div>
     </footer>

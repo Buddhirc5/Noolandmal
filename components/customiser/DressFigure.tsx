@@ -42,8 +42,8 @@ export function DressFigure({
         const pid = s.texture ? `${idPrefix}-${s.texture}-${color.replace("#", "")}` : null;
         return (
           <g key={i}>
-            <path d={s.d} fill={color} opacity={op} stroke="rgba(0,0,0,0.16)" strokeWidth={0.8} style={{ transition: "fill 220ms ease" }} />
-            {pid && <path d={s.d} fill={`url(#${pid})`} opacity={Math.min(1, op + 0.3)} />}
+            {!s.patternOnly && <path d={s.d} fill={color} opacity={op} stroke="rgba(0,0,0,0.16)" strokeWidth={0.8} style={{ transition: "fill 220ms ease" }} />}
+            {pid && <path d={s.d} fill={`url(#${pid})`} opacity={s.patternOnly ? 1 : Math.min(1, op + 0.3)} />}
             {s.sheen && <path d={s.d} fill={`url(#${idPrefix}-sheen)`} />}
           </g>
         );

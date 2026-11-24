@@ -62,7 +62,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/q/
     };
   });
 
-  const wa = waLink(`Hi Nool & Mal 👋 About my order *${order.code}*: `);
+  const wa = waLink(`Hi Nool & Mal, about my order *${order.code}*: `);
 
   return (
     <div className="container-x max-w-4xl py-10 md:py-14">

@@ -69,9 +69,6 @@ export function Header({ signedIn, accountsEnabled }: { signedIn: boolean; accou
             <Menu className="size-6" aria-hidden />
             <span className="sr-only">Open menu</span>
           </button>
-          <span className="hidden xl:block">
-            <LanguageToggle dark />
-          </span>
         </div>
       </div>
 

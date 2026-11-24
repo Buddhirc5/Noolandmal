@@ -13,6 +13,12 @@ const MAP = {
   "78b447b0-image.jpg": "sage-bloom-lehenga-set",
   "75b9c876-image.jpg": "aqua-one-shoulder-cape-gown",
   "71970717-image.jpg": "cocoa-tiered-maxi-skirt-set",
+  "1f9539fa-image.jpg": "navy-sequin-fan-party-dress",
+  "721bea82-image.jpg": "navy-silver-peplum-drape-saree",
+  "41e00773-image.jpg": "champagne-lace-high-neck-saree",
+  "70033e8f-image.jpg": "cocoa-linen-peplum-top",
+  "6f73a09f-image.jpg": "botanical-bow-shoulder-mini",
+  "36bdf447-image.jpg": "lilac-ruffle-saree",
 };
 const VIEWS = ["front", "back", "detail", "angle"];
 const [src, out = "public/catalog"] = process.argv.slice(2);

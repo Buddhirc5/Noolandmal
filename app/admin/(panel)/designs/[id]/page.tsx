@@ -32,6 +32,7 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
             addon_groups: ["neckline", "sleeves", "length", "lining"],
             default_options: [],
             images: [],
+            color_images: {},
             published: false,
             featured: false,
             sort: count,

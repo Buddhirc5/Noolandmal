@@ -102,6 +102,8 @@ export interface Design {
   addon_groups: string[];
   default_options: string[];
   images: string[];
+  /** photos of the design made in a specific colour: palette key -> image URLs (first = cover) */
+  color_images: Record<string, string[]>;
   published: boolean;
   featured: boolean;
   sort: number;

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
-import { CalendarCheck2, Check, Loader2, Upload } from "lucide-react";
+import { Check, Loader2 } from "lucide-react";
 import { compressImage } from "@/lib/compress";
 import { cn } from "@/lib/format";
 
@@ -79,7 +79,7 @@ export function SlipUpload({ code, k, type, amountLabel }: { code: string; k: st
       </p>
       <div className="flex flex-wrap items-center gap-3">
         <button type="button" className="btn-secondary" onClick={() => input.current?.click()}>
-          <Upload className="size-4" aria-hidden /> {file ? "Change photo" : "Choose photo"}
+          {file ? "Change photo" : "Choose photo"}
         </button>
         {file && <span className="max-w-48 truncate text-sm text-muted">{file.name}</span>}
         <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/heic" className="sr-only" tabIndex={-1} aria-label="Payment slip" onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
@@ -119,7 +119,7 @@ export function BookingPicker({ code, k, slots, current }: { code: string; k: st
     <div className="space-y-4">
       {current && (
         <p className="flex items-center gap-2 rounded-xl bg-green-50 p-3 text-sm text-green-900">
-          <CalendarCheck2 className="size-4" aria-hidden /> Booked: {current}. You can pick another slot to reschedule.
+          Booked: {current}. You can pick another slot to reschedule.
         </p>
       )}
       <div className="flex gap-2" role="radiogroup" aria-label="Appointment type">

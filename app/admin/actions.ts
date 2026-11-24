@@ -218,6 +218,7 @@ const designSchema = z.object({
   addon_groups: z.array(key),
   default_options: z.array(key),
   images: z.array(z.string().max(500)).max(12),
+  color_images: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), z.array(z.string().max(500)).max(12)).default({}),
   published: z.boolean(),
   featured: z.boolean(),
   sort: z.number().int(),

@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { CustomRequestForm } from "@/components/custom/CustomRequestForm";
 import { SectionHeading } from "@/components/ui/SectionHeading";
-import { ChatMock } from "@/components/home/Mockups";
 
 export const metadata: Metadata = {
   title: "Custom request — send us your dream dress",
@@ -14,7 +13,7 @@ export default function CustomPage() {
     <div className="container-x py-10 md:py-16">
       <div className="grid gap-10 lg:grid-cols-[1fr_340px]">
         <div>
-          <SectionHeading as="h1" eyebrow="Custom request" title="Can't find your dream design?" sub="Show us what you love — a link, a screenshot or a photo — and we'll make it for you. You'll get a request code and we'll reply with ideas and a quotation on WhatsApp." />
+          <SectionHeading as="h1" align="left" eyebrow="Custom request" title="Can't find your *dream* design?" sub="Show us what you love — a link, a screenshot or a photo — and we'll make it for you. You'll get a request code and we'll reply with ideas and a quotation on WhatsApp." />
           <div className="mt-10">
             <CustomRequestForm />
           </div>
@@ -39,7 +38,6 @@ export default function CustomPage() {
               ))}
             </ol>
           </div>
-          <ChatMock />
         </aside>
       </div>
     </div>

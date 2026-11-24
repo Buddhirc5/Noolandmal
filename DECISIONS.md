@@ -34,3 +34,10 @@ Choices made while building, so they're easy to revisit.
 - Vercel limits function request bodies to ~4.5 MB, so photos are compressed in the browser (max 1600 px JPEG) before upload and the total is capped at 4 MB; the server still validates every file by decoding it. For larger uploads, switch to Supabase signed upload URLs.
 - Measurement capacity: admin generates slots from a weekly template; a week is "fully booked" once bookings reach the weekly capacity, and the customer sees the next available week highlighted.
 - Analytics: first-party `events` table (WhatsApp clicks, saves, uploads, bookings). Add Vercel Analytics or GA if you want dashboards.
+
+## Photo-led redesign (latest)
+- **Real photography only.** The drawn dress previews and mock UI widgets were removed from the public site. Designs without photos are unpublished until photos are supplied. The drawing code stays in `lib/figure.ts` for the admin and OG images and can return later (`features.drawnPreview`).
+- **Photos per colour.** `designs.color_images` maps a palette colour to photos of the design made in that colour. Upload them in Admin → Designs → "Photos by colour". When a customer picks that colour, those photos replace the defaults; otherwise the page says which colour the photos show.
+- **Add-ons paused.** `features.addons = false` hides sleeves/embroidery/etc. in the customiser; the data, pricing and admin stay in place for a later update. Included defaults (e.g. lining) are listed as "Includes" in the quote.
+- **No emoji or decorative icons**; only functional icons (menu, close, chevrons, plus/minus, checkmarks, WhatsApp logo).
+- **Hero** uses the supplied studio photograph (`public/brand/hero-studio.webp`) full-bleed under the floating nav, with the looks fanned at the bottom and a white rounded sheet sliding over it (ceynk.lk pattern). The language switch moved from the nav to the footer and mobile menu.

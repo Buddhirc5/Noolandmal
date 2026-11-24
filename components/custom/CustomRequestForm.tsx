@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckCircle2, ImagePlus, Link2, Loader2, X } from "lucide-react";
+import { Loader2, Plus, X } from "lucide-react";
 import { BUDGETS, customRequestSchema, MAX_PHOTOS, MAX_PHOTO_BYTES, MAX_TOTAL_BYTES, type CustomRequestInput } from "@/lib/custom-request";
 import { compressImage } from "@/lib/compress";
 import { buildWhatsAppLink, type WaLang } from "@/lib/whatsapp";
@@ -117,7 +117,6 @@ export function CustomRequestForm() {
     );
     return (
       <div ref={doneRef} tabIndex={-1} className="card p-6 text-center outline-none sm:p-10" role="status">
-        <CheckCircle2 className="mx-auto size-10 text-success" aria-hidden />
         <p className="eyebrow mt-4">Request saved</p>
         <p className="mt-1 text-5xl font-semibold tracking-wider text-green-900">{done.code}</p>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-muted">
@@ -156,7 +155,7 @@ export function CustomRequestForm() {
         <p className="mt-1 text-sm text-muted">Paste a link, upload photos, or both.</p>
         <div className="mt-5">
           <label className="label" htmlFor="referenceUrl">
-            <Link2 className="mr-1 inline size-4 text-gold-600" aria-hidden /> Link (Instagram, Pinterest, Google…)
+            Link (Instagram, Pinterest, Google…)
           </label>
           <input id="referenceUrl" type="url" inputMode="url" placeholder="https://www.pinterest.com/pin/…" className="input" {...register("referenceUrl")} aria-invalid={Boolean(errors.referenceUrl)} />
           {err(errors.referenceUrl?.message)}
@@ -188,7 +187,7 @@ export function CustomRequestForm() {
                 onClick={() => fileInput.current?.click()}
                 className="flex aspect-square flex-col items-center justify-center gap-1 rounded-xl border border-dashed border-gold bg-gold-50/50 text-xs text-green-900 hover:bg-gold-50"
               >
-                {compressing ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <ImagePlus className="size-5" aria-hidden />}
+                {compressing ? <Loader2 className="size-5 animate-spin" aria-hidden /> : <Plus className="size-5" aria-hidden />}
                 {compressing ? "Preparing…" : "Add photos"}
               </button>
             )}

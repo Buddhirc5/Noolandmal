@@ -40,7 +40,7 @@ export default async function Dashboard() {
             All requests →
           </Link>
         </div>
-        <OrderTable rows={s.newRequests.slice(0, 10)} empty="No open quote requests. 🎉" />
+        <OrderTable rows={s.newRequests.slice(0, 10)} empty="No open quote requests." />
       </section>
     </div>
   );

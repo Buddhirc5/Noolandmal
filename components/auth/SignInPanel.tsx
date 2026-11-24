@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Loader2, Mail } from "lucide-react";
+import { Loader2 } from "lucide-react";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
 export function SignInPanel({ next }: { next: string }) {
@@ -47,7 +47,7 @@ export function SignInPanel({ next }: { next: string }) {
         </label>
         <input id="email" type="email" required autoComplete="email" className="input" value={email} onChange={(e) => setEmail(e.target.value)} />
         <button type="submit" className="btn-primary w-full" disabled={state === "sending"}>
-          {state === "sending" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : <Mail className="size-4" aria-hidden />} Send link
+          {state === "sending" ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null} Send link
         </button>
       </form>
       {state === "sent" && <p role="status" className="rounded-xl bg-green-50 p-3 text-sm text-green-900">Check your inbox for the sign-in link.</p>}

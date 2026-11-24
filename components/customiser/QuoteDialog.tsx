@@ -1,15 +1,14 @@
 "use client";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { Check, Copy, Loader2, Share2, X } from "lucide-react";
-import { DressFigure } from "./DressFigure";
+import Image from "next/image";
+import { Loader2, X } from "lucide-react";
 import { Breakdown } from "./Breakdown";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
-import { colorHex, colorName, SHEEN } from "@/lib/colors";
+import { colorHex, colorName } from "@/lib/colors";
 import { buildWhatsAppLink, type WaLang } from "@/lib/whatsapp";
 import { lkrRange, formatDate } from "@/lib/format";
 import { useLocale } from "@/components/I18nProvider";
-import type { FigureLayer } from "@/lib/figure";
 import type { Catalog, DesignBundle, PriceResult, Selections } from "@/lib/types";
 
 interface Saved {
@@ -26,7 +25,7 @@ export function QuoteDialog({
   catalog,
   selections,
   price,
-  figureLayers,
+  photo,
 }: {
   open: boolean;
   onClose: () => void;
@@ -34,7 +33,7 @@ export function QuoteDialog({
   catalog: Catalog;
   selections: Selections;
   price: PriceResult;
-  figureLayers: FigureLayer[];
+  photo: string | null;
 }) {
   const ref = useRef<HTMLDialogElement>(null);
   const locale = useLocale();
@@ -140,7 +139,7 @@ export function QuoteDialog({
       ref={ref}
       onClose={onClose}
       onClick={(e) => e.target === ref.current && onClose()}
-      className="m-auto max-h-[92dvh] w-[min(560px,calc(100vw-24px))] overflow-y-auto rounded-[24px] border border-line bg-paper p-0 text-ink shadow-2xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
+      className="m-auto max-h-[92dvh] w-[min(560px,calc(100vw-24px))] overflow-y-auto rounded-[32px] bg-paper p-0 text-ink shadow-2xl backdrop:bg-ink/40 backdrop:backdrop-blur-sm"
       aria-labelledby="quote-title"
     >
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-paper/95 px-5 py-4 backdrop-blur">
@@ -154,10 +153,8 @@ export function QuoteDialog({
 
       <div className="p-5">
         {/* Summary card */}
-        <div className="flex gap-4 rounded-2xl border border-line bg-ivory p-3">
-          <div className="w-24 shrink-0 rounded-xl bg-paper">
-            <DressFigure layers={figureLayers} colorOf={(r) => colorHex(selections.colors[r], catalog.palette)} sheen={SHEEN[selections.fabric]} idPrefix="qd" className="h-auto w-full" />
-          </div>
+        <div className="flex gap-4 rounded-[22px] bg-surface p-3">
+          <div className="relative h-32 w-24 shrink-0 overflow-hidden rounded-[16px] bg-paper">{photo && <Image src={photo} alt="" fill sizes="96px" className="object-cover" />}</div>
           <div className="min-w-0 text-sm">
             <p className="font-semibold text-green-900">{design.name}</p>
             <ul className="mt-1 space-y-0.5 text-xs leading-5 text-muted">
@@ -168,7 +165,7 @@ export function QuoteDialog({
                 </li>
               ))}
               <li>Fabric: {fabricName}</li>
-              {optionNames.length > 0 && <li className="line-clamp-2">Options: {optionNames.join(", ")}</li>}
+              {optionNames.length > 0 && <li className="line-clamp-2">Includes: {optionNames.join(", ")}</li>}
               <li>
                 Size {sizeLabel} · Qty {selections.qty}
                 {selections.neededBy ? ` · by ${formatDate(selections.neededBy)}` : ""}
@@ -249,10 +246,10 @@ export function QuoteDialog({
             </a>
             <div className="mt-3 grid grid-cols-2 gap-2">
               <button type="button" className="btn-secondary" onClick={() => copy("code")}>
-                {copied === "code" ? <Check className="size-4" aria-hidden /> : <Copy className="size-4" aria-hidden />} {copied === "code" ? "Copied" : "Copy code"}
+                {copied === "code" ? "Copied" : "Copy code"}
               </button>
               <button type="button" className="btn-secondary" onClick={share}>
-                {copied === "link" ? <Check className="size-4" aria-hidden /> : <Share2 className="size-4" aria-hidden />} {copied === "link" ? "Link copied" : "Share link"}
+                {copied === "link" ? "Link copied" : "Share link"}
               </button>
             </div>
             <p className="mt-5 text-xs leading-5 text-muted">

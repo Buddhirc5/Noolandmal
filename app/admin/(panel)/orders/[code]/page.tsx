@@ -7,7 +7,7 @@ import { getDesignBundleById, loadCatalog } from "@/lib/server/catalog";
 import { currentQuote, getOrder, orderBooking } from "@/lib/server/orders";
 import { CustomerPanel, PaymentCard, QuotePanel, StatusPanel } from "@/components/admin/OrderPanels";
 import { StatusBadge } from "@/components/admin/StatusBadge";
-import { DressFigure } from "@/components/customiser/DressFigure";
+import Image from "next/image";
 import { Breakdown } from "@/components/customiser/Breakdown";
 import { resolveLayers } from "@/lib/figure";
 import { colorHex, colorName } from "@/lib/colors";
@@ -66,8 +66,10 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
                 </Link>
               </div>
               <div className="mt-4 grid gap-5 sm:grid-cols-[160px_1fr]">
-                <div className="rounded-2xl bg-[#F1ECE4] p-2">
-                  <DressFigure layers={layers} colorOf={(r) => colorHex(config.selections.colors[r], catalog.palette)} idPrefix="adm" className="h-auto w-full" />
+                <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-surface-2">
+                  {(bundle.design.color_images?.[config.selections.colors.main] ?? bundle.design.images)[0] && (
+                    <Image src={(bundle.design.color_images?.[config.selections.colors.main] ?? bundle.design.images)[0]} alt="" fill sizes="160px" className="object-cover" />
+                  )}
                 </div>
                 <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
                   {bundle.regions.map((r) => (

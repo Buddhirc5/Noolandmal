@@ -90,6 +90,7 @@ create table public.designs (
   addon_groups text[] not null default '{}',
   default_options text[] not null default '{}',
   images text[] not null default '{}',
+  color_images jsonb not null default '{}',
   published boolean not null default false,
   featured boolean not null default false,
   sort int not null default 0,

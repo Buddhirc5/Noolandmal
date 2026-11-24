@@ -5,7 +5,7 @@ import { listDesignCards, loadCatalog } from "@/lib/server/catalog";
 import { resolveLayers } from "@/lib/figure";
 import { colorHex } from "@/lib/colors";
 import { formatDate, lkrRange } from "@/lib/format";
-import { DressFigure } from "@/components/customiser/DressFigure";
+import Image from "next/image";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import type { Configuration, LayerSpec, Order } from "@/lib/types";
 
@@ -38,18 +38,10 @@ export async function MyDesigns() {
       {configs.map((c) => {
         const card = cards.find((x) => x.design.id === c.design_id);
         const order = orders.find((o) => o.code === c.code);
-        const layers = card
-          ? resolveLayers(
-              card.layers.filter((l) => !l.image_url),
-              c.selections.options.map((k) => catalog.options.find((o) => o.key === k)?.layer).filter(Boolean) as LayerSpec[],
-              card.regions.map((r) => r.key),
-            )
-          : [];
+        const cover = card ? (card.design.color_images?.[c.selections.colors.main] ?? card.design.images)[0] : undefined;
         return (
           <article key={c.id} className="card flex gap-4 p-4">
-            <div className="w-20 shrink-0 rounded-xl bg-[#F1ECE4]">
-              <DressFigure layers={layers} colorOf={(r) => colorHex(c.selections.colors[r], catalog.palette)} idPrefix={`my-${c.code}`} className="h-auto w-full" />
-            </div>
+            <div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-[16px] bg-surface-2">{cover && <Image src={cover} alt="" fill sizes="80px" className="object-cover" />}</div>
             <div className="min-w-0 text-sm">
               <p className="font-mono text-xs text-muted">{c.code}</p>
               <p className="font-semibold text-green-900">{card?.design.name ?? c.design_slug}</p>

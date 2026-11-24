@@ -37,6 +37,12 @@ export const site = {
   defaultLocale: "en" as const,
 };
 
+/** Feature switches. Add-ons (sleeves, embroidery…) and the drawn preview return in a later update. */
+export const features = {
+  addons: false,
+  drawnPreview: false,
+};
+
 export type Locale = (typeof site.locales)[number];
 
 export const navLinks = [

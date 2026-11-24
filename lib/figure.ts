@@ -12,8 +12,10 @@ export interface Shape {
   opacity?: number;
   line?: boolean; // stroke-only path
   width?: number;
-  texture?: "lace" | "sequin" | "knit" | "tulle" | "embroidery";
+  texture?: "lace" | "sequin" | "knit" | "tulle" | "embroidery" | "print";
   sheen?: boolean;
+  /** draw only the texture pattern (in the region colour) over what's below — no solid fill */
+  patternOnly?: boolean;
 }
 
 export interface FigureLayer {
@@ -331,6 +333,14 @@ export function buildFigure(layers: FigureLayer[]): Shape[] {
     front.push({ d: circle(150, 205, 5), region: bow.region_key });
   }
 
+  const shoulderBow = has("shoulder-bow");
+  if (shoulderBow) {
+    // tie knotted at the open shoulder (left), tails falling down the arm
+    front.push({ d: "M100,112 L82,100 L80,126 Z M100,112 L118,96 L112,124 Z", region: shoulderBow.region_key, sheen: true });
+    front.push({ d: "M97,114 Q88,170 84,236 L92,238 Q96,172 103,116 Z", region: shoulderBow.region_key, sheen: true });
+    front.push({ d: circle(100, 112, 5), region: shoulderBow.region_key });
+  }
+
   const stole = has("stole");
   if (stole) {
     const drape = "M100,92 Q78,160 70,300 Q78,306 88,300 Q92,190 108,132 Z";
@@ -385,9 +395,12 @@ export function buildFigure(layers: FigureLayer[]): Shape[] {
     }
   }
   const sparkle = has("sparkle");
-  if (sparkle) for (const s of [...body]) if (s.region === mainRegion && !s.line) front.unshift({ d: s.d, region: sparkle.region_key, texture: "sequin" });
+  if (sparkle) for (const s of [...body]) if (s.region === mainRegion && !s.line) front.unshift({ d: s.d, region: sparkle.region_key, texture: "sequin", patternOnly: true });
   const emb = has("embroidery");
-  if (emb && bodice) front.push({ d: BODICES[bodice.variant] ?? BODICES.strapless, region: emb.region_key, texture: "embroidery" });
+  if (emb && bodice) front.push({ d: BODICES[bodice.variant] ?? BODICES.strapless, region: emb.region_key, texture: "print", patternOnly: true });
+  // all-over print / embroidery in the accent colour across the main fabric
+  const print = has("print");
+  if (print) for (const s of [...body]) if (s.region === mainRegion && !s.line) front.unshift({ d: s.d, region: print.region_key, texture: "print", patternOnly: true });
 
   return [...dressForm(), ...back, ...body, ...front];
 }
@@ -427,6 +440,8 @@ export function patternDefs(id: string, tone: string, texture: NonNullable<Shape
       return `<pattern id="${id}" width="6" height="6" patternUnits="userSpaceOnUse"><path d="M0 0 L3 4 L6 0" fill="none" stroke="${shade(tone, -0.18)}" stroke-width="0.8"/></pattern>`;
     case "tulle":
       return `<pattern id="${id}" width="4" height="4" patternUnits="userSpaceOnUse"><path d="M0 0 L4 4 M4 0 L0 4" stroke="${shade(tone, -0.2)}" stroke-width="0.3" opacity="0.6"/></pattern>`;
+    case "print":
+      return `<pattern id="${id}" width="18" height="18" patternUnits="userSpaceOnUse"><path d="M9 2 C13 6 13 11 9 15 C5 11 5 6 9 2Z" fill="${tone}" opacity="0.85"/><path d="M0 9 Q4 7 6 11" fill="none" stroke="${tone}" stroke-width="1"/><circle cx="15" cy="16" r="1.6" fill="${tone}"/></pattern>`;
     case "embroidery":
       return `<pattern id="${id}" width="16" height="16" patternUnits="userSpaceOnUse"><path d="M8 3 C11 6 11 10 8 13 C5 10 5 6 8 3Z" fill="none" stroke="${light}" stroke-width="0.8"/><circle cx="2" cy="14" r="1" fill="${light}"/></pattern>`;
   }
@@ -446,7 +461,7 @@ export function figureToSvg(shapes: Shape[], colorOf: (region: string) => string
       body.push(`<path d="${s.d}" fill="none" stroke="${color}" stroke-width="${s.width ?? 2}" stroke-linecap="round" opacity="${op}"/>`);
       return;
     }
-    body.push(`<path d="${s.d}" fill="${color}" opacity="${op}" stroke="rgba(0,0,0,0.16)" stroke-width="0.8"/>`);
+    if (!s.patternOnly) body.push(`<path d="${s.d}" fill="${color}" opacity="${op}" stroke="rgba(0,0,0,0.16)" stroke-width="0.8"/>`);
     if (s.texture) {
       const pid = `p-${s.texture}-${color.replace("#", "")}`;
       if (!seen.has(pid)) {
@@ -467,7 +482,7 @@ export const VARIANTS: Record<string, string[]> = {
   sleeves: ["none", ...Object.keys(SLEEVES)],
   skirt: ["column", "mermaid", "aline", "ball", "tiered", "none"],
   length: ["mini", "knee", "midi", "maxi", "floor", "train"],
-  texture: ["none", "lace", "sequin", "knit", "tulle", "embroidery"],
-  extra: ["overlay-skirt", "leaves", "sash-drape", "saree-drape", "lace-insert", "ties", "flowers-scatter", "flower-3d", "belt", "bow", "stole", "cape", "cardigan", "peplum", "hem-lace", "crochet-hem", "beads", "buttons", "pockets", "sparkle", "embroidery"],
+  texture: ["none", "lace", "sequin", "knit", "tulle", "embroidery", "print"],
+  extra: ["overlay-skirt", "leaves", "shoulder-bow", "print", "sash-drape", "saree-drape", "lace-insert", "ties", "flowers-scatter", "flower-3d", "belt", "bow", "stole", "cape", "cardigan", "peplum", "hem-lace", "crochet-hem", "beads", "buttons", "pockets", "sparkle", "embroidery"],
   image: [""],
 };

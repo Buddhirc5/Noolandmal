@@ -36,6 +36,8 @@ const paletteRaw: [string, string, string][] = [
   ["terracotta", "Terracotta", "#C66B4E"],
   ["mustard", "Mustard", "#D9A441"],
   ["gold", "Gold", "#C9A66B"],
+  ["champagne", "Champagne", "#E6D5B3"],
+  ["silver", "Silver", "#C9CBCF"],
   ["ivory", "Ivory", "#F4EEE2"],
   ["cream", "Cream", "#EDE3CF"],
   ["white", "White", "#FFFFFF"],
@@ -63,7 +65,7 @@ const fabricRaw: [string, string, string, number, string[] | null][] = [
   ["satin", "Satin", "Smooth with a soft sheen. Our most popular occasion fabric.", 2500, null],
   ["tulle", "Soft tulle", "Layered net over a satin base for volume and float.", 2000, null],
   ["silk-blend", "Silk blend", "Luxurious lustre and drape for special occasions.", 5500, null],
-  ["sequin-net", "Sequin net", "Hand-finished sequins on net. Limited colours.", 9000, ["black", "navy", "maroon", "deep-green", "mauve", "blush", "gold", "ivory", "aqua"]],
+  ["sequin-net", "Sequin net", "Hand-finished sequins on net. Limited colours.", 9000, ["black", "navy", "maroon", "deep-green", "mauve", "blush", "gold", "ivory", "aqua", "silver", "champagne"]],
   ["brocade", "Brocade", "Woven pattern with metallic thread, ideal for blouses.", 4500, ["deep-green", "maroon", "navy", "gold", "plum", "red", "mustard", "ivory"]],
   ["crochet-cotton", "Crochet cotton yarn", "Hand-crocheted in cotton yarn by our designer.", 0, ["ivory", "cream", "white", "sage", "mint", "dusty-rose", "blush", "lilac", "mustard", "sky", "terracotta", "black", "cocoa"]],
 ];
@@ -236,7 +238,7 @@ export const settings: Settings = {
 
 // ── Designs ─────────────────────────────────────────────────────────────
 interface DesignSeed {
-  design: Omit<Design, "id" | "images" | "sort" | "published"> & { photos?: boolean };
+  design: Omit<Design, "id" | "images" | "color_images" | "sort" | "published"> & { photos?: boolean };
   regions: [string, string, string][];
   layers: [string, string, string][];
 }
@@ -468,6 +470,132 @@ const designSeeds: DesignSeed[] = [
     regions: [["main", "Frock", "sky"], ["accent", "Belt & trims", "ivory"]],
     layers: [["bodice", "boat", "main"], ["sleeves", "cap", "main"], ["skirt", "aline", "main"], ["length", "midi", "main"]],
   },
+  {
+    design: {
+      slug: "navy-sequin-fan-party-dress",
+      name: "Navy Sequin Fan Party Dress",
+      category: "dress",
+      occasions: ["Party", "Homecoming"],
+      description:
+        "A knee-length satin fit-and-flare dress with an asymmetric neckline and a bodice of hand-sewn sequin rays fanning out from the waist. Gathered full skirt, concealed back zip.",
+      base_price: 18500,
+      fabric_metres: 3.5,
+      default_fabric: "satin",
+      fabric_keys: ["satin", "silk-blend", "crepe"],
+      addon_groups: ["neckline", "sleeves", "length", "back", "lining", "embroidery", "detail", "pockets"],
+      default_options: ["neck-design", "len-design", "back-zip", "lining-full"],
+      featured: true,
+      badge: "New",
+      photos: true,
+    },
+    regions: [["main", "Satin dress", "navy"], ["accent", "Sequin rays", "white"]],
+    layers: [["bodice", "one-shoulder", "main"], ["skirt", "aline", "main"], ["length", "knee", "main"], ["extra", "embroidery", "accent"]],
+  },
+  {
+    design: {
+      slug: "navy-silver-peplum-drape-saree",
+      name: "Navy Silver Peplum Drape Saree",
+      category: "saree-blouse",
+      occasions: ["Wedding", "Engagement", "Party"],
+      description:
+        "A pre-draped saree with a peplum front drape and silver-trimmed pallu over a column skirt embroidered with flowing silver vines. V-neck blouse with sheer puff sleeves and embroidered cuffs.",
+      base_price: 42000,
+      fabric_metres: 6,
+      default_fabric: "crepe",
+      fabric_keys: ["crepe", "silk-blend", "satin"],
+      addon_groups: ["neckline", "sleeves", "back", "lining", "embroidery", "detail"],
+      default_options: ["neck-design", "sleeves-puff", "back-zip", "lining-full"],
+      featured: true,
+      badge: "New",
+      photos: true,
+    },
+    regions: [["main", "Saree & blouse", "navy"], ["accent", "Silver embroidery", "silver"]],
+    layers: [["bodice", "v-neck", "main"], ["sleeves", "puff", "main"], ["skirt", "column", "main"], ["length", "floor", "main"], ["extra", "print", "accent"], ["extra", "saree-drape", "main"], ["extra", "peplum", "main"], ["extra", "hem-lace", "accent"]],
+  },
+  {
+    design: {
+      slug: "champagne-lace-high-neck-saree",
+      name: "Champagne Lace High-Neck Saree",
+      category: "bridal",
+      occasions: ["Wedding", "Engagement"],
+      description:
+        "A soft net saree covered in gold-thread floral embroidery with a scalloped lace border, worn with a sleeveless high-neck sheer lace blouse.",
+      base_price: 46000,
+      fabric_metres: 6.5,
+      default_fabric: "tulle",
+      fabric_keys: ["tulle", "silk-blend", "satin"],
+      addon_groups: ["neckline", "sleeves", "back", "lining", "embroidery", "buttons"],
+      default_options: ["neck-design", "sleeves-none", "back-buttons", "lining-half"],
+      featured: true,
+      badge: "Bridal",
+      photos: true,
+    },
+    regions: [["main", "Net saree & blouse", "champagne"], ["overlay", "Lace drape", "champagne"]],
+    layers: [["bodice", "boat", "main"], ["skirt", "column", "main"], ["length", "floor", "main"], ["texture", "lace", "main"], ["extra", "saree-drape", "overlay"], ["extra", "hem-lace", "overlay"]],
+  },
+  {
+    design: {
+      slug: "cocoa-linen-peplum-top",
+      name: "Cocoa Linen Peplum Top",
+      category: "sets",
+      occasions: ["Office", "Casual"],
+      description:
+        "A sleeveless boat-neck linen top with a fitted bodice and a box-pleated peplum. Back zip. Lovely with wide-leg trousers — ask us to make a matching pair.",
+      base_price: 6900,
+      fabric_metres: 1.4,
+      default_fabric: "linen",
+      fabric_keys: ["linen", "cotton", "crepe"],
+      addon_groups: ["neckline", "sleeves", "lining", "embroidery", "buttons"],
+      default_options: ["neck-design", "sleeves-none", "lining-none"],
+      featured: false,
+      badge: null,
+      photos: true,
+    },
+    regions: [["main", "Top", "cocoa"], ["accent", "Details", "ivory"]],
+    layers: [["bodice", "boat", "main"], ["skirt", "none", "main"], ["extra", "peplum", "main"]],
+  },
+  {
+    design: {
+      slug: "botanical-bow-shoulder-mini",
+      name: "Botanical Bow-Shoulder Mini",
+      category: "dress",
+      occasions: ["Casual", "Party"],
+      description:
+        "A one-shoulder A-line mini in botanical-print linen with a long tie that knots into a bow at the open shoulder.",
+      base_price: 9800,
+      fabric_metres: 2,
+      default_fabric: "linen",
+      fabric_keys: ["linen", "cotton"],
+      addon_groups: ["length", "lining", "embroidery", "detail", "pockets"],
+      default_options: ["len-design", "lining-half"],
+      featured: true,
+      badge: null,
+      photos: true,
+    },
+    regions: [["main", "Print base", "beige"], ["accent", "Botanical print", "deep-green"]],
+    layers: [["bodice", "one-shoulder", "main"], ["skirt", "aline", "main"], ["length", "mini", "main"], ["extra", "print", "accent"], ["extra", "shoulder-bow", "main"]],
+  },
+  {
+    design: {
+      slug: "lilac-ruffle-saree",
+      name: "Lilac Ruffle Saree",
+      category: "saree-blouse",
+      occasions: ["Wedding", "Festival", "Office"],
+      description:
+        "A soft textured saree edged with frills along the pallu and hem, paired with a long-sleeve sheer lace blouse in a deeper lilac.",
+      base_price: 28500,
+      fabric_metres: 6,
+      default_fabric: "cotton",
+      fabric_keys: ["cotton", "crepe", "silk-blend"],
+      addon_groups: ["neckline", "sleeves", "back", "lining", "embroidery"],
+      default_options: ["neck-design", "sleeves-long", "back-zip", "lining-half"],
+      featured: false,
+      badge: null,
+      photos: true,
+    },
+    regions: [["blouse", "Lace blouse", "mauve"], ["main", "Saree", "lilac"]],
+    layers: [["bodice", "boat", "blouse"], ["sleeves", "long", "blouse"], ["texture", "lace", "blouse"], ["skirt", "column", "main"], ["length", "floor", "main"], ["extra", "saree-drape", "main"], ["extra", "crochet-hem", "main"]],
+  },
 ];
 
 export const designs: Design[] = designSeeds.map((s, i) => {
@@ -476,7 +604,9 @@ export const designs: Design[] = designSeeds.map((s, i) => {
     ...d,
     id: id("des", d.slug),
     images: hasPhotos ? photos(d.slug) : [],
-    published: true,
+    color_images: {},
+    // only designs with real photography are shown until photos are supplied
+    published: Boolean(hasPhotos),
     sort: i,
     created_at: "2026-11-01T00:00:00.000Z",
     updated_at: "2026-11-01T00:00:00.000Z",

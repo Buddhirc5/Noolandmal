@@ -26,6 +26,8 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
   const photoInput = useRef<HTMLInputElement>(null);
   const [layerUploadIdx, setLayerUploadIdx] = useState<number | null>(null);
   const layerInput = useRef<HTMLInputElement>(null);
+  const colourInput = useRef<HTMLInputElement>(null);
+  const [colourKey, setColourKey] = useState(catalog.palette[0]?.key ?? "");
 
   const set = <K extends keyof DesignForm>(k: K, v: DesignForm[K]) => setD((x) => ({ ...x, [k]: v }));
   const toggle = (k: "fabric_keys" | "addon_groups" | "default_options" | "occasions", v: string) =>
@@ -289,6 +291,58 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
             />
           </div>
           <up.Feedback />
+        </section>
+        <section className="card space-y-4 p-5">
+          <h2 className="font-semibold text-ink">Photos by colour</h2>
+          <p className="text-sm text-muted">Upload photos of this design made in a specific colour. When a customer picks that colour for the main fabric, these photos replace the default ones.</p>
+          <div className="flex flex-wrap items-center gap-2">
+            <select className="input w-56" value={colourKey} onChange={(e) => setColourKey(e.target.value)} aria-label="Colour">
+              {catalog.palette.map((c) => (
+                <option key={c.key} value={c.key}>
+                  {c.name}
+                  {d.color_images?.[c.key]?.length ? ` (${d.color_images[c.key].length})` : ""}
+                </option>
+              ))}
+            </select>
+            <button type="button" className="btn-secondary" onClick={() => colourInput.current?.click()} disabled={up.pending}>
+              {up.pending ? <Spinner /> : null} Add photo in {catalog.palette.find((c) => c.key === colourKey)?.name}
+            </button>
+            <input
+              ref={colourInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp"
+              className="sr-only"
+              tabIndex={-1}
+              aria-label="Upload colour photo"
+              onChange={async (e) => {
+                const f = e.target.files?.[0];
+                if (!f) return;
+                const url = await upload(f, "photo");
+                if (url) setD((x) => ({ ...x, color_images: { ...(x.color_images ?? {}), [colourKey]: [...(x.color_images?.[colourKey] ?? []), url] } }));
+                e.target.value = "";
+              }}
+            />
+          </div>
+          {Object.entries(d.color_images ?? {})
+            .filter(([, list]) => list.length)
+            .map(([key, list]) => (
+              <div key={key}>
+                <p className="mb-2 flex items-center gap-2 text-sm font-medium text-ink">
+                  <span className="size-4 rounded-full ring-1 ring-black/10" style={{ background: colorHex(key, catalog.palette) }} />
+                  {catalog.palette.find((c) => c.key === key)?.name ?? key}
+                </p>
+                <div className="flex flex-wrap gap-3">
+                  {list.map((src) => (
+                    <div key={src} className="w-24 space-y-1">
+                      <img src={src} alt="" className="aspect-[4/5] w-full rounded-[14px] object-cover" />
+                      <button type="button" className="btn-ghost min-h-8 w-full px-1.5 text-xs text-danger" onClick={() => setD((x) => ({ ...x, color_images: { ...x.color_images, [key]: x.color_images[key].filter((u) => u !== src) } }))}>
+                        Remove
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
         </section>
       </div>
 

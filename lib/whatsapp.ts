@@ -56,12 +56,12 @@ type Payloads = {
 
 const T = {
   en: {
-    hi: "Hi Nool & Mal 👋",
+    hi: "Hi Nool & Mal,",
     wantQuote: (c: string) => `I'd like a quotation for design *${c}*.`,
     design: "Design",
     colours: "Colours",
     fabric: "Fabric",
-    options: "Options",
+    options: "Includes",
     none: "none",
     size: "Size",
     qty: "Qty",
@@ -77,15 +77,15 @@ const T = {
     photos: (n: number) => `${n} photo${n === 1 ? "" : "s"} uploaded`,
     notes: "Notes",
     details: "Details",
-    enquiry: "Hi Nool & Mal 👋 I have a question about a made-to-order dress.",
+    enquiry: "Hi Nool & Mal, I have a question about a made-to-order dress.",
   },
   si: {
-    hi: "ආයුබෝවන් Nool & Mal 👋",
+    hi: "ආයුබෝවන් Nool & Mal,",
     wantQuote: (c: string) => `*${c}* නිර්මාණය සඳහා මිල ගණනක් ලබා ගැනීමට කැමතියි.`,
     design: "නිර්මාණය",
     colours: "වර්ණ",
     fabric: "රෙදි වර්ගය",
-    options: "අමතර කොටස්",
+    options: "ඇතුළත්",
     none: "නැත",
     size: "ප්‍රමාණය",
     qty: "ගණන",
@@ -101,7 +101,7 @@ const T = {
     photos: (n: number) => `ඡායාරූප ${n}ක් උඩුගත කළා`,
     notes: "සටහන්",
     details: "විස්තර",
-    enquiry: "ආයුබෝවන් Nool & Mal 👋 ඇණවුමට මසන ඇඳුමක් ගැන ප්‍රශ්නයක් තිබේ.",
+    enquiry: "ආයුබෝවන් Nool & Mal, ඇණවුමට මසන ඇඳුමක් ගැන ප්‍රශ්නයක් තිබේ.",
   },
 };
 
@@ -174,7 +174,7 @@ export const STATUS_MESSAGES: Record<string, string> = {
   cutting: "your fabric is being cut",
   sewing: "your dress is being sewn",
   fitting: "your dress is ready for a fitting",
-  ready: "your dress is ready! 🎉",
+  ready: "your dress is ready!",
   delivered: "your dress has been delivered",
   collected: "thank you for collecting your dress",
   cancelled: "your order has been cancelled",

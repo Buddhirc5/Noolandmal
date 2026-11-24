@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   images: {
     formats: ["image/avif", "image/webp"],
+    qualities: [50, 70, 75],
     remotePatterns: supabaseHost ? [{ protocol: "https", hostname: supabaseHost }] : [],
   },
   serverExternalPackages: ["sharp"],
