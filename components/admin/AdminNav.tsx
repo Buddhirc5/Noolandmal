@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CalendarDays, ClipboardList, CreditCard, Gauge, History, Inbox, LayoutGrid, Palette, Users } from "lucide-react";
+import { CalendarDays, ClipboardList, CreditCard, Gauge, History, Inbox, LayoutGrid, Palette, Users, Video } from "lucide-react";
 
 const items = [
   { href: "/admin", label: "Dashboard", icon: Gauge },
@@ -12,6 +12,7 @@ const items = [
   { href: "/admin/designs", label: "Designs", icon: LayoutGrid },
   { href: "/admin/catalog", label: "Catalog & prices", icon: Palette },
   { href: "/admin/customers", label: "Customers", icon: Users },
+  { href: "/admin/creators", label: "Creators", icon: Video },
   { href: "/admin/audit", label: "Audit log", icon: History },
 ];
 

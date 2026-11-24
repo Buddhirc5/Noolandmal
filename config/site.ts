@@ -77,6 +77,19 @@ export const testimonials = [
   },
 ];
 
+/**
+ * Creator programme ("Nool & Mal Partners"). Business terms are PLACEHOLDERS —
+ * confirm the discount and rules with Roshini before promoting the page.
+ */
+export const creatorProgram = {
+  discountPercent: 25,
+  minFollowers: "1,000+",
+  videoLength: "30–60 seconds",
+  postWithinDays: 14,
+  hashtag: "#noolandmalpartner",
+  handle: "@noolandmal",
+};
+
 export const occasions = ["Wedding", "Homecoming", "Engagement", "Party", "Office", "Casual", "Festival", "Kids"] as const;
 
 export const categories = [

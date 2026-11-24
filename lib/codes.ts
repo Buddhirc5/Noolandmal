@@ -2,7 +2,7 @@
 // Alphabet excludes 0, O, 1 and I so codes can be read aloud and typed safely.
 export const CODE_ALPHABET = "23456789ABCDEFGHJKLMNPQRSTUVWXYZ";
 export const CODE_LENGTH = 5;
-export type CodePrefix = "NM" | "CR";
+export type CodePrefix = "NM" | "CR" | "NP";
 
 function randomBytes(n: number): Uint8Array {
   const b = new Uint8Array(n);
