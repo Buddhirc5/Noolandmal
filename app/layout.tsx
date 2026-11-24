@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Poppins, Noto_Sans_Sinhala, Noto_Sans_Tamil } from "next/font/google";
+import { Cormorant_Garamond, Poppins, Noto_Sans_Sinhala, Noto_Sans_Tamil, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
 import { site } from "@/config/site";
 import { getLocale } from "@/lib/i18n-server";
@@ -9,6 +9,7 @@ import { I18nProvider } from "@/components/I18nProvider";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-cormorant", display: "swap" });
 const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-poppins", display: "swap" });
 const sinhala = Noto_Sans_Sinhala({ subsets: ["sinhala"], weight: ["400", "500", "600"], variable: "--font-sinhala", display: "swap", preload: false });
+const serifSinhala = Noto_Serif_Sinhala({ subsets: ["sinhala"], weight: ["500", "600"], variable: "--font-serif-sinhala", display: "swap", preload: false });
 const tamil = Noto_Sans_Tamil({ subsets: ["tamil"], weight: ["400", "500", "600"], variable: "--font-tamil", display: "swap", preload: false });
 
 export const metadata: Metadata = {
@@ -35,7 +36,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   return (
-    <html lang={locale} data-scroll-behavior="smooth" className={`${cormorant.variable} ${poppins.variable} ${sinhala.variable} ${tamil.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${cormorant.variable} ${poppins.variable} ${sinhala.variable} ${serifSinhala.variable} ${tamil.variable}`}>
       <body className="min-h-dvh">
         <I18nProvider dict={getDict(locale)} locale={locale}>
           {children}

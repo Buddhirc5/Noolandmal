@@ -18,7 +18,7 @@
   --color-danger: #b4232f;
   --color-success: #1f7a4d;
 
-  --font-serif: var(--font-cormorant), "Noto Serif Sinhala", "Noto Serif Tamil", Georgia, serif;
+  --font-serif: var(--font-cormorant), var(--font-serif-sinhala), var(--font-tamil), Georgia, serif;
   --font-sans: var(--font-poppins), var(--font-sinhala), var(--font-tamil), system-ui, sans-serif;
 
   --radius-card: 22px;
@@ -92,7 +92,7 @@ body {
     @apply btn text-green-900 hover:bg-green-50;
   }
 @utility btn-gold {
-    @apply btn bg-gold text-green-900 hover:bg-[#d4b47c];
+    @apply btn bg-gold text-ink hover:bg-[#d4b47c];
   }
 @utility btn-wa {
     @apply btn bg-[#1f7a4d] text-white hover:bg-[#186640];

@@ -92,7 +92,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
     <div className="pb-28 lg:pb-12">
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-12">
         {/* PREVIEW */}
-        <div className="lg:sticky lg:top-24 lg:self-start">
+        <div className="min-w-0 lg:sticky lg:top-24 lg:self-start">
           <div className="card relative overflow-hidden bg-[#F1ECE4]">
             <div className="relative aspect-[4/5] w-full">
               {view === -1 ? (
@@ -148,7 +148,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
         </div>
 
         {/* CONTROLS */}
-        <div>
+        <div className="min-w-0">
           {savedCode && (
             <div className="mb-5 rounded-2xl border border-gold/50 bg-gold-50 px-4 py-3 text-sm text-green-900">
               Viewing saved design <b>{savedCode}</b>. Changes create a new code when you request a quote.

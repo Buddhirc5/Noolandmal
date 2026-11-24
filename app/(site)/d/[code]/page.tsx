@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { Customiser } from "@/components/customiser/Customiser";
 import { getDesignBundleById, loadCatalog, publicCatalog, queueWeeks } from "@/lib/server/catalog";
 import { getConfiguration } from "@/lib/server/orders";
+import { getAdmin, getGuestId, getUser } from "@/lib/server/auth";
 import { isValidCode, normalizeCode } from "@/lib/codes";
 import { formatDate, lkrRange } from "@/lib/format";
 
@@ -18,8 +19,11 @@ export default async function SavedDesignPage({ params }: PageProps<"/d/[code]">
   if (!isValidCode(code, "NM")) notFound();
   const config = await getConfiguration(code);
   if (!config) notFound();
-  const [bundle, catalog, weeks] = await Promise.all([getDesignBundleById(config.design_id), loadCatalog(), queueWeeks()]);
+  const [bundle, catalog, weeks, guestId, user, admin] = await Promise.all([getDesignBundleById(config.design_id), loadCatalog(), queueWeeks(), getGuestId(), getUser(), getAdmin()]);
   if (!bundle) notFound();
+  // Anyone with the link sees the design; free-text notes stay private to the owner and the studio
+  const owner = Boolean(admin || (guestId && config.guest_id === guestId) || (user && config.user_id === user.id));
+  const selections = owner ? config.selections : { ...config.selections, notes: "" };
   return (
     <div className="container-x py-6 md:py-10">
       <div className="mb-6 flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-paper p-5 sm:flex-row sm:items-center sm:justify-between">
@@ -34,7 +38,7 @@ export default async function SavedDesignPage({ params }: PageProps<"/d/[code]">
           Track this order
         </Link>
       </div>
-      <Customiser bundle={bundle} catalog={publicCatalog(catalog)} initial={config.selections} queueWeeks={weeks} savedCode={config.code} syncUrl={false} />
+      <Customiser bundle={bundle} catalog={publicCatalog(catalog)} initial={selections} queueWeeks={weeks} savedCode={config.code} syncUrl={false} />
     </div>
   );
 }

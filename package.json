@@ -8,8 +8,8 @@
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "seed": "node scripts/seed-local.mjs",
-    "seed:sql": "node scripts/generate-seed-sql.mjs",
+    "seed": "node scripts/reset-local.mjs",
+    "seed:sql": "tsx scripts/generate-seed-sql.ts",
     "brand": "node scripts/generate-brand-assets.mjs",
     "catalog-images": "node scripts/split-catalog-images.mjs"
   },
@@ -33,6 +33,7 @@
     "@types/react-dom": "^19.3.0",
     "postcss": "^8.5.33",
     "tailwindcss": "^4.3.5",
+    "tsx": "^4.23.15",
     "typescript": "^7.0.2",
     "vitest": "^5.1.1"
   }

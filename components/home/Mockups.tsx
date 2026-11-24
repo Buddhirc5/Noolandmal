@@ -74,7 +74,7 @@ export function BookingMock() {
       </div>
       <div className="mt-3 grid grid-cols-6 gap-1.5 text-center">
         {days.map((d, i) => (
-          <div key={d} className={`rounded-lg border py-1.5 ${i === 3 ? "border-green-900 bg-green-900 text-white" : i === 1 ? "border-line text-muted/60 line-through" : "border-line text-ink"}`}>
+          <div key={d} className={`rounded-lg border py-1.5 ${i === 3 ? "border-green-900 bg-green-900 text-white" : i === 1 ? "border-line bg-ivory text-muted line-through" : "border-line text-ink"}`}>
             <span className="block text-[10px]">{d}</span>
             <span className="font-medium">{12 + i}</span>
           </div>

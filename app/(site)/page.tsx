@@ -90,7 +90,7 @@ export default async function HomePage() {
         <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
           <SectionHeading eyebrow={t("how.eyebrow")} title={t("how.title")} />
           <Link href="/how-it-works" className="btn-ghost self-start md:self-auto">
-            Learn more <ArrowRight className="size-4" aria-hidden />
+            The full process <ArrowRight className="size-4" aria-hidden />
           </Link>
         </div>
         <div className="mt-10">

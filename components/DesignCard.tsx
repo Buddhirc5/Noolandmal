@@ -6,7 +6,8 @@ import { lkr } from "@/lib/format";
 import type { PaletteColor } from "@/lib/types";
 import type { DesignCardData } from "@/lib/server/catalog";
 
-export function DesignCard({ item, palette, priority = false, fromLabel = "from" }: { item: DesignCardData; palette: PaletteColor[]; priority?: boolean; fromLabel?: string }) {
+export function DesignCard({ item, palette, priority = false, fromLabel = "from", headingLevel = "h3" }: { item: DesignCardData; palette: PaletteColor[]; priority?: boolean; fromLabel?: string; headingLevel?: "h2" | "h3" }) {
+  const Heading = headingLevel;
   const { design, regions, layers } = item;
   const minFabric = item.fabrics.length ? Math.min(...item.fabrics.map((f) => f.price_modifier)) : 0;
   const colorOf = (key: string) => colorHex(regions.find((r) => r.key === key)?.default_color, palette);
@@ -29,7 +30,7 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
         {design.badge && <span className="badge absolute top-3 left-3 bg-paper/95">{design.badge}</span>}
       </div>
       <div className="flex flex-1 flex-col gap-2 p-4">
-        <h3 className="font-serif text-xl leading-tight font-semibold text-green-900">{design.name}</h3>
+        <Heading className="font-serif text-xl leading-tight font-semibold text-green-900">{design.name}</Heading>
         <div className="mt-auto flex items-center justify-between gap-3">
           <p className="text-sm text-muted">
             {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price + minFabric)}</span>

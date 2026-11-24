@@ -14,10 +14,18 @@ export interface HeroPreset {
 export function HeroPhone({ title, layers, presets }: { title: string; layers: FigureLayer[]; presets: HeroPreset[] }) {
   const [i, setI] = useState(0);
   const [paused, setPaused] = useState(false);
+  // start cycling colours only once the page has settled, so it never competes with loading
   useEffect(() => {
     if (paused || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => setI((x) => (x + 1) % presets.length), 2800);
-    return () => clearInterval(id);
+    let id: ReturnType<typeof setInterval> | undefined;
+    const start = setTimeout(() => {
+      setI((x) => (x + 1) % presets.length);
+      id = setInterval(() => setI((x) => (x + 1) % presets.length), 2800);
+    }, 6000);
+    return () => {
+      clearTimeout(start);
+      clearInterval(id);
+    };
   }, [paused, presets.length]);
   const p = presets[i];
   return (
@@ -58,7 +66,7 @@ export function HeroPhone({ title, layers, presets }: { title: string; layers: F
                   LKR <AnimatedNumber value={p.min} /> – <AnimatedNumber value={p.max} />
                 </p>
               </div>
-              <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-medium whitespace-nowrap text-green-900">Get quote</span>
+              <span className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-xs font-medium whitespace-nowrap text-ink">Get quote</span>
             </div>
           </div>
         </div>
