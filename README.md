@@ -91,9 +91,9 @@ messages/           UI strings: en (complete), si / ta (draft, falls back to Eng
 
 All in `config/site.ts`, `data/seed.ts` (or later in Admin → Catalog):
 
-- [ ] Real WhatsApp number (`NEXT_PUBLIC_WHATSAPP_NUMBER`) and display phone
+- [x] WhatsApp number (+94 77 634 4267)
 - [ ] Bank account details (Admin → Catalog → Settings)
-- [ ] Studio address, map link and opening hours
+- [x] Studio address and map pin (No 85, Senanayake Mawatha, Sri Jayawardenepura Kotte) — confirm opening hours
 - [ ] Final garment list and real base prices; fabric and add-on prices
 - [ ] Real photos for every design (and remove designs you won't offer)
 - [ ] Delivery fee table and weekly order capacity
@@ -101,6 +101,10 @@ All in `config/site.ts`, `data/seed.ts` (or later in Admin → Catalog):
 - [ ] Replace the **sample testimonials** in `config/site.ts` with real customer quotes (with permission)
 - [ ] Have the Terms and Privacy pages reviewed
 - [ ] Instagram handle and email
+
+## Motion
+
+Scroll reveals (`[data-reveal]`, `[data-reveal-stagger]`, one observer in `components/motion/RevealObserver.tsx`), hero and photo parallax (`Parallax`), scroll-lit statement text (`ScrollWords`), count-up numbers, fanned photo entrance, animated FAQ and testimonials, page fade between routes, and a footer that is revealed from under the page on desktop. Everything respects the phone's reduce-motion setting, and content stays visible without JavaScript.
 
 ## Quality checks done
 

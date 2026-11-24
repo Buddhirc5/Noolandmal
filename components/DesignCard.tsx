@@ -11,7 +11,7 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
   const minFabric = item.fabrics.length ? Math.min(...item.fabrics.map((f) => f.price_modifier)) : 0;
   const photo = design.images[0];
   return (
-    <Link href={`/collection/${design.slug}`} className="group card card-hover flex flex-col overflow-hidden p-2.5">
+    <Link href={`/collection/${design.slug}`} className="group card lift flex flex-col overflow-hidden p-2.5">
       <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2">
         {photo ? (
           <Image

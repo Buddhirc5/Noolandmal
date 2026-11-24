@@ -8,21 +8,23 @@ export const site = {
   description:
     "Nool & Mal is a family-run made-to-order fashion label in Colombo, Sri Lanka. Design your dress online, change colours and details, see a live price estimate and get a quotation on WhatsApp.",
   url: (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, ""),
-  /** E.164 without "+". PLACEHOLDER */
-  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "94770000000",
-  /** Display phone for tel: links. PLACEHOLDER */
-  phoneDisplay: "+94 77 000 0000",
+  /** E.164 without "+" */
+  whatsappNumber: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "94776344267",
+  /** Display phone for tel: links */
+  phoneDisplay: "+94 77 634 4267",
   instagram: "https://instagram.com/noolandmal", // PLACEHOLDER
   email: "hello@noolandmal.lk", // PLACEHOLDER
-  /** PLACEHOLDER studio address & map pin */
+  designer: "Roshini Shyama",
+  /** Studio address & map pin */
   studio: {
-    street: "Studio address to be confirmed",
-    city: "Colombo",
+    street: "No 85, Senanayake Mawatha",
+    city: "Sri Jayawardenepura Kotte",
     region: "Western Province",
     country: "LK",
-    lat: 6.9271,
-    lng: 79.8612,
-    mapUrl: "https://maps.google.com/?q=Colombo",
+    lat: 6.888937,
+    lng: 79.891813,
+    plusCode: "6JRXVVQR+HP",
+    mapUrl: "https://maps.app.goo.gl/2sV6Z4YYoxkryc8u8",
     hours: "Mon–Sat, 9.30am – 6.00pm (by appointment)",
   },
   /** PLACEHOLDER bank details shown on quote pages (also editable in Admin → Catalog → Settings) */

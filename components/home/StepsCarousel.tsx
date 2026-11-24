@@ -52,9 +52,9 @@ export function StepsCarousel({ label, steps }: { label: string; steps: Step[] }
         aria-label={label}
       >
         {steps.map((s, i) => (
-          <article key={s.title} className="card flex w-[82%] shrink-0 snap-start flex-col p-3 sm:w-[46%] lg:w-[calc(33.333%-14px)]" aria-roledescription="slide" aria-label={`${i + 1} of ${steps.length}`}>
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-surface-2">
-              <Image src={s.image} alt={s.alt} fill sizes="(max-width: 640px) 82vw, 33vw" className="object-cover object-top" />
+          <article key={s.title} className="card lift flex w-[82%] shrink-0 snap-start flex-col p-3 sm:w-[46%] lg:w-[calc(33.333%-14px)]" aria-roledescription="slide" aria-label={`${i + 1} of ${steps.length}`}>
+            <div className="group relative aspect-[4/3] overflow-hidden rounded-[22px] bg-surface-2">
+              <Image src={s.image} alt={s.alt} fill sizes="(max-width: 640px) 82vw, 33vw" className={`object-cover object-top transition-transform duration-[1200ms] ease-out ${i === idx ? "scale-100" : "scale-[1.08]"}`} />
             </div>
             <div className="px-3 pt-5 pb-4">
               <p className="font-mono text-[12px] tracking-[0.12em] text-muted">STEP {pad(i + 1)}</p>
@@ -62,6 +62,11 @@ export function StepsCarousel({ label, steps }: { label: string; steps: Step[] }
               <p className="mt-2 text-[15px] leading-6 text-muted">{s.body}</p>
             </div>
           </article>
+        ))}
+      </div>
+      <div className="mt-6 flex justify-center gap-1.5" aria-hidden>
+        {steps.map((_, i) => (
+          <span key={i} className={`h-1.5 rounded-full transition-all duration-500 ease-out ${i === idx ? "w-8 bg-ink" : "w-1.5 bg-ink/20"}`} />
         ))}
       </div>
     </div>

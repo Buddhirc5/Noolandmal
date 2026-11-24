@@ -86,7 +86,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
         {/* GALLERY */}
         <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-surface">
-            {current && <Image key={current} src={current} alt={`${design.name}, photo ${photo + 1} of ${images.length}`} fill priority quality={70} sizes="(max-width: 1024px) 100vw, 55vw" className="object-cover" />}
+            {current && <Image key={current} src={current} alt={`${design.name}, photo ${photo + 1} of ${images.length}`} fill priority quality={70} sizes="(max-width: 1024px) 100vw, 55vw" className="animate-photo-in object-cover" />}
           </div>
           {images.length > 1 && (
             <div className="mt-3 flex gap-2.5 overflow-x-auto p-1 [scrollbar-width:none]" role="tablist" aria-label="Photos">
@@ -158,9 +158,9 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                       role="radio"
                       aria-checked={on}
                       onClick={() => setSel((s) => ({ ...s, version: v.key }))}
-                      className="group text-left"
+                      className="group text-left transition-transform active:scale-[0.97]"
                     >
-                      <span className={cn("relative block aspect-[4/5] overflow-hidden rounded-[18px] bg-surface transition-shadow", on ? "ring-2 ring-ink ring-offset-2" : "ring-1 ring-black/5")}>
+                      <span className={cn("relative block aspect-[4/5] overflow-hidden rounded-[18px] bg-surface transition-[box-shadow,transform] duration-300 group-hover:-translate-y-0.5", on ? "ring-2 ring-ink ring-offset-2" : "ring-1 ring-black/5")}>
                         {v.images[0] && <Image src={v.images[0]} alt="" fill sizes="120px" className="object-cover" />}
                       </span>
                       <span className="mt-2 block text-[13px] leading-tight font-medium text-ink">{v.name}</span>

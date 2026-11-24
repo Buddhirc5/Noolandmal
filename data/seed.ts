@@ -581,6 +581,25 @@ const designSeeds: DesignSeed[] = [
     },
     regions: [["blouse", "Lace blouse", "mauve"], ["main", "Saree", "lilac"]],
   },
+  {
+    design: {
+      slug: "pleated-midi-dress",
+      name: "Pleated Midi Dress",
+      category: "dress",
+      occasions: ["Party", "Office", "Engagement"],
+      description:
+        "A fitted bodice with princess seams and a full box-pleated midi skirt with pockets. Choose the neckline: high-neck halter, folded off-shoulder or V-wrap halter. Concealed back zip.",
+      base_price: 13500,
+      fabric_metres: 3.8,
+      default_fabric: "crepe",
+      fabric_keys: ["crepe", "satin", "linen", "cotton"],
+      addon_groups: ["length", "lining", "pockets"],
+      default_options: ["len-design", "lining-half", "pockets-side"],
+      featured: true,
+      badge: "3 necklines",
+    },
+    regions: [["main", "Dress", "navy"]],
+  },
 ];
 
 export const designs: Design[] = designSeeds.map((s, i) => {
@@ -598,6 +617,18 @@ export const designs: Design[] = designSeeds.map((s, i) => {
     updated_at: "2026-11-01T00:00:00.000Z",
   };
 });
+
+// Designs photographed as versions (one photo set per version)
+const mdPhotos = (v: string) => ["front", "back", "detail", "angle"].map((x) => `/catalog/pleated-midi-dress/${v}/${x}.webp`);
+for (const d of designs) {
+  if (d.slug !== "pleated-midi-dress") continue;
+  d.images = mdPhotos("high-neck-halter");
+  d.published = true;
+  d.versions = [
+    { key: "off-shoulder-fold", name: "Off-shoulder fold", price: 1500, images: mdPhotos("off-shoulder-fold") },
+    { key: "v-wrap-halter", name: "V-wrap halter", price: 0, images: mdPhotos("v-wrap-halter") },
+  ];
+}
 
 export const designRegions: DesignRegion[] = designSeeds.flatMap((s) =>
   s.regions.map(([key, label, default_color], i) => ({

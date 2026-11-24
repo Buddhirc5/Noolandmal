@@ -40,7 +40,11 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   return (
-    <html lang={locale} data-scroll-behavior="smooth" className={`${cormorant.variable} ${figtree.variable} ${instrument.variable} ${sinhala.variable} ${serifSinhala.variable} ${tamil.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" suppressHydrationWarning className={`${cormorant.variable} ${figtree.variable} ${instrument.variable} ${sinhala.variable} ${serifSinhala.variable} ${tamil.variable}`}>
+      <head>
+        {/* lets reveal animations hide content only when JavaScript runs */}
+        <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js')" }} />
+      </head>
       <body className="min-h-dvh">
         <I18nProvider dict={getDict(locale)} locale={locale}>
           {children}

@@ -19,6 +19,10 @@ const MAP = {
   "70033e8f-image.jpg": "cocoa-linen-peplum-top",
   "6f73a09f-image.jpg": "botanical-bow-shoulder-mini",
   "36bdf447-image.jpg": "lilac-ruffle-saree",
+  // one design, three photographed versions
+  "2a2e149a-image.jpg": "pleated-midi-dress/high-neck-halter",
+  "d0ee5616-image.jpg": "pleated-midi-dress/off-shoulder-fold",
+  "dbe87571-image.jpg": "pleated-midi-dress/v-wrap-halter",
 };
 const VIEWS = ["front", "back", "detail", "angle"];
 const [src, out = "public/catalog"] = process.argv.slice(2);

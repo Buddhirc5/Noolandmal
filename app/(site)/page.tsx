@@ -1,6 +1,9 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FannedPhotos } from "@/components/home/FannedPhotos";
+import { Parallax } from "@/components/motion/Parallax";
+import { ScrollWords } from "@/components/motion/ScrollWords";
+import { CountUp } from "@/components/motion/CountUp";
 import { StepsCarousel, type Step } from "@/components/home/StepsCarousel";
 import { Testimonials } from "@/components/home/Testimonials";
 import { SectionHeading } from "@/components/ui/SectionHeading";
@@ -11,7 +14,7 @@ import { JsonLd, faqLd } from "@/components/JsonLd";
 import { getT } from "@/lib/i18n-server";
 import { listDesignCards, loadCatalog } from "@/lib/server/catalog";
 import { faqs } from "@/data/faq";
-import { testimonials } from "@/config/site";
+import { site, testimonials } from "@/config/site";
 
 const img = (slug: string, view: "front" | "back" | "detail" | "angle") => `/catalog/${slug}/${view}.webp`;
 
@@ -47,11 +50,14 @@ export default async function HomePage() {
     <>
       {/* HERO — full-bleed studio photograph under the floating nav */}
       <section className="relative -mt-[68px] overflow-hidden pt-[68px] text-white sm:-mt-[80px] sm:pt-[80px]">
-        <Image src="/brand/hero-studio.webp" alt="" fill priority quality={70} sizes="100vw" className="object-cover object-[50%_42%]" />
+        <Parallax speed={0.25} className="absolute inset-0">
+          <Image src="/brand/hero-studio.webp" alt="" fill priority quality={70} sizes="100vw" className="scale-110 object-cover object-[50%_42%]" />
+        </Parallax>
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/50 via-black/35 to-black/55" aria-hidden />
-        <div className="relative container-x pt-14 text-center sm:pt-24">
-          <p className="text-[12px] font-medium tracking-[0.2em] text-white/85 uppercase">{t("hero.eyebrow")}</p>
-          <h1 className="mx-auto mt-5 max-w-4xl text-[2.9rem] leading-[1] font-semibold tracking-[-0.04em] [text-shadow:0_2px_24px_rgb(0_0_0/0.25)] [text-wrap:balance] sm:text-[5.2rem]">
+        <Parallax speed={0.35} fade={1.4} className="relative">
+        <div className="container-x pt-14 text-center sm:pt-24">
+          <p className="animate-page-in text-[12px] font-medium tracking-[0.2em] text-white/85 uppercase">{t("hero.eyebrow")}</p>
+          <h1 className="animate-page-in mx-auto mt-5 max-w-4xl [animation-delay:80ms] text-[2.9rem] leading-[1] font-semibold tracking-[-0.04em] [text-shadow:0_2px_24px_rgb(0_0_0/0.25)] [text-wrap:balance] sm:text-[5.2rem]">
             <Accent text={t("hero.title")} />
           </h1>
           <p className="mx-auto mt-6 max-w-xl text-[17px] leading-7 text-white/90">{t("hero.sub")}</p>
@@ -64,8 +70,11 @@ export default async function HomePage() {
             </Link>
           </div>
         </div>
+        </Parallax>
         <div className="relative mt-14 -mb-16 sm:mt-20 sm:-mb-24">
-          <FannedPhotos items={fan} />
+          <Parallax speed={0.12}>
+            <FannedPhotos items={fan} />
+          </Parallax>
         </div>
       </section>
 
@@ -74,9 +83,7 @@ export default async function HomePage() {
       {/* STATEMENT */}
       <section className="container-x pt-20 text-center sm:pt-24">
         <p className="eyebrow">{t("toolkit.eyebrow")}</p>
-        <p className="mx-auto mt-5 max-w-4xl text-[2rem] leading-[1.15] font-semibold tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[3rem]">
-          <Accent text={t("toolkit.title")} />
-        </p>
+        <ScrollWords text={t("toolkit.title")} className="mx-auto mt-5 max-w-4xl text-[2rem] leading-[1.15] font-semibold tracking-[-0.03em] text-ink [text-wrap:balance] sm:text-[3rem]" />
       </section>
 
       {/* HOW IT WORKS */}
@@ -90,7 +97,7 @@ export default async function HomePage() {
       {/* COLLECTION */}
       <section className="container-x pt-24 md:pt-32">
         <SectionHeading eyebrow={t("collection.eyebrow")} title={t("collection.title")} sub="Every design is a starting point. Open one to choose your colour, fabric and size." />
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
           {featured.map((c) => (
             <DesignCard key={c.design.id} item={c} palette={catalog.palette} fromLabel={t("collection.from")} />
           ))}
@@ -105,10 +112,10 @@ export default async function HomePage() {
       {/* CRAFT */}
       <section className="container-x pt-24 md:pt-32">
         <SectionHeading eyebrow="The details" title="Finished by *hand*" sub="Close-ups from the studio — the work that goes into every order." />
-        <div className="mt-12 grid gap-4 md:grid-cols-3 md:grid-rows-2">
+        <div className="mt-12 grid gap-4 md:grid-cols-3 md:grid-rows-2" data-reveal-stagger>
           {craft.map((c, i) => (
-            <figure key={c.src} className={`relative overflow-hidden rounded-[28px] bg-surface ${i === 0 ? "aspect-[4/5] md:col-span-2 md:row-span-2 md:aspect-auto md:min-h-[560px]" : "aspect-[4/3]"}`}>
-              <Image src={c.src} alt={c.title} fill sizes={i === 0 ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} className="object-cover" />
+            <figure key={c.src} className={`group relative overflow-hidden rounded-[28px] bg-surface ${i === 0 ? "aspect-[4/5] md:col-span-2 md:row-span-2 md:aspect-auto md:min-h-[560px]" : "aspect-[4/3]"}`}>
+              <Image src={c.src} alt={c.title} fill sizes={i === 0 ? "(max-width: 768px) 100vw, 66vw" : "(max-width: 768px) 100vw, 33vw"} className="object-cover transition-transform duration-[1500ms] ease-out group-hover:scale-105" />
               <figcaption className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 to-transparent p-6 pt-16 text-white">
                 <p className="text-[19px] font-semibold tracking-[-0.01em]">{c.title}</p>
                 <p className="mt-1 text-[14px] text-white/85">{c.body}</p>
@@ -120,7 +127,7 @@ export default async function HomePage() {
 
       {/* CUSTOM REQUEST */}
       <section className="container-x pt-24 md:pt-32">
-        <div className="card grid items-center gap-10 overflow-hidden p-6 md:grid-cols-2 md:p-12">
+        <div className="card grid items-center gap-10 overflow-hidden p-6 md:grid-cols-2 md:p-12" data-reveal>
           <div>
             <p className="eyebrow">{t("custom.eyebrow")}</p>
             <h2 className="h-display mt-4 text-[2.4rem] leading-[1.05] sm:text-5xl">
@@ -144,7 +151,7 @@ export default async function HomePage() {
       {/* STORY */}
       <section id="story" className="container-x pt-24 md:pt-32">
         <div className="grid items-center gap-10 md:grid-cols-2 md:gap-16">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-surface">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-surface" data-reveal="scale">
             <Image src={img("botanical-bow-shoulder-mini", "detail")} alt="Shoulder bow on a botanical print dress" fill sizes="(max-width: 768px) 100vw, 50vw" className="object-cover" />
           </div>
           <div>
@@ -157,7 +164,7 @@ export default async function HomePage() {
                 ["3 wks", "Typical lead time"],
               ].map(([n, l]) => (
                 <div key={l}>
-                  <p className="text-[2.4rem] leading-none font-semibold tracking-[-0.03em] text-ink">{n}</p>
+                  <CountUp value={n} className="block text-[2.4rem] leading-none font-semibold tracking-[-0.03em] text-ink" />
                   <p className="mt-2 text-[13px] text-muted">{l}</p>
                 </div>
               ))}
@@ -189,20 +196,27 @@ export default async function HomePage() {
         <JsonLd data={faqLd(homeFaqs)} />
       </section>
 
-      {/* CLOSING */}
-      <section className="container-x pt-24 md:pt-32">
-        <div className="rounded-[36px] bg-green-900 px-6 py-16 text-center text-white md:py-24">
-          <h2 className="mx-auto max-w-2xl text-[2.6rem] leading-[1.05] font-semibold tracking-[-0.035em] sm:text-6xl">
-            <Accent text={t("closing.title")} />
-          </h2>
-          <p className="mx-auto mt-4 max-w-md text-white/70">{t("closing.sub")}</p>
-          <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/collection" className="btn h-[52px] w-full max-w-xs bg-white px-8 text-[16px] text-ink hover:bg-ivory sm:w-auto">
-              {t("cta.start")}
-            </Link>
-            <Link href="/custom" className="btn h-[52px] w-full max-w-xs border border-white/25 px-8 text-[16px] text-white hover:bg-white/10 sm:w-auto">
-              {t("cta.dream")}
-            </Link>
+      {/* CLOSING — full-bleed photo band, like the hero */}
+      <section className="pt-24 md:pt-32">
+        <div className="relative mx-3 overflow-hidden rounded-[36px] sm:mx-5" data-reveal="scale">
+          <Parallax speed={-0.15} mode="center" className="absolute inset-x-0 -inset-y-24">
+            <Image src="/brand/hero-studio.webp" alt="" fill quality={60} sizes="100vw" className="object-cover object-[50%_60%]" />
+          </Parallax>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/45 to-black/70" aria-hidden />
+          <div className="relative px-6 py-24 text-center text-white md:py-36">
+            <p className="text-[12px] font-medium tracking-[0.2em] text-white/80 uppercase">Designed by {site.designer}</p>
+            <h2 className="mx-auto mt-5 max-w-3xl text-[2.8rem] leading-[1.02] font-semibold tracking-[-0.04em] [text-wrap:balance] sm:text-7xl">
+              <Accent text={t("closing.title")} />
+            </h2>
+            <p className="mx-auto mt-5 max-w-md text-white/80">{t("closing.sub")}</p>
+            <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
+              <Link href="/collection" className="btn h-[52px] w-full max-w-xs bg-white px-8 text-[16px] text-ink hover:bg-ivory sm:w-auto">
+                {t("cta.start")}
+              </Link>
+              <Link href="/custom" className="btn h-[52px] w-full max-w-xs border border-white/30 bg-white/10 px-8 text-[16px] text-white backdrop-blur-md hover:bg-white/20 sm:w-auto">
+                {t("cta.dream")}
+              </Link>
+            </div>
           </div>
         </div>
       </section>

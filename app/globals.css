@@ -127,3 +127,45 @@ body {
 @utility accent {
   @apply font-serif font-normal italic tracking-normal;
 }
+
+/* ── Motion ─────────────────────────────────────────────────────────────
+   Elements with [data-reveal] start hidden only when JS is running
+   (html.js), so content is never lost without JavaScript. */
+html.js [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 28px, 0);
+  transition:
+    opacity 800ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms),
+    transform 900ms cubic-bezier(0.2, 0.7, 0.2, 1) var(--reveal-delay, 0ms);
+}
+html.js [data-reveal="scale"] {
+  transform: scale(0.96);
+}
+html.js [data-reveal][data-in] {
+  opacity: 1;
+  transform: none;
+}
+
+@keyframes page-in {
+  from { opacity: 0; transform: translate3d(0, 10px, 0); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes crossfade-in {
+  from { opacity: 0; transform: translate3d(0, 8px, 0); filter: blur(4px); }
+  to { opacity: 1; transform: none; filter: none; }
+}
+@keyframes photo-in {
+  from { opacity: 0.4; transform: scale(1.03); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes progress {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+.animate-page-in { animation: page-in 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-crossfade { animation: crossfade-in 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.animate-photo-in { animation: photo-in 600ms cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+
+@utility lift {
+  @apply transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_24px_48px_-24px_rgb(10_10_10/0.35)];
+}

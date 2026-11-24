@@ -26,6 +26,8 @@ export function organizationLd() {
     geo: { "@type": "GeoCoordinates", latitude: site.studio.lat, longitude: site.studio.lng },
     areaServed: { "@type": "Country", name: "Sri Lanka" },
     contactPoint: { "@type": "ContactPoint", contactType: "customer service", url: `https://wa.me/${site.whatsappNumber}`, availableLanguage: ["English", "Sinhala", "Tamil"] },
+    founder: { "@type": "Person", name: site.designer, jobTitle: "Fashion designer" },
+    hasMap: site.studio.mapUrl,
     sameAs: [site.instagram],
   };
 }
