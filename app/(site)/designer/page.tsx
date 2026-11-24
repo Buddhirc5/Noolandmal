@@ -9,7 +9,7 @@ import { site, testimonials } from "@/config/site";
 
 export const metadata: Metadata = {
   title: `${site.designer} — designer & founder`,
-  description: `Meet ${site.designer}, the designer behind Nool & Mal: ${site.designerYears} years of dressmaking and more than ${site.designerPieces} pieces made for customers across Sri Lanka.`,
+  description: `Meet ${site.designer}, the designer behind Nool & Mal: ${site.designerYears} years of dressmaking and ${site.designerPieces} pieces made for customers across Sri Lanka.`,
   alternates: { canonical: "/designer" },
   openGraph: { images: [{ url: "/brand/roshini-shyama.webp", width: 1000, height: 1094, alt: site.designer }] },
 };
@@ -55,7 +55,7 @@ export default function Designer() {
             <Accent text="Twenty years, *two thousand* fittings" />
           </h2>
           <p>
-            {site.designer.split(" ")[0]} learned to sew as a girl and has never really stopped. Over two decades she has made more than {site.designerPieces} pieces — each one cut to a single customer&apos;s measurements, never from a production line.
+            {site.designer.split(" ")[0]} learned to sew as a girl and has never really stopped. Over two decades she has made more than 2,000 pieces — each one cut to a single customer&apos;s measurements, never from a production line.
           </p>
           <p>
             That experience shows in the details customers keep coming back for: a bodice that sits flat without pulling, a drape that falls the same way on both sides, pearls and lace placed by hand so they stay put through a long evening.
