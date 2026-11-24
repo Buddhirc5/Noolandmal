@@ -10,6 +10,8 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
   const { design, regions } = item;
   const minFabric = item.fabrics.length ? Math.min(...item.fabrics.map((f) => f.price_modifier)) : 0;
   const photo = design.images[0];
+  const photoColours = Object.keys(design.color_images ?? {}).filter((k) => design.color_images[k]?.length);
+  const dots = photoColours.length ? photoColours : regions.map((r) => r.default_color);
   return (
     <Link href={`/collection/${design.slug}`} className="group card lift flex flex-col overflow-hidden p-2.5">
       <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2">
@@ -34,9 +36,9 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
           <p className="text-sm text-muted">
             {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price + minFabric)}</span>
           </p>
-          <div className="flex -space-x-1.5" aria-label={`Shown in ${regions.map((r) => colorName(r.default_color, palette)).join(", ")}`}>
-            {regions.map((r) => (
-              <span key={r.id} className="size-4 rounded-full border-2 border-surface ring-1 ring-black/10" style={{ background: colorHex(r.default_color, palette) }} />
+          <div className="flex items-center -space-x-1.5" aria-label={`${photoColours.length ? "Photographed in" : "Shown in"} ${dots.map((k) => colorName(k, palette)).join(", ")}`}>
+            {dots.slice(0, 5).map((k) => (
+              <span key={k} className="size-4 rounded-full border-2 border-surface ring-1 ring-black/10" style={{ background: colorHex(k, palette) }} />
             ))}
           </div>
         </div>

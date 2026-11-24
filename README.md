@@ -85,7 +85,7 @@ messages/           UI strings: en (complete), si / ta (draft, falls back to Eng
 
 **Adding a design:** Admin → Designs → New design. Upload photos (the first is the cover), choose fabrics and colour regions. Everything customers see is a photo you uploaded — there are no drawn previews.
 
-**Versions (photographed variations):** in the design editor, "Versions" → Add version → name it (e.g. "With ornaments"), set the price change and upload its photos. Customers pick a version by tapping its photo; the gallery switches to that version and the price updates. **Photos by colour** works the same way for colours of the main fabric. Add-ons (sleeves, ornaments…) are switched off for now (`features.addons` in `config/site.ts`); when switched on, each option shows the photo set in Admin → Catalog → Add-on options (`image_url`).
+**Versions (photographed variations):** in the design editor, "Versions" → Add version → name it (e.g. "With ornaments"), set the price change and upload its photos. Customers pick a version by tapping its photo; the gallery switches to that version and the price updates. **Photos by colour** works the same way for colours of the main fabric: on the design page they appear as a "Photographed in" row of photo buttons, and swatches with a photo get a pink dot. To add colour collages in bulk, put 2×2 collages in a folder, list them in `scripts/split-colour-images.mjs` and run `node scripts/split-colour-images.mjs <folder>`. Add-ons (sleeves, ornaments…) are switched off for now (`features.addons` in `config/site.ts`); when switched on, each option shows the photo set in Admin → Catalog → Add-on options (`image_url`).
 
 ## Before launch — replace the placeholders
 

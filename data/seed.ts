@@ -23,6 +23,10 @@ const paletteRaw: [string, string, string][] = [
   ["aqua", "Aqua", "#9ED9D2"],
   ["sky", "Sky Blue", "#A8C8E8"],
   ["navy", "Navy", "#1F2A4A"],
+  ["royal-blue", "Royal Blue", "#1D3FA6"],
+  ["teal", "Teal", "#1E9E95"],
+  ["emerald", "Emerald", "#0B6B4B"],
+  ["purple", "Purple", "#6A2BB8"],
   ["blush", "Blush", "#EFC8C4"],
   ["dusty-rose", "Dusty Rose", "#D9A5A0"],
   ["rose-pink", "Rose Pink", "#E2A3B5"],
@@ -59,7 +63,7 @@ export const palette: PaletteColor[] = paletteRaw.map(([key, name, hex], i) => (
 }));
 
 // ── Fabrics ─────────────────────────────────────────────────────────────
-const earthy = ["ivory", "cream", "beige", "cocoa", "sage", "deep-green", "navy", "terracotta", "dusty-rose", "sky", "white", "black", "mustard", "grey"];
+const earthy = ["ivory", "cream", "beige", "cocoa", "maroon", "sage", "deep-green", "navy", "terracotta", "dusty-rose", "sky", "white", "black", "mustard", "grey"];
 const fabricRaw: [string, string, string, number, string[] | null][] = [
   ["cotton", "Cotton", "Breathable, everyday comfort. Best for day wear and kids.", 0, null],
   ["linen", "Linen", "Cool and textured with a natural crease. Earthy tones only.", 1500, earthy],
@@ -68,7 +72,7 @@ const fabricRaw: [string, string, string, number, string[] | null][] = [
   ["satin", "Satin", "Smooth with a soft sheen. Our most popular occasion fabric.", 2500, null],
   ["tulle", "Soft tulle", "Layered net over a satin base for volume and float.", 2000, null],
   ["silk-blend", "Silk blend", "Luxurious lustre and drape for special occasions.", 5500, null],
-  ["sequin-net", "Sequin net", "Hand-finished sequins on net. Limited colours.", 9000, ["black", "navy", "maroon", "deep-green", "mauve", "blush", "gold", "ivory", "aqua", "silver", "champagne"]],
+  ["sequin-net", "Sequin net", "Hand-finished sequins on net. Limited colours.", 9000, ["black", "navy", "maroon", "deep-green", "mauve", "blush", "gold", "ivory", "aqua", "silver", "champagne", "emerald", "royal-blue"]],
   ["brocade", "Brocade", "Woven pattern with metallic thread, ideal for blouses.", 4500, ["deep-green", "maroon", "navy", "gold", "plum", "red", "mustard", "ivory"]],
   ["crochet-cotton", "Crochet cotton yarn", "Hand-crocheted in cotton yarn by our designer.", 0, ["ivory", "cream", "white", "sage", "mint", "dusty-rose", "blush", "lilac", "mustard", "sky", "terracotta", "black", "cocoa"]],
 ];
@@ -583,6 +587,25 @@ const designSeeds: DesignSeed[] = [
   },
   {
     design: {
+      slug: "satin-halter-a-line-gown",
+      name: "Satin Halter A-Line Gown",
+      category: "dress",
+      occasions: ["Wedding", "Party", "Engagement"],
+      description:
+        "A floor-length satin gown with a sweetheart halter neckline, fitted bodice and a fluid A-line skirt. Shown in wine, champagne, sage and navy.",
+      base_price: 19500,
+      fabric_metres: 5,
+      default_fabric: "satin",
+      fabric_keys: ["satin", "silk-blend", "crepe"],
+      addon_groups: ["length", "back", "lining", "pockets"],
+      default_options: ["len-design", "back-zip", "lining-full"],
+      featured: true,
+      badge: "4 colours",
+    },
+    regions: [["main", "Satin", "maroon"]],
+  },
+  {
+    design: {
       slug: "pleated-midi-dress",
       name: "Pleated Midi Dress",
       category: "dress",
@@ -628,6 +651,27 @@ for (const d of designs) {
     { key: "off-shoulder-fold", name: "Off-shoulder fold", price: 1500, images: mdPhotos("off-shoulder-fold") },
     { key: "v-wrap-halter", name: "V-wrap halter", price: 0, images: mdPhotos("v-wrap-halter") },
   ];
+}
+
+// Photos of designs made in other colours (palette key -> photos), split from the colour collages
+const colourPhotos: Record<string, string[]> = {
+  "satin-halter-a-line-gown": ["maroon", "champagne", "sage", "navy"],
+  "cocoa-tiered-maxi-skirt-set": ["maroon", "cream", "sage", "navy"],
+  "maroon-tie-back-column-dress": ["maroon", "cream", "sage", "navy"],
+  "aqua-one-shoulder-cape-gown": ["maroon", "champagne", "sage", "navy"],
+  "sage-bloom-lehenga-set": ["maroon", "ivory", "mint", "navy"],
+  "mauve-lace-drape-saree": ["royal-blue", "emerald", "red", "champagne"],
+  "noir-sequin-sash-gown": ["maroon", "emerald", "royal-blue", "gold"],
+  "blush-leaf-tulle-gown": ["purple", "teal", "dusty-rose", "navy"],
+};
+for (const d of designs) {
+  const keys = colourPhotos[d.slug];
+  if (!keys) continue;
+  d.color_images = Object.fromEntries(keys.map((k) => [k, [`/catalog/${d.slug}/colours/${k}.webp`]]));
+  if (d.slug === "satin-halter-a-line-gown") {
+    d.images = keys.map((k) => `/catalog/${d.slug}/colours/${k}.webp`);
+    d.published = true;
+  }
 }
 
 export const designRegions: DesignRegion[] = designSeeds.flatMap((s) =>

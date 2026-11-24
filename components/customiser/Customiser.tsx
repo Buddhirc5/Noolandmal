@@ -58,6 +58,9 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
     return () => clearTimeout(id);
   }, [notice]);
 
+  const photographed = Object.entries(design.color_images ?? {}).filter(([k, v]) => v.length && catalog.palette.some((p) => p.key === k && p.active) && (!fabric?.available_colors || fabric.available_colors.includes(k)));
+  const setColour = (region: string, key: string) => setSel((s) => ({ ...s, colors: { ...s.colors, [region]: key } }));
+
   const available = (key: string) => !fabric?.available_colors || fabric.available_colors.includes(key);
 
   const setFabric = (key: string) => {
@@ -174,6 +177,34 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
 
           {/* Colour */}
           <Group title="Colour">
+            {photographed.length > 0 && primaryRegion && (
+              <div className="mb-6">
+                <p className="mb-3 text-[15px] text-muted">Photographed in</p>
+                <div className="-mx-1 flex gap-3 overflow-x-auto px-1 pt-1 pb-1 [scrollbar-width:none]" role="radiogroup" aria-label="Colours with photos">
+                  {photographed.map(([key, photos]) => {
+                    const on = sel.colors[primaryRegion.key] === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        role="radio"
+                        aria-checked={on}
+                        onClick={() => setColour(primaryRegion.key, key)}
+                        className="group w-[76px] shrink-0 text-left transition-transform active:scale-[0.97]"
+                      >
+                        <span className={cn("relative block aspect-[3/4] overflow-hidden rounded-[16px] bg-surface transition-transform duration-300 group-hover:-translate-y-0.5", on ? "ring-2 ring-ink ring-offset-2" : "ring-1 ring-black/5")}>
+                          <Image src={photos[0]} alt="" fill sizes="76px" className="object-cover" />
+                        </span>
+                        <span className="mt-1.5 flex items-center gap-1.5 text-[12px] leading-tight text-ink">
+                          <span className="size-2.5 shrink-0 rounded-full ring-1 ring-black/10" style={{ background: colorHex(key, catalog.palette) }} />
+                          <span className="truncate">{colorName(key, catalog.palette)}</span>
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
             {regions.map((r) => {
               const v = sel.colors[r.key];
               const custom = v && isCustomColor(v);
@@ -195,11 +226,14 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                             aria-pressed={on}
                             aria-label={c.name}
                             title={c.name}
-                            onClick={() => setSel((s) => ({ ...s, colors: { ...s.colors, [r.key]: c.key } }))}
+                            onClick={() => setColour(r.key, c.key)}
                             className={cn("relative size-10 rounded-full ring-1 ring-black/10 transition-transform active:scale-95", on && "ring-2 ring-ink ring-offset-[3px] ring-offset-paper")}
                             style={{ background: c.hex }}
                           >
                             {on && <Check className={cn("absolute inset-0 m-auto size-4", luminance(c.hex) > 0.45 ? "text-ink" : "text-white")} strokeWidth={2.5} aria-hidden />}
+                            {r.key === primaryRegion?.key && design.color_images?.[c.key]?.length ? (
+                              <span className="absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-paper bg-pink" title="Photo available" />
+                            ) : null}
                           </button>
                         );
                       })}
@@ -215,6 +249,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                 </fieldset>
               );
             })}
+            {photographed.length > 0 && <p className="mb-2 flex items-center gap-1.5 text-[13px] text-muted"><span className="size-2.5 rounded-full bg-pink" /> Pink dot: we have a photo in this colour.</p>}
             <p className="text-[13px] text-muted">Need an exact shade? Use the colour wheel — custom colours are matched for {lkr(catalog.settings.custom_color_fee)} each.</p>
           </Group>
 
