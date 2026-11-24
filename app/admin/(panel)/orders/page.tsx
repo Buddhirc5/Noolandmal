@@ -12,7 +12,7 @@ export default async function Orders() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">Orders board</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Orders board</h1>
         <p className="mt-1 text-sm text-muted">Quoted orders through to delivery. Open a card to change its status. New requests live in the inbox.</p>
       </div>
       <div className="-mx-4 flex gap-4 overflow-x-auto px-4 pb-4 md:-mx-8 md:px-8">

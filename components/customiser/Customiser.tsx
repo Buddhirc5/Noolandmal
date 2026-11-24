@@ -424,7 +424,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
             <span className="flex items-center gap-1 text-[11px] text-muted">
               Estimated · tap for details <ChevronDown className={cn("size-3 transition-transform", showBreakdown && "rotate-180")} aria-hidden />
             </span>
-            <span className="block truncate font-serif text-xl font-semibold text-green-900">
+            <span className="block truncate text-xl font-semibold tracking-tight text-green-900">
               LKR <AnimatedNumber value={price.min} />–<AnimatedNumber value={price.max} />
             </span>
           </button>
@@ -463,7 +463,7 @@ function PriceSummary({ price, open, onToggle, rangePercent }: { price: ReturnTy
   return (
     <div>
       <p className="text-sm text-muted">Estimated price</p>
-      <p className="font-serif text-4xl font-semibold text-green-900" aria-live="polite">
+      <p className="text-4xl font-semibold tracking-tight text-green-900" aria-live="polite">
         LKR <AnimatedNumber value={price.min} /> – <AnimatedNumber value={price.max} />
       </p>
       <p className="mt-1 text-xs text-muted">Final quote confirmed on WhatsApp (estimate ±{rangePercent}%).</p>

@@ -13,8 +13,8 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
   const colorOf = (key: string) => colorHex(regions.find((r) => r.key === key)?.default_color, palette);
   const photo = design.images[0];
   return (
-    <Link href={`/collection/${design.slug}`} className="group card card-hover flex flex-col overflow-hidden">
-      <div className="relative aspect-[4/5] overflow-hidden bg-[#F1ECE4]">
+    <Link href={`/collection/${design.slug}`} className="group card card-hover flex flex-col overflow-hidden p-2.5">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2">
         {photo ? (
           <Image
             src={photo}
@@ -29,15 +29,15 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
         )}
         {design.badge && <span className="badge absolute top-3 left-3 bg-paper/95">{design.badge}</span>}
       </div>
-      <div className="flex flex-1 flex-col gap-2 p-4">
-        <Heading className="font-serif text-xl leading-tight font-semibold text-green-900">{design.name}</Heading>
+      <div className="flex flex-1 flex-col gap-2 px-2.5 pt-4 pb-2">
+        <Heading className="text-xl leading-tight font-semibold tracking-[-0.02em] text-ink">{design.name}</Heading>
         <div className="mt-auto flex items-center justify-between gap-3">
           <p className="text-sm text-muted">
             {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price + minFabric)}</span>
           </p>
           <div className="flex -space-x-1.5" aria-label={`Shown in ${regions.map((r) => colorName(r.default_color, palette)).join(", ")}`}>
             {regions.map((r) => (
-              <span key={r.id} className="size-4 rounded-full border-2 border-paper ring-1 ring-line" style={{ background: colorHex(r.default_color, palette) }} />
+              <span key={r.id} className="size-4 rounded-full border-2 border-surface ring-1 ring-black/10" style={{ background: colorHex(r.default_color, palette) }} />
             ))}
             <span className="ml-2 pl-2 text-xs text-muted">+{palette.length - regions.length}</span>
           </div>

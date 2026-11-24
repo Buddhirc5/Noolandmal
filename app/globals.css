@@ -15,13 +15,17 @@
   --color-ink: #1b2a26;
   --color-muted: #5f6e69;
   --color-line: #e7e1d8;
+  --color-surface: #f4f2ee;
+  --color-surface-2: #ebe8e2;
+  --color-night: #14201c;
   --color-danger: #b4232f;
   --color-success: #1f7a4d;
 
-  --font-serif: var(--font-cormorant), var(--font-serif-sinhala), var(--font-tamil), Georgia, serif;
-  --font-sans: var(--font-poppins), var(--font-sinhala), var(--font-tamil), system-ui, sans-serif;
+  --font-serif: var(--font-instrument), var(--font-serif-sinhala), var(--font-tamil), Georgia, serif;
+  --font-logo: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-figtree), var(--font-sinhala), var(--font-tamil), system-ui, sans-serif;
 
-  --radius-card: 22px;
+  --radius-card: 28px;
   --shadow-soft: 0 1px 2px rgb(27 42 38 / 0.04), 0 12px 32px -12px rgb(27 42 38 / 0.18);
   --ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
 
@@ -47,7 +51,7 @@ html {
 }
 
 body {
-  background: var(--color-ivory);
+  background: var(--color-paper);
   color: var(--color-ink);
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
@@ -65,17 +69,17 @@ body {
 }
 
 @utility eyebrow {
-    @apply text-[11px] font-medium uppercase tracking-[0.22em] text-green-700;
-  }
+  @apply text-[12px] font-medium uppercase tracking-[0.16em] text-ink/75;
+}
 @utility h-display {
-    @apply font-serif font-semibold tracking-tight text-green-900;
-  }
+  @apply font-sans font-semibold tracking-[-0.035em] text-ink;
+}
 @utility container-x {
     @apply mx-auto w-full max-w-6xl px-4 sm:px-6;
   }
 @utility card {
-    @apply rounded-[var(--radius-card)] border border-line bg-paper;
-  }
+  @apply rounded-[var(--radius-card)] bg-surface;
+}
 @utility card-hover {
     @apply transition-shadow duration-200 hover:shadow-[var(--shadow-soft)];
   }
@@ -83,32 +87,32 @@ body {
     @apply inline-flex min-h-11 items-center justify-center gap-2 whitespace-nowrap rounded-full px-5 text-sm font-medium transition-[background-color,color,border-color,transform] duration-200 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50;
   }
 @utility btn-primary {
-    @apply btn bg-green-900 text-white hover:bg-green-700;
-  }
+  @apply btn bg-green-900 text-white hover:bg-green-700;
+}
 @utility btn-secondary {
-    @apply btn border border-green-900/25 bg-transparent text-green-900 hover:border-green-900 hover:bg-green-50;
-  }
+  @apply btn border border-ink/15 bg-paper text-ink hover:border-ink/40;
+}
 @utility btn-ghost {
-    @apply btn text-green-900 hover:bg-green-50;
-  }
+  @apply btn text-ink hover:bg-surface;
+}
 @utility btn-gold {
-    @apply btn bg-gold text-ink hover:bg-[#d4b47c];
-  }
+  @apply btn bg-gold text-ink hover:bg-[#d6b67e];
+}
 @utility btn-wa {
-    @apply btn bg-[#1f7a4d] text-white hover:bg-[#186640];
-  }
+  @apply btn bg-[#1f7a4d] text-white hover:bg-[#186640];
+}
 @utility input {
-    @apply min-h-11 w-full rounded-xl border border-line bg-paper px-3.5 py-2.5 text-[15px] text-ink placeholder:text-muted/70 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30;
-  }
+  @apply min-h-11 w-full rounded-2xl border border-line bg-paper px-4 py-2.5 text-[15px] text-ink placeholder:text-muted/70 focus:border-gold focus:outline-none focus:ring-2 focus:ring-gold/30;
+}
 @utility label {
     @apply mb-1.5 block text-sm font-medium text-ink;
   }
 @utility chip {
-    @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3 py-1.5 text-sm text-ink transition-colors hover:border-green-700;
-  }
+  @apply inline-flex items-center gap-1.5 rounded-full border border-line bg-paper px-3.5 py-1.5 text-sm text-ink transition-colors hover:border-ink/40;
+}
 @utility chip-active {
-    @apply border-green-900 bg-green-900 text-white hover:border-green-900;
-  }
+  @apply border-ink bg-ink text-white hover:border-ink;
+}
 @utility badge {
     @apply inline-flex items-center rounded-full bg-rose-50 px-2.5 py-0.5 text-[11px] font-medium tracking-wide text-[#8a4a44];
   }
@@ -136,4 +140,9 @@ body {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Italic serif accent word inside sans headings: "does *everything*" */
+@utility accent {
+  @apply font-serif font-normal italic tracking-normal;
 }

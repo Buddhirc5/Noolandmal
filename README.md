@@ -105,4 +105,4 @@ All in `config/site.ts`, `data/seed.ts` (or later in Admin → Catalog):
 - `npm test`: 19 unit tests (pricing, rush fees, per-metre lining, ranges, compatibility rules, validation of every seeded design, code generator, URL encoding, WhatsApp messages).
 - End-to-end browser runs of: customise → code → WhatsApp message → `/d/<code>` restores the same range; tampered price rejected; custom request with link + photos; private links 404 without the key; forged file signatures rejected; admin quote → customer tracks, accepts, uploads slip → admin approves → slots → booking → status updates visible to the customer; admin price change reflected live.
 - The SQL migration and seed were executed against Postgres (PGlite) successfully.
-- Lighthouse (mobile, production build): Home 99 / 100 / 100 / 100, Collection 92+ / 98+ / 100 / 100 (performance / accessibility / best practices / SEO).
+- Lighthouse (mobile, production build): Home 97–99 / 100 / 100 / 100, Collection 90+ / 100 / 100 / 100 (performance / accessibility / best practices / SEO).

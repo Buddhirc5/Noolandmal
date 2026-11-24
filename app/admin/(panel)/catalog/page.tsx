@@ -22,7 +22,7 @@ export default async function CatalogPage({ searchParams }: PageProps<"/admin/ca
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">Catalog &amp; prices</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Catalog &amp; prices</h1>
         <p className="mt-1 text-sm text-muted">Changes apply to the website immediately — no deploy needed. Saved designs keep the price they were saved with.</p>
       </div>
       <nav className="flex flex-wrap gap-2" aria-label="Catalog sections">

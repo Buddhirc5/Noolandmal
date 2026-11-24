@@ -14,12 +14,12 @@ export default async function Dashboard() {
   ];
   return (
     <div className="space-y-8">
-      <h1 className="font-serif text-4xl font-semibold text-green-900">Dashboard</h1>
+      <h1 className="text-4xl font-semibold tracking-tight text-green-900">Dashboard</h1>
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((c) => (
           <Link key={c.label} href={c.href} className={`card card-hover p-5 ${c.tone}`}>
             <p className="text-sm text-muted">{c.label}</p>
-            <p className="mt-2 font-serif text-4xl font-semibold text-green-900">{c.value}</p>
+            <p className="mt-2 text-4xl font-semibold tracking-tight text-green-900">{c.value}</p>
           </Link>
         ))}
       </div>

@@ -44,7 +44,7 @@ export function PriceMock() {
       <div className="my-2 hairline" />
       <div className="flex items-end justify-between">
         <span className="text-muted">Estimated</span>
-        <span className="font-serif text-lg font-semibold text-green-900">LKR 23,300 – 27,300</span>
+        <span className="text-lg font-semibold tracking-tight text-green-900">LKR 23,300 – 27,300</span>
       </div>
     </div>
   );
@@ -95,7 +95,7 @@ export function CodeMock() {
   return (
     <div className="w-full max-w-[240px] rounded-2xl border border-line bg-paper p-4 text-center shadow-sm">
       <p className="text-[10px] tracking-[0.2em] text-muted uppercase">Your design code</p>
-      <p className="mt-1 font-serif text-3xl font-semibold tracking-wide text-green-900">NM-7K4Q2</p>
+      <p className="mt-1 text-3xl font-semibold tracking-wide text-green-900">NM-7K4Q2</p>
       <span className="btn-wa mt-3 min-h-8 w-full px-3 text-xs">Chat on WhatsApp</span>
     </div>
   );

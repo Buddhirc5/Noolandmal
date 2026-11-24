@@ -50,7 +50,7 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
         <Link href="/admin/requests" className="text-sm text-muted hover:text-green-900">
           ← Requests
         </Link>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">{order.code}</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">{order.code}</h1>
         <StatusBadge status={order.status} />
         {order.whatsapp_clicked_at && <span className="badge bg-green-50 text-green-900">WhatsApp opened {formatDateTime(order.whatsapp_clicked_at)}</span>}
       </div>

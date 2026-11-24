@@ -29,7 +29,7 @@ export default async function Pricing() {
       <PageHeader eyebrow="Pricing & quotes" title="Clear prices, confirmed by a person" sub={`Every design shows a live estimate as you customise it. We confirm the final price on WhatsApp — usually within ${s.range_percent}% of the estimate.`} />
 
       <section className="mt-12">
-        <h2 className="font-serif text-3xl font-semibold text-green-900">Price guide</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-green-900">Price guide</h2>
         <div className="card mt-5 overflow-x-auto">
           <table className="w-full min-w-[520px] text-[15px]">
             <thead className="border-b border-line text-left text-xs text-muted">

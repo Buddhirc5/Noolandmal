@@ -144,7 +144,7 @@ export function QuoteDialog({
       aria-labelledby="quote-title"
     >
       <div className="sticky top-0 z-10 flex items-center justify-between border-b border-line bg-paper/95 px-5 py-4 backdrop-blur">
-        <h2 id="quote-title" className="font-serif text-2xl font-semibold text-green-900">
+        <h2 id="quote-title" className="text-2xl font-semibold tracking-tight text-green-900">
           {saved ? "Your design code" : "Get your quotation"}
         </h2>
         <button type="button" className="btn-ghost size-10 px-0" onClick={onClose} aria-label="Close">
@@ -174,7 +174,7 @@ export function QuoteDialog({
                 {selections.neededBy ? ` · by ${formatDate(selections.neededBy)}` : ""}
               </li>
             </ul>
-            <p className="mt-2 font-serif text-lg font-semibold text-green-900">{lkrRange(saved?.min ?? price.min, saved?.max ?? price.max)}</p>
+            <p className="mt-2 text-lg font-semibold tracking-tight text-green-900">{lkrRange(saved?.min ?? price.min, saved?.max ?? price.max)}</p>
           </div>
         </div>
 
@@ -234,7 +234,7 @@ export function QuoteDialog({
         ) : (
           <div className="mt-5 text-center">
             <p className="eyebrow">Design code</p>
-            <p className="mt-1 font-serif text-5xl font-semibold tracking-wider text-green-900" aria-live="polite">
+            <p className="mt-1 text-5xl font-semibold tracking-wider text-green-900" aria-live="polite">
               {saved.code}
             </p>
             <p className="mx-auto mt-2 max-w-sm text-sm text-muted">Send it to us on WhatsApp — the message is ready, just tap send.</p>

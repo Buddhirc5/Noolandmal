@@ -103,7 +103,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/q/
 
       {/* Quote */}
       <section className="card mt-6 p-5 sm:p-7">
-        <h2 className="font-serif text-3xl font-semibold text-green-900">Quotation</h2>
+        <h2 className="text-3xl font-semibold tracking-tight text-green-900">Quotation</h2>
         {!quote ? (
           <p className="mt-3 text-[15px] leading-7 text-muted">
             We&apos;re preparing your quotation and will send it on WhatsApp — usually within a day.
@@ -154,7 +154,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/q/
       {/* Payment */}
       {quote?.status === "accepted" && (
         <section className="card mt-6 space-y-5 p-5 sm:p-7">
-          <h2 className="font-serif text-3xl font-semibold text-green-900">Payment</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-green-900">Payment</h2>
           <div className="rounded-2xl border border-gold/50 bg-gold-50 p-4 text-sm">
             <p className="font-medium text-green-900">Bank transfer</p>
             <dl className="mt-2 grid grid-cols-[auto_1fr] gap-x-4 gap-y-1">
@@ -206,7 +206,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/q/
       {/* Measurement */}
       {(canBook || booking) && (
         <section className="card mt-6 p-5 sm:p-7">
-          <h2 className="font-serif text-3xl font-semibold text-green-900">Measurement appointment</h2>
+          <h2 className="text-3xl font-semibold tracking-tight text-green-900">Measurement appointment</h2>
           <div className="mt-4">
             {canBook ? (
               <BookingPicker code={order.code} k={key} slots={slotOptions} current={booking?.slot ? `${formatDateTime(booking.slot.starts_at)} (${booking.booking.mode === "home" ? "home visit" : "studio"})` : null} />

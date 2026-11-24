@@ -119,7 +119,7 @@ export function CustomRequestForm() {
       <div ref={doneRef} tabIndex={-1} className="card p-6 text-center outline-none sm:p-10" role="status">
         <CheckCircle2 className="mx-auto size-10 text-success" aria-hidden />
         <p className="eyebrow mt-4">Request saved</p>
-        <p className="mt-1 font-serif text-5xl font-semibold tracking-wider text-green-900">{done.code}</p>
+        <p className="mt-1 text-5xl font-semibold tracking-wider text-green-900">{done.code}</p>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-muted">
           {done.photoCount > 0 ? "Your photos are saved. Our team will open them from your code. " : ""}
           Tap below to send your request on WhatsApp — the message is ready, just press send.

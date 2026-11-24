@@ -1,13 +1,17 @@
 import type { Metadata, Viewport } from "next";
-import { Cormorant_Garamond, Poppins, Noto_Sans_Sinhala, Noto_Sans_Tamil, Noto_Serif_Sinhala } from "next/font/google";
+import { Cormorant_Garamond, Figtree, Instrument_Serif, Noto_Sans_Sinhala, Noto_Sans_Tamil, Noto_Serif_Sinhala } from "next/font/google";
 import "./globals.css";
 import { site } from "@/config/site";
 import { getLocale } from "@/lib/i18n-server";
 import { getDict } from "@/lib/i18n";
 import { I18nProvider } from "@/components/I18nProvider";
 
-const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600", "700"], variable: "--font-cormorant", display: "swap" });
-const poppins = Poppins({ subsets: ["latin"], weight: ["300", "400", "500", "600"], variable: "--font-poppins", display: "swap" });
+// Logo wordmark only
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600"], variable: "--font-cormorant", display: "swap" });
+// UI + headings (geometric sans, close to the ceynk.lk look)
+const figtree = Figtree({ subsets: ["latin"], weight: ["400", "500", "600", "700"], variable: "--font-figtree", display: "swap" });
+// Italic accent words and numerals
+const instrument = Instrument_Serif({ subsets: ["latin"], weight: "400", style: ["normal", "italic"], variable: "--font-instrument", display: "swap" });
 const sinhala = Noto_Sans_Sinhala({ subsets: ["sinhala"], weight: ["400", "500", "600"], variable: "--font-sinhala", display: "swap", preload: false });
 const serifSinhala = Noto_Serif_Sinhala({ subsets: ["sinhala"], weight: ["500", "600"], variable: "--font-serif-sinhala", display: "swap", preload: false });
 const tamil = Noto_Sans_Tamil({ subsets: ["tamil"], weight: ["400", "500", "600"], variable: "--font-tamil", display: "swap", preload: false });
@@ -28,7 +32,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#1F4D40",
+  themeColor: "#FFFFFF",
   width: "device-width",
   initialScale: 1,
 };
@@ -36,7 +40,7 @@ export const viewport: Viewport = {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const locale = await getLocale();
   return (
-    <html lang={locale} data-scroll-behavior="smooth" className={`${cormorant.variable} ${poppins.variable} ${sinhala.variable} ${serifSinhala.variable} ${tamil.variable}`}>
+    <html lang={locale} data-scroll-behavior="smooth" className={`${cormorant.variable} ${figtree.variable} ${instrument.variable} ${sinhala.variable} ${serifSinhala.variable} ${tamil.variable}`}>
       <body className="min-h-dvh">
         <I18nProvider dict={getDict(locale)} locale={locale}>
           {children}

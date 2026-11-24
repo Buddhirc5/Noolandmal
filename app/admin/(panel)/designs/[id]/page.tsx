@@ -15,7 +15,7 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
         <Link href="/admin/designs" className="text-sm text-muted hover:text-green-900">
           ← Designs
         </Link>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">New design</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">New design</h1>
         <DesignEditor
           id={null}
           catalog={catalog}
@@ -59,7 +59,7 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
       <Link href="/admin/designs" className="text-sm text-muted hover:text-green-900">
         ← Designs
       </Link>
-      <h1 className="font-serif text-4xl font-semibold text-green-900">{b.design.name}</h1>
+      <h1 className="text-4xl font-semibold tracking-tight text-green-900">{b.design.name}</h1>
       <DesignEditor
         id={b.design.id}
         catalog={catalog}

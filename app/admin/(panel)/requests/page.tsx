@@ -23,7 +23,7 @@ export default async function Requests({ searchParams }: PageProps<"/admin/reque
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">Requests inbox</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Requests inbox</h1>
         <p className="mt-1 text-sm text-muted">Quote requests from the customiser (NM-) and custom requests with links or photos (CR-).</p>
       </div>
       <form className="flex flex-wrap gap-2" action="/admin/requests">

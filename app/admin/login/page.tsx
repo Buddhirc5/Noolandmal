@@ -24,7 +24,7 @@ export default async function AdminLogin({ searchParams }: PageProps<"/admin/log
     <div className="flex min-h-dvh items-center justify-center bg-ivory p-4">
       <div className="card w-full max-w-sm p-7">
         <Logo variant="horizontal" size={30} />
-        <h1 className="mt-6 font-serif text-3xl font-semibold text-green-900">Studio admin</h1>
+        <h1 className="mt-6 text-3xl font-semibold tracking-tight text-green-900">Studio admin</h1>
         {supabaseMode ? (
           <>
             {user && <p className="mt-3 rounded-xl bg-rose-50 p-3 text-sm text-[#8a2f2a]">{user.email} isn&apos;t on the admin list. Ask the owner to add it to ADMIN_EMAILS.</p>}

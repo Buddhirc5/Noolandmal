@@ -8,7 +8,7 @@ export default async function Audit() {
   const rows = await db.list<AuditRow>("admin_audit_log", { order: { column: "created_at", ascending: false }, limit: 200 });
   return (
     <div className="space-y-6">
-      <h1 className="font-serif text-4xl font-semibold text-green-900">Audit log</h1>
+      <h1 className="text-4xl font-semibold tracking-tight text-green-900">Audit log</h1>
       <div className="card overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead className="border-b border-line text-left text-xs text-muted">

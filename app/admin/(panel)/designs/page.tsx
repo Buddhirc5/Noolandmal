@@ -14,7 +14,7 @@ export default async function Designs() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="font-serif text-4xl font-semibold text-green-900">Designs</h1>
+          <h1 className="text-4xl font-semibold tracking-tight text-green-900">Designs</h1>
           <p className="mt-1 text-sm text-muted">Order here is the order on the collection page.</p>
         </div>
         <Link href="/admin/designs/new" className="btn-primary">

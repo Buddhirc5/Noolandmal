@@ -36,7 +36,7 @@ export function HeroPhone({ title, layers, presets }: { title: string; layers: F
           <div className="absolute top-2 left-1/2 h-5 w-24 -translate-x-1/2 rounded-full bg-ink" aria-hidden />
           <div className="px-4 pt-10 pb-4">
             <p className="text-[10px] tracking-[0.2em] text-muted uppercase">Customise</p>
-            <p className="font-serif text-lg leading-tight font-semibold text-green-900">{title}</p>
+            <p className="text-lg leading-tight font-semibold tracking-tight text-green-900">{title}</p>
             <div className="relative mt-1 h-[300px] rounded-2xl bg-paper">
               <DressFigure layers={layers} colorOf={(r) => p.colors[r] ?? "#ccc"} sheen={0.3} className="h-full w-full" idPrefix="hero" title={`${title} in ${p.name}`} />
             </div>

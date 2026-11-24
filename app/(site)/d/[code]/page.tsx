@@ -29,7 +29,7 @@ export default async function SavedDesignPage({ params }: PageProps<"/d/[code]">
       <div className="mb-6 flex flex-col gap-3 rounded-[var(--radius-card)] border border-line bg-paper p-5 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="eyebrow">Saved design</p>
-          <p className="mt-1 font-serif text-3xl font-semibold text-green-900">{config.code}</p>
+          <p className="mt-1 text-3xl font-semibold tracking-tight text-green-900">{config.code}</p>
           <p className="text-sm text-muted">
             Saved {formatDate(config.created_at)} · estimate at the time {lkrRange(config.price_min, config.price_max)}
           </p>

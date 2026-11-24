@@ -14,7 +14,7 @@ export default async function Customers() {
   }
   return (
     <div className="space-y-6">
-      <h1 className="font-serif text-4xl font-semibold text-green-900">Customers</h1>
+      <h1 className="text-4xl font-semibold tracking-tight text-green-900">Customers</h1>
       <div className="card divide-y divide-line">
         {[...groups].map(([k, list]) => (
           <div key={k} className="flex flex-col gap-2 p-4 sm:flex-row sm:items-start">

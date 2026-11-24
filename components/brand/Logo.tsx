@@ -23,7 +23,7 @@ function Flower({ size, stroke, dot, title }: { size: number; stroke: string; do
 export function Logo({ variant = "horizontal", className, size = 36 }: { variant?: Variant; className?: string; size?: number }) {
   const mono = variant === "mono";
   const stroke = mono ? "currentColor" : FLOWER_GREEN;
-  const dot = mono ? "currentColor" : FLOWER_GOLD;
+  const dot = FLOWER_GOLD;
 
   if (variant === "icon") return <span className={className}><Flower size={size} stroke={stroke} dot={dot} title="Nool & Mal" /></span>;
 
@@ -31,7 +31,7 @@ export function Logo({ variant = "horizontal", className, size = 36 }: { variant
     return (
       <div className={`inline-flex flex-col items-center text-center ${className ?? ""}`} aria-label="Nool & Mal — Made to order · Sri Lanka" role="img">
         <Flower size={size} stroke={stroke} dot={dot} />
-        <span className="mt-2 font-serif text-[2.6em] leading-[0.95] font-medium tracking-tight text-green-900">
+        <span className="mt-2 font-logo text-[2.6em] leading-[0.95] font-medium tracking-tight text-green-900">
           Nool
           <br />
           <span className="text-gold-600">&amp;</span> Mal
@@ -49,8 +49,8 @@ export function Logo({ variant = "horizontal", className, size = 36 }: { variant
   return (
     <span className={`inline-flex items-center gap-2.5 ${mono ? "" : "text-green-900"} ${className ?? ""}`}>
       <Flower size={size} stroke={stroke} dot={dot} />
-      <span className="font-serif text-[1.6rem] leading-none font-semibold tracking-tight">
-        Nool <span className={mono ? "" : "text-gold-600"}>&amp;</span> Mal
+      <span className="font-logo text-[1.6rem] leading-none font-semibold tracking-tight">
+        Nool <span className={mono ? "text-gold" : "text-gold-600"}>&amp;</span> Mal
       </span>
     </span>
   );

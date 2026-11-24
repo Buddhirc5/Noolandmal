@@ -63,7 +63,7 @@ export default async function RequestPage({ params, searchParams }: PageProps<"/
           <dd className="mt-0.5 whitespace-pre-wrap text-ink">{req.notes || "—"}</dd>
         </div>
       </dl>
-      <h2 className="mt-10 font-serif text-3xl font-semibold text-green-900">Photos ({files.length})</h2>
+      <h2 className="mt-10 text-3xl font-semibold tracking-tight text-green-900">Photos ({files.length})</h2>
       {files.length ? (
         <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3">
           {urls.map((u, i) => (

@@ -23,7 +23,7 @@ export default async function AccountPage() {
         <MyDesigns />
       </section>
       <section id="orders" className="mt-12">
-        <h2 className="mb-4 font-serif text-3xl font-semibold text-green-900">Orders</h2>
+        <h2 className="mb-4 text-3xl font-semibold tracking-tight text-green-900">Orders</h2>
         <MyOrders />
       </section>
     </div>

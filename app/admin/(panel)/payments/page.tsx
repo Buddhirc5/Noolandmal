@@ -23,7 +23,7 @@ export default async function Payments() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">Payment slips</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Payment slips</h1>
         <p className="mt-1 text-sm text-muted">Check the amount and the reference (design code) against your bank statement before approving.</p>
       </div>
       <section className="space-y-4">

@@ -16,7 +16,7 @@ export default function Guides() {
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {guides.map((g) => (
           <Link key={g.slug} href={`/guides/${g.slug}`} className="card card-hover p-6">
-            <h2 className="font-serif text-2xl font-semibold text-green-900">{g.title}</h2>
+            <h2 className="text-2xl font-semibold tracking-tight text-green-900">{g.title}</h2>
             <p className="mt-2 text-sm leading-6 text-muted">{g.description}</p>
           </Link>
         ))}

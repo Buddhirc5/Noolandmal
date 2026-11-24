@@ -26,7 +26,7 @@ export default async function Schedule() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="font-serif text-4xl font-semibold text-green-900">Measurement schedule</h1>
+        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Measurement schedule</h1>
         <p className="mt-1 text-sm text-muted">
           Weekly capacity: <b>{settings.weekly_capacity}</b> orders (change it in Catalog → Settings). When a week is full, customers are offered the next week.
         </p>
