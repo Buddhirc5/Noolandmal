@@ -460,3 +460,14 @@ export function figureToSvg(shapes: Shape[], colorOf: (region: string) => string
   const bg = opts.background ? `<rect width="100%" height="100%" fill="${opts.background}"/>` : "";
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${VIEWBOX.w} ${VIEWBOX.h}"><defs>${defs.join("")}</defs>${bg}${body.join("")}</svg>`;
 }
+
+/** Variants the parametric preview understands, per slot (used by the admin design editor). */
+export const VARIANTS: Record<string, string[]> = {
+  bodice: Object.keys(BODICES),
+  sleeves: ["none", ...Object.keys(SLEEVES)],
+  skirt: ["column", "mermaid", "aline", "ball", "tiered", "none"],
+  length: ["mini", "knee", "midi", "maxi", "floor", "train"],
+  texture: ["none", "lace", "sequin", "knit", "tulle", "embroidery"],
+  extra: ["overlay-skirt", "leaves", "sash-drape", "saree-drape", "lace-insert", "ties", "flowers-scatter", "flower-3d", "belt", "bow", "stole", "cape", "cardigan", "peplum", "hem-lace", "crochet-hem", "beads", "buttons", "pockets", "sparkle", "embroidery"],
+  image: [""],
+};
