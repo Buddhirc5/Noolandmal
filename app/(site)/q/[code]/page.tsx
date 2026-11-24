@@ -110,7 +110,7 @@ export default async function QuotePage({ params, searchParams }: PageProps<"/q/
             {config && (
               <>
                 {" "}
-                Your online estimate was <b className="text-ink">{lkr(config.price_min)} – {lkr(config.price_max)}</b>.
+                The design&apos;s starting price was <b className="text-ink">{lkr(config.price_min)}</b>; your quotation includes the fabric, details and date we agree on.
               </>
             )}
           </p>

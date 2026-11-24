@@ -33,7 +33,7 @@ export default async function CollectionPage({ searchParams }: PageProps<"/colle
   const price = PRICES.find((p) => p.value === get("price"));
   const q = get("q")?.toLowerCase().trim();
 
-  const fromPrice = (c: (typeof cards)[number]) => c.design.base_price + (c.fabrics.length ? Math.min(...c.fabrics.map((f) => f.price_modifier)) : 0);
+  const fromPrice = (c: (typeof cards)[number]) => c.design.base_price;
   const filtered = cards.filter((c) => {
     const d = c.design;
     if (category && d.category !== category) return false;

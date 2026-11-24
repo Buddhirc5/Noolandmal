@@ -60,7 +60,7 @@ export default function SizeGuide() {
           </div>
         </div>
         <p className="mt-4 text-center text-[14px] text-muted">
-          Between sizes? Choose the larger one — we take it in at the fitting. Or choose <b className="font-medium text-ink">Custom</b> and we&apos;ll sew to your exact measurements.
+          Between sizes? Choose the larger one — we take it in at the fitting. Or send us your exact measurements when you order.
         </p>
       </div>
 

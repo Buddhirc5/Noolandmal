@@ -15,6 +15,7 @@ import { normalizeCode } from "@/lib/codes";
 import { site } from "@/config/site";
 import type { Configuration, CustomRequest, EventRow, Payment, RequestFile } from "@/lib/types";
 import { photosFor } from "@/lib/photos";
+import { describeMeasurements } from "@/lib/measurements";
 
 export default async function OrderDetail({ params }: PageProps<"/admin/orders/[code]">) {
   const code = normalizeCode((await params).code);
@@ -77,10 +78,10 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
                   <dd>{catalog.fabrics.find((f) => f.key === config.selections.fabric)?.name ?? config.selections.fabric}</dd>
                   <dt className="text-muted">Options</dt>
                   <dd>{config.selections.options.filter((k) => !k.endsWith("-design")).map((k) => catalog.options.find((o) => o.key === k)?.name ?? k).join(", ") || "—"}</dd>
-                  <dt className="text-muted">Size · Qty</dt>
-                  <dd>
-                    {config.selections.size} · {config.selections.qty}
-                  </dd>
+                  <dt className="text-muted">Measurements</dt>
+                  <dd>{describeMeasurements(config.selections, catalog)}</dd>
+                  <dt className="text-muted">Qty</dt>
+                  <dd>{config.selections.qty}</dd>
                   <dt className="text-muted">Needed by</dt>
                   <dd>{config.needed_by ? formatDate(config.needed_by) : "Flexible"}</dd>
                   <dt className="text-muted">Notes</dt>

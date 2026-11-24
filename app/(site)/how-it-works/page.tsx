@@ -15,12 +15,12 @@ const img = (slug: string, view: string) => `/catalog/${slug}/${view}.webp`;
 export default async function HowItWorks() {
   const s = await loadSettings();
   const steps = [
-    ["Choose a design and make it yours", "Pick from the collection, then choose the colour, fabric and size. The estimated price updates with every choice.", img("navy-sequin-fan-party-dress", "front")],
-    ["See an honest estimate", `You see an itemised price and a range of ±${s.range_percent}%. Final prices are confirmed by a person, because every dress is a little different.`, img("lilac-ruffle-saree", "detail")],
+    ["Choose a design and make it yours", "Pick from the collection, then choose your colour and preferred fabric, and tell us how we'll get your measurements — at the studio, from your last visit, or your size from our chart.", img("navy-sequin-fan-party-dress", "front")],
+    ["See the starting price", "Each design shows its starting price. Colours cost nothing extra. Fabric, extra details and rush dates are talked through on WhatsApp, and Roshini sends you one final quotation.", img("lilac-ruffle-saree", "detail")],
     ["Get your design code", "Tap “Get quote” to save your design and receive a code like NM-7K4Q2. Your design link works on any device, so you can share it with family before you decide.", img("botanical-bow-shoulder-mini", "angle")],
     ["Send it on WhatsApp", "WhatsApp opens with your code and a summary ready to send. We reply with your quotation, usually within a day.", img("champagne-lace-high-neck-saree", "front")],
-    ["Pay the advance and book a fitting", `Accept the quote, pay a ${s.advance_percent}% advance by bank transfer using your code as the reference, and upload the slip. Then book a measurement appointment at the studio, or a home visit in Colombo.`, img("cocoa-linen-peplum-top", "front")],
-    ["We sew, you follow along", `Cutting, sewing and a fitting — follow each step on your order page. Most pieces take 1–3 weeks to make. Pay the balance, then collect or have it delivered.`, img("navy-silver-peplum-drape-saree", "angle")],
+    ["Pay the advance and book a fitting", `Accept the quote, pay a ${s.advance_percent}% advance by bank transfer using your code as the reference, and upload the slip. Then book a measurement appointment at the studio. Measured with us before? We keep your measurements on file, so you don't need to come in again.`, img("cocoa-linen-peplum-top", "front")],
+    ["We sew, you follow along", `Cutting, sewing and a fitting — follow each step on your order page. Most pieces take 1–3 weeks; detailed patterns can take 3–6 weeks. Pay the balance, then collect or have it delivered.`, img("navy-silver-peplum-drape-saree", "angle")],
   ] as const;
   return (
     <div className="container-x py-12 md:py-16">

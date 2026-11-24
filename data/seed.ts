@@ -209,24 +209,21 @@ const ruleRaw: [string, string, string][] = [
 ];
 export const addonRules: AddonRule[] = ruleRaw.map(([option_a, option_b, reason], i) => ({ id: `rule_${i + 1}`, option_a, option_b, reason }));
 
+// How we get the customer's measurements (there are no S/M/L price tiers;
+// customers who can't visit pick a size from /size-guide or send their own).
 export const sizes: SizeOption[] = [
-  ["XS", "XS", 0, ""],
-  ["S", "S", 0, ""],
-  ["M", "M", 0, ""],
-  ["L", "L", 0, ""],
-  ["XL", "XL", 1000, "Extra fabric"],
-  ["XXL", "XXL", 1500, "Extra fabric"],
-  ["3XL", "3XL", 2500, "Extra fabric & pattern grading"],
-  ["custom", "Custom", 0, "Made to your exact measurements, taken at the studio"],
+  ["studio", "Measure me at the studio", 0, "We take your measurements at your appointment in Kotte."],
+  ["on-file", "I've been measured before", 0, "We keep your measurements on file, so there's no need to come in again."],
+  ["own", "I'll send my measurements", 0, "Can't visit? Pick your size from the chart or enter your measurements."],
 ].map(([key, label, modifier, note], i) => ({ id: `size_${key}`, key: key as string, label: label as string, modifier: modifier as number, note: note as string, sort: i }));
 
 export const settings: Settings = {
   range_percent: 8,
-  custom_color_fee: 1500,
+  custom_color_fee: 0, // colours never cost extra
   // Most pieces take 1 to 3 weeks; dates sooner than a week are a rush
   standard_lead_days: 7,
   rush_min_days: 3,
-  rush_fee_percent: 20,
+  rush_fee_percent: 20, // shown nowhere on the site; rush charges are agreed in the quotation
   advance_percent: 50,
   quote_valid_days: 7,
   weekly_capacity: 6,

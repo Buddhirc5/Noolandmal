@@ -73,7 +73,8 @@ export function defaultSelections(design: Design, regions: DesignRegion[], catal
     colors,
     fabric: design.default_fabric,
     options: design.default_options.filter((k) => catalog.options.some((o) => o.key === k && o.active)),
-    size: catalog.sizes.find((s) => s.key === "M")?.key ?? catalog.sizes[0]?.key ?? "M",
+    size: catalog.sizes.find((s) => s.key === "studio")?.key ?? catalog.sizes[0]?.key ?? "studio",
+    measurements: null,
     qty: 1,
     neededBy: null,
     notes: "",
@@ -132,7 +133,7 @@ export function validateSelections(
   }
   if (new Set(sel.options).size !== sel.options.length) errors.push("Duplicate options.");
 
-  if (!catalog.sizes.some((s) => s.key === sel.size)) errors.push(`Unknown size "${sel.size}".`);
+  if (!catalog.sizes.some((s) => s.key === sel.size)) errors.push(`Unknown measurement option "${sel.size}".`);
   if (!Number.isInteger(sel.qty) || sel.qty < 1 || sel.qty > catalog.settings.max_quantity)
     errors.push(`Quantity must be between 1 and ${catalog.settings.max_quantity}.`);
   if (sel.notes.length > 1000) errors.push("Notes are too long (max 1000 characters).");
@@ -140,8 +141,10 @@ export function validateSelections(
 }
 
 /**
- * price = base + fabric + Σ add-ons + size + custom-colour fees (+ rush %), × quantity.
- * The range shown to customers is total ± settings.range_percent, rounded to 100.
+ * The website only shows the starting price: the design's base price (plus a
+ * photographed version's difference), × quantity. Fabric, details, colour
+ * availability and rush dates are agreed on WhatsApp and priced in the
+ * quotation, so nothing else is added here. Colours never cost extra.
  */
 export function computePrice(
   catalog: Catalog,
@@ -150,41 +153,14 @@ export function computePrice(
   today: Date = new Date(),
 ): PriceResult {
   const s = catalog.settings;
-  const lines: PriceLine[] = [{ label: `${design.name} (base)`, amount: design.base_price, kind: "base" }];
+  const lines: PriceLine[] = [{ label: `${design.name} (starting price)`, amount: design.base_price, kind: "base" }];
 
   const version = sel.version ? (design.versions ?? []).find((v) => v.key === sel.version) : undefined;
   if (version && version.price !== 0) lines.push({ label: version.name, amount: version.price, kind: "version" });
 
-  const fabric = catalog.fabrics.find((f) => f.key === sel.fabric);
-  if (fabric && fabric.price_modifier !== 0)
-    lines.push({ label: `Fabric: ${fabric.name}`, amount: fabric.price_modifier, kind: "fabric" });
-
-  const opts = optionMap(catalog.options);
-  for (const k of sel.options) {
-    const o = opts.get(k);
-    if (!o || o.price === 0) continue;
-    const amount = o.price_type === "per_metre" ? Math.round(o.price * design.fabric_metres) : o.price;
-    lines.push({
-      label: o.price_type === "per_metre" ? `${o.name} (${design.fabric_metres} m)` : o.name,
-      amount,
-      kind: "addon",
-    });
-  }
-
-  const size = catalog.sizes.find((x) => x.key === sel.size);
-  if (size && size.modifier !== 0) lines.push({ label: `Size ${size.label}`, amount: size.modifier, kind: "size" });
-
-  const customCount = new Set(Object.values(sel.colors).filter(isCustomColor).map((h) => h.toLowerCase())).size;
-  if (customCount > 0 && s.custom_color_fee > 0)
-    lines.push({
-      label: `Custom colour sourcing × ${customCount}`,
-      amount: s.custom_color_fee * customCount,
-      kind: "colour",
-    });
-
   const unit = lines.reduce((a, l) => a + l.amount, 0);
   const quantity = Math.max(1, Math.floor(sel.qty || 1));
-  const subtotal = unit * quantity;
+  const total = unit * quantity;
 
   let rush = false;
   let tooSoon = false;
@@ -194,20 +170,15 @@ export function computePrice(
     rush = leadDays < s.standard_lead_days;
     tooSoon = leadDays < s.rush_min_days;
   }
-  const rushFee = rush ? round100((subtotal * s.rush_fee_percent) / 100) : 0;
-  if (rushFee) lines.push({ label: `Rush (${s.rush_fee_percent}%)`, amount: rushFee, kind: "rush" });
-
-  const total = subtotal + rushFee;
-  const delta = (total * s.range_percent) / 100;
   return {
     lines,
     unit,
     quantity,
-    subtotal,
-    rushFee,
+    subtotal: total,
+    rushFee: 0,
     total,
-    min: Math.max(0, round100(total - delta)),
-    max: round100(total + delta),
+    min: total,
+    max: total,
     rush,
     tooSoon,
     leadDays: Number.isFinite(leadDays) ? leadDays : -1,

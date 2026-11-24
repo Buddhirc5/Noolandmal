@@ -148,10 +148,21 @@ export interface Selections {
   fabric: string;
   /** add-on option keys */
   options: string[];
+  /** how we get measurements: "studio" | "on-file" | "own" (see seed sizes) */
   size: string;
+  /** chart size and/or body measurements in cm, when the customer sends their own */
+  measurements: Measurements | null;
   qty: number;
   neededBy: string | null;
   notes: string;
+}
+
+export interface Measurements {
+  chart: string | null;
+  bust: number | null;
+  waist: number | null;
+  hip: number | null;
+  length: number | null;
 }
 
 export interface PriceLine {

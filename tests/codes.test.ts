@@ -38,14 +38,14 @@ describe("codes", () => {
 
 describe("selection url encoding", () => {
   it("round-trips", () => {
-    const sel = { version: "with-ornaments", colors: { main: "blush", accent: "#aa3366" }, fabric: "satin", options: ["sleeves-puff", "det-bow"], size: "L", qty: 2, neededBy: "2026-12-20", notes: "" };
+    const sel = { version: "with-ornaments", colors: { main: "blush", accent: "#aa3366" }, fabric: "satin", options: ["sleeves-puff", "det-bow"], size: "L", qty: 2, neededBy: "2026-12-20", measurements: null, notes: "" };
     const p = encodeSelections(sel);
-    const back = decodeSelections(new URLSearchParams(p.toString()), { ...sel, colors: { main: "x", accent: "y" }, options: [], qty: 1, neededBy: null });
+    const back = decodeSelections(new URLSearchParams(p.toString()), { ...sel, colors: { main: "x", accent: "y" }, options: [], qty: 1, measurements: null, neededBy: null });
     expect(back).toEqual(sel);
   });
 
   it("ignores malformed values", () => {
-    const base = { version: null, colors: { main: "blush" }, fabric: "satin", options: [], size: "M", qty: 1, neededBy: null, notes: "" };
+    const base = { version: null, colors: { main: "blush" }, fabric: "satin", options: [], size: "M", qty: 1, measurements: null, neededBy: null, notes: "" };
     const out = decodeSelections(new URLSearchParams("c=main.<script>,evil.red&q=999&n=tomorrow"), base);
     expect(out).toEqual(base);
   });
@@ -59,15 +59,16 @@ describe("whatsapp", () => {
       colours: [{ region: "Main", colour: "Blush" }],
       fabric: "Satin",
       options: ["Puff sleeves"],
-      size: "M",
+      size: "I'll send my measurements: size M",
       qty: 1,
       neededBy: null,
       min: 18500,
-      max: 21000,
+      max: 18500,
       link: "https://example.com/d/NM-7K4Q2",
     });
     expect(msg).toContain("I'd like a quotation for design *NM-7K4Q2*.");
-    expect(msg).toContain("Estimate shown: LKR 18,500 – 21,000");
+    expect(msg).toContain("Starting price: LKR 18,500");
+    expect(msg).toContain("Measurements: I'll send my measurements: size M");
     expect(msg).toContain("Link: https://example.com/d/NM-7K4Q2");
   });
 

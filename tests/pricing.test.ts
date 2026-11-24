@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { computePrice, defaultSelections, toggleOption, validateSelections, conflictReason, round100 } from "@/lib/pricing";
+import { computePrice, defaultSelections, toggleOption, validateSelections, conflictReason } from "@/lib/pricing";
 import * as seed from "@/data/seed";
 import type { Catalog } from "@/lib/types";
 
@@ -17,45 +17,47 @@ const regions = seed.designRegions.filter((r) => r.design_id === design.id);
 const today = new Date(2026, 10, 24); // 24 Nov 2026
 
 describe("computePrice", () => {
-  it("prices the default configuration as base + included options", () => {
+  it("shows only the starting (base) price", () => {
     const sel = defaultSelections(design, regions, catalog);
     const p = computePrice(catalog, design, sel, today);
-    // base 8900 + cap sleeves 800 + belt 900 + pockets 900 (cotton +0, size M +0)
-    expect(p.total).toBe(8900 + 800 + 900 + 900);
-    expect(p.lines[0]).toMatchObject({ kind: "base", amount: 8900 });
+    expect(p.total).toBe(design.base_price);
+    expect(p.min).toBe(p.total);
+    expect(p.max).toBe(p.total);
+    expect(p.lines).toHaveLength(1);
+    expect(p.lines[0]).toMatchObject({ kind: "base", amount: design.base_price });
   });
 
-  it("adds fabric, per-metre lining, size, custom colours and multiplies by quantity", () => {
+  it("ignores fabric, details, measurements and colours — those are quoted on WhatsApp", () => {
     const sel = {
       ...defaultSelections(design, regions, catalog),
-      fabric: "linen", // +1500
-      options: ["lining-full"], // 450 × 2.8 m = 1260
-      size: "XXL", // +1500
-      colors: { main: "#123456", accent: "ivory" }, // custom colour fee 1500
-      qty: 2,
+      fabric: "linen",
+      options: ["lining-full"],
+      size: "own",
+      colors: { main: "#123456", accent: "ivory" },
     };
-    const p = computePrice(catalog, design, sel, today);
-    expect(p.unit).toBe(8900 + 1500 + 1260 + 1500 + 1500);
-    expect(p.total).toBe(p.unit * 2);
+    expect(computePrice(catalog, design, sel, today).total).toBe(design.base_price);
   });
 
-  it("returns a ±8% range rounded to 100", () => {
-    const sel = defaultSelections(design, regions, catalog);
-    const p = computePrice(catalog, design, sel, today);
-    expect(p.min).toBe(round100(p.total * 0.92));
-    expect(p.max).toBe(round100(p.total * 1.08));
+  it("multiplies by quantity", () => {
+    const sel = { ...defaultSelections(design, regions, catalog), qty: 3 };
+    expect(computePrice(catalog, design, sel, today).total).toBe(design.base_price * 3);
   });
 
-  it("applies a rush fee when needed sooner than the standard lead time", () => {
+  it("flags rush dates without adding a fee", () => {
     const base = defaultSelections(design, regions, catalog);
     const relaxed = computePrice(catalog, design, { ...base, neededBy: "2027-01-31" }, today);
     expect(relaxed.rush).toBe(false);
     const rushed = computePrice(catalog, design, { ...base, neededBy: "2026-11-29" }, today); // 5 days
     expect(rushed.rush).toBe(true);
     expect(rushed.tooSoon).toBe(false);
-    expect(rushed.rushFee).toBe(round100(rushed.subtotal * 0.2));
+    expect(rushed.rushFee).toBe(0);
+    expect(rushed.total).toBe(relaxed.total);
     const tooSoon = computePrice(catalog, design, { ...base, neededBy: "2026-11-26" }, today); // 2 days
     expect(tooSoon.tooSoon).toBe(true);
+  });
+
+  it("defaults to measuring at the studio", () => {
+    expect(defaultSelections(design, regions, catalog).size).toBe("studio");
   });
 });
 

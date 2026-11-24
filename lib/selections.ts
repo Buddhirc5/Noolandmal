@@ -12,6 +12,16 @@ export const selectionsSchema = z.object({
   fabric: z.string().regex(KEY),
   options: z.array(z.string().regex(KEY)).max(40),
   size: z.string().regex(/^[A-Za-z0-9-]{1,12}$/),
+  measurements: z
+    .object({
+      chart: z.string().regex(/^[A-Za-z0-9-]{1,12}$/).nullable(),
+      bust: z.number().min(40).max(250).nullable(),
+      waist: z.number().min(40).max(250).nullable(),
+      hip: z.number().min(40).max(250).nullable(),
+      length: z.number().min(20).max(200).nullable(),
+    })
+    .nullable()
+    .default(null),
   qty: z.number().int().min(1).max(50),
   neededBy: z
     .string()
@@ -47,6 +57,7 @@ export function decodeSelections(
     const v = params[k];
     return Array.isArray(v) ? v[0] : v;
   };
+  // measurements are personal, so they are never put in a shareable link
   const out: Selections = { ...base, colors: { ...base.colors }, options: [...base.options] };
   const c = get("c");
   if (c) {

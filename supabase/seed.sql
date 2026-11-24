@@ -140,18 +140,13 @@ insert into public.addon_rules (id, option_a, option_b, reason) values
 on conflict (id) do nothing;
 
 insert into public.size_options (id, key, label, modifier, note, sort) values
-  ('size_XS', 'XS', 'XS', 0, '', 0),
-  ('size_S', 'S', 'S', 0, '', 1),
-  ('size_M', 'M', 'M', 0, '', 2),
-  ('size_L', 'L', 'L', 0, '', 3),
-  ('size_XL', 'XL', 'XL', 1000, 'Extra fabric', 4),
-  ('size_XXL', 'XXL', 'XXL', 1500, 'Extra fabric', 5),
-  ('size_3XL', '3XL', '3XL', 2500, 'Extra fabric & pattern grading', 6),
-  ('size_custom', 'custom', 'Custom', 0, 'Made to your exact measurements, taken at the studio', 7)
+  ('size_studio', 'studio', 'Measure me at the studio', 0, 'We take your measurements at your appointment in Kotte.', 0),
+  ('size_on-file', 'on-file', 'I''ve been measured before', 0, 'We keep your measurements on file, so there''s no need to come in again.', 1),
+  ('size_own', 'own', 'I''ll send my measurements', 0, 'Can''t visit? Pick your size from the chart or enter your measurements.', 2)
 on conflict (id) do nothing;
 
 insert into public.price_settings (id, data) values
-  (1, '{"range_percent":8,"custom_color_fee":1500,"standard_lead_days":7,"rush_min_days":3,"rush_fee_percent":20,"advance_percent":50,"quote_valid_days":7,"weekly_capacity":6,"max_quantity":20,"bank":{"accountName":"Nool & Mal (placeholder)","bank":"Bank name","branch":"Branch","accountNumber":"0000 0000 0000"},"delivery_fees":[{"district":"Colombo","fee":500},{"district":"Gampaha","fee":750},{"district":"Kalutara","fee":900},{"district":"Kandy","fee":1200},{"district":"Galle","fee":1200},{"district":"Kurunegala","fee":1200},{"district":"Matara","fee":1400},{"district":"Jaffna","fee":1800},{"district":"Other districts","fee":1500}]}'::jsonb)
+  (1, '{"range_percent":8,"custom_color_fee":0,"standard_lead_days":7,"rush_min_days":3,"rush_fee_percent":20,"advance_percent":50,"quote_valid_days":7,"weekly_capacity":6,"max_quantity":20,"bank":{"accountName":"Nool & Mal (placeholder)","bank":"Bank name","branch":"Branch","accountNumber":"0000 0000 0000"},"delivery_fees":[{"district":"Colombo","fee":500},{"district":"Gampaha","fee":750},{"district":"Kalutara","fee":900},{"district":"Kandy","fee":1200},{"district":"Galle","fee":1200},{"district":"Kurunegala","fee":1200},{"district":"Matara","fee":1400},{"district":"Jaffna","fee":1800},{"district":"Other districts","fee":1500}]}'::jsonb)
 on conflict (id) do nothing;
 
 insert into public.designs (slug, name, category, occasions, description, base_price, fabric_metres, default_fabric, fabric_keys, addon_groups, default_options, featured, badge, id, images, color_images, versions, published, sort) values

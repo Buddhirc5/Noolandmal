@@ -26,7 +26,7 @@ export const guides: Guide[] = [
         p: [
           "Fabric is the biggest variable. Cotton and crepe are the most affordable; satin, silk blends, brocade and hand-finished sequin net cost more — sometimes LKR 5,000–9,000 more for the same design.",
           "Details are priced by the work they take: a lace hem trim adds a few thousand rupees; bodice beadwork or hand embroidery can add LKR 6,000–8,500. Lining is priced by the metre of fabric a design uses.",
-          "Larger sizes need more fabric, and a date sooner than a week usually carries a rush fee (ours is 20%).",
+          "Detailed patterns take longer to make, and a date sooner than a week may carry a rush charge — agreed in your quotation.",
         ],
       },
       {
@@ -60,7 +60,7 @@ export const guides: Guide[] = [
       {
         h: "Planning for an event",
         p: [
-          "For weddings, homecomings and engagements, start 5–6 weeks before the date. That leaves time for a second fitting if needed. If you're short on time, choose your date in the customiser — it tells you immediately if a rush fee applies or if the date is too tight.",
+          "For weddings, homecomings and engagements, start 5–6 weeks before the date. That leaves time for a second fitting if needed. If you're short on time, choose your date in the customiser and we'll confirm on WhatsApp whether it's possible and if a rush charge applies.",
         ],
       },
     ],

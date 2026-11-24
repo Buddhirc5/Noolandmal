@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
+import { describeMeasurements } from "@/lib/measurements";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
-import { Breakdown } from "./Breakdown";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { colorHex, colorName } from "@/lib/colors";
 import { buildWhatsAppLink, type WaLang } from "@/lib/whatsapp";
-import { lkrRange, formatDate } from "@/lib/format";
+import { lkr, formatDate } from "@/lib/format";
 import { useLocale } from "@/components/I18nProvider";
 import type { Catalog, DesignBundle, PriceResult, Selections } from "@/lib/types";
 
@@ -66,7 +66,7 @@ export function QuoteDialog({
   // "As designed" placeholders (neck-design, len-design…) add nothing to the summary
   const optionNames = selections.options.filter((k) => !k.endsWith("-design")).map((k) => catalog.options.find((o) => o.key === k)?.name ?? k);
   const fabricName = catalog.fabrics.find((f) => f.key === selections.fabric)?.name ?? selections.fabric;
-  const sizeLabel = catalog.sizes.find((s) => s.key === selections.size)?.label ?? selections.size;
+  const sizeLabel = describeMeasurements(selections, catalog);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -169,18 +169,21 @@ export function QuoteDialog({
               <li>Fabric: {fabricName}</li>
               {optionNames.length > 0 && <li className="line-clamp-2">Includes: {optionNames.join(", ")}</li>}
               <li>
-                Size {sizeLabel} · Qty {selections.qty}
+                {sizeLabel} · Qty {selections.qty}
                 {selections.neededBy ? ` · by ${formatDate(selections.neededBy)}` : ""}
               </li>
             </ul>
-            <p className="mt-2 text-lg font-semibold tracking-tight text-green-900">{lkrRange(saved?.min ?? price.min, saved?.max ?? price.max)}</p>
+            <p className="mt-2 text-lg font-semibold tracking-tight text-green-900">
+              <span className="text-[13px] font-normal text-muted">From </span>
+              {lkr(saved?.min ?? price.min)}
+            </p>
           </div>
         </div>
 
         {!saved ? (
           <form onSubmit={submit} className="mt-5 space-y-4">
             <p className="text-sm leading-6 text-muted">
-              We&apos;ll save your design and give you a code. Then tap WhatsApp to send it — we reply with your final quotation, usually within a day.
+              We&apos;ll save your design and give you a code. Then tap WhatsApp to send it. We&apos;ll talk through fabric, details, colour availability and your date, then send your final quotation.
             </p>
             <div className="grid gap-3 sm:grid-cols-2">
               <div>
@@ -223,12 +226,6 @@ export function QuoteDialog({
               {busy ? <Loader2 className="size-4 animate-spin" aria-hidden /> : null}
               {busy ? "Saving your design…" : "Save design & get my code"}
             </button>
-            <details className="text-sm">
-              <summary className="cursor-pointer text-green-700">Price breakdown</summary>
-              <div className="mt-3">
-                <Breakdown price={price} />
-              </div>
-            </details>
           </form>
         ) : (
           <div className="mt-5 text-center">

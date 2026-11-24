@@ -27,10 +27,8 @@ export default async function DesignPage({ params, searchParams }: PageProps<"/c
   const sp = await searchParams;
   const initial = decodeSelections(sp as Record<string, string>, base);
 
-  // Product structured data with the price range across fabrics
-  const fabricMods = catalog.fabrics.filter((f) => bundle.design.fabric_keys.includes(f.key)).map((f) => f.price_modifier);
-  const low = computePrice(catalog, bundle.design, { ...base, fabric: bundle.design.fabric_keys[fabricMods.indexOf(Math.min(...fabricMods))] ?? base.fabric }).min;
-  const high = computePrice(catalog, bundle.design, base).max;
+  // Product structured data: the starting price (final price is quoted on WhatsApp)
+  const low = computePrice(catalog, bundle.design, base).min;
   const product = {
     "@context": "https://schema.org",
     "@type": "Product",
@@ -42,8 +40,7 @@ export default async function DesignPage({ params, searchParams }: PageProps<"/c
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "LKR",
-      lowPrice: Math.min(low, high),
-      highPrice: Math.max(low, high),
+      lowPrice: low,
       availability: "https://schema.org/MadeToOrder",
       seller: { "@id": `${site.url}/#business` },
     },

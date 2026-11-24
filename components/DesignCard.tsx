@@ -8,7 +8,6 @@ import type { DesignCardData } from "@/lib/server/catalog";
 export function DesignCard({ item, palette, priority = false, fromLabel = "from", headingLevel = "h3" }: { item: DesignCardData; palette: PaletteColor[]; priority?: boolean; fromLabel?: string; headingLevel?: "h2" | "h3" }) {
   const Heading = headingLevel;
   const { design, regions } = item;
-  const minFabric = item.fabrics.length ? Math.min(...item.fabrics.map((f) => f.price_modifier)) : 0;
   const photo = design.images[0];
   const photoColours = Object.keys(design.color_images ?? {}).filter((k) => design.color_images[k]?.length);
   const dots = photoColours.length ? photoColours : regions.map((r) => r.default_color);
@@ -34,7 +33,7 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
         <Heading className="text-xl leading-tight font-semibold tracking-[-0.02em] text-ink">{design.name}</Heading>
         <div className="mt-auto flex items-center justify-between gap-3">
           <p className="text-sm text-muted">
-            {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price + minFabric)}</span>
+            {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price)}</span>
           </p>
           <div className="flex items-center -space-x-1.5" aria-label={`${photoColours.length ? "Photographed in" : "Shown in"} ${dots.map((k) => colorName(k, palette)).join(", ")}`}>
             {dots.slice(0, 5).map((k) => (

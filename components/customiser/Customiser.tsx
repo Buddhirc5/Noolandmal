@@ -2,17 +2,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
-import { Check, ChevronDown, Minus, Plus } from "lucide-react";
+import { Check, Minus, Plus } from "lucide-react";
 import { QuoteDialog } from "./QuoteDialog";
-import { Breakdown } from "./Breakdown";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { computePrice, conflictReason, estimateReadyDate, isCustomColor, toggleOption } from "@/lib/pricing";
 import { colorHex, colorName, luminance } from "@/lib/colors";
 import { encodeSelections } from "@/lib/selections";
-import { formatDate, lkr, toISODate, cn } from "@/lib/format";
+import { formatDate, toISODate, cn } from "@/lib/format";
+import { MEASURE_FIELDS } from "@/lib/measurements";
+import { sizeChart } from "@/data/size-chart";
 import { features } from "@/config/site";
 import { photosFor } from "@/lib/photos";
-import type { Catalog, DesignBundle, Selections } from "@/lib/types";
+import type { Catalog, DesignBundle, Measurements, Selections } from "@/lib/types";
 
 export interface CustomiserProps {
   bundle: DesignBundle;
@@ -28,7 +29,6 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
   const [sel, setSel] = useState<Selections>(initial);
   const [photo, setPhoto] = useState(0);
   const [notice, setNotice] = useState<string | null>(null);
-  const [showBreakdown, setShowBreakdown] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [today] = useState(() => new Date());
 
@@ -130,19 +130,13 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
           <p className="mt-4 text-[16px] leading-7 text-muted">{design.description}</p>
 
           <div className="mt-6 rounded-[24px] bg-surface p-5">
-            <p className="text-[13px] text-muted">Estimated price</p>
+            <p className="text-[13px] text-muted">Starting price</p>
             <p className="mt-1 text-[1.9rem] leading-tight font-semibold tracking-[-0.02em] text-ink" aria-live="polite">
-              LKR <AnimatedNumber value={price.min} /> – <AnimatedNumber value={price.max} />
+              LKR <AnimatedNumber value={price.total} />
             </p>
-            <p className="mt-1 text-[13px] text-muted">Final price confirmed on WhatsApp.</p>
-            <button type="button" className="mt-2 inline-flex min-h-11 items-center gap-1 text-[14px] font-medium text-ink" onClick={() => setShowBreakdown((o) => !o)} aria-expanded={showBreakdown}>
-              {showBreakdown ? "Hide" : "See"} how it&apos;s calculated <ChevronDown className={cn("size-4 transition-transform", showBreakdown && "rotate-180")} aria-hidden />
-            </button>
-            {showBreakdown && (
-              <div className="mt-2 rounded-[18px] bg-paper p-4">
-                <Breakdown price={price} />
-              </div>
-            )}
+            <p className="mt-2 text-[13px] leading-5 text-muted">
+              Choose a colour at no extra cost. Fabric, extra details and your date are agreed on WhatsApp, then we send your final quotation.
+            </p>
           </div>
 
           {notice && (
@@ -253,11 +247,11 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
               );
             })}
             {photographed.length > 0 && <p className="mb-2 flex items-center gap-1.5 text-[13px] text-muted"><span className="size-2.5 rounded-full bg-pink" /> Pink dot: we have a photo in this colour.</p>}
-            <p className="text-[13px] text-muted">Need an exact shade? Use the colour wheel — custom colours are matched for {lkr(catalog.settings.custom_color_fee)} each.</p>
+            <p className="text-[13px] leading-5 text-muted">Any colour, no extra cost — use the colour wheel for an exact shade. We confirm the fabric is available in your colour before sending the quotation.</p>
           </Group>
 
           {/* Fabric */}
-          <Group title="Fabric">
+          <Group title="Preferred fabric">
             <div className="overflow-hidden rounded-[22px] bg-surface" role="radiogroup" aria-label="Fabric">
               {fabrics.map((f, i) => {
                 const on = f.key === sel.fabric;
@@ -275,11 +269,11 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                       <span className="block text-[15px] font-medium text-ink">{f.name}</span>
                       <span className="block text-[13px] leading-5 text-muted">{f.note}</span>
                     </span>
-                    <span className="shrink-0 text-[13px] text-muted tabular-nums">{f.price_modifier ? `+${f.price_modifier.toLocaleString("en-LK")}` : "Included"}</span>
                   </button>
                 );
               })}
             </div>
+            <p className="mt-3 text-[13px] leading-5 text-muted">Fabric can change the final price, and some fabrics sell out — we&apos;ll confirm both in your quotation.</p>
           </Group>
 
           {/* Add-ons (switched off until a later update) */}
@@ -316,32 +310,31 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
             </Group>
           )}
 
-          {/* Size */}
-          <Group title="Size" action={<Link href="/size-guide" target="_blank" className="text-[14px] font-medium text-pink underline-offset-4 hover:underline">Size chart</Link>}>
-            <div className="grid grid-cols-4 gap-2 sm:grid-cols-8" role="radiogroup" aria-label="Size">
-              {catalog.sizes.map((s) => {
-                const on = sel.size === s.key;
+          {/* Measurements */}
+          <Group title="Measurements" action={<Link href="/size-guide" target="_blank" className="text-[14px] font-medium text-pink underline-offset-4 hover:underline">Size chart</Link>}>
+            <div className="overflow-hidden rounded-[22px] bg-surface" role="radiogroup" aria-label="Measurements">
+              {catalog.sizes.map((o, i) => {
+                const on = sel.size === o.key;
                 return (
                   <button
-                    key={s.key}
+                    key={o.key}
                     type="button"
                     role="radio"
                     aria-checked={on}
-                    onClick={() => setSel((x) => ({ ...x, size: s.key }))}
-                    className={cn("min-h-12 rounded-[16px] text-[14px] font-medium transition-colors", on ? "bg-ink text-white" : "bg-surface text-ink hover:bg-surface-2")}
+                    onClick={() => setSel((x) => ({ ...x, size: o.key }))}
+                    className={cn("flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-2", i > 0 && "border-t border-black/5")}
                   >
-                    {s.label}
+                    <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border-2", on ? "border-ink bg-ink" : "border-ink/25")}>{on && <span className="size-2 rounded-full bg-white" />}</span>
+                    <span className="min-w-0 flex-1">
+                      <span className="block text-[15px] font-medium text-ink">{o.label}</span>
+                      {o.note && <span className="block text-[13px] leading-5 text-muted">{o.note}</span>}
+                    </span>
                   </button>
                 );
               })}
             </div>
-            <p className="mt-3 text-[13px] leading-5 text-muted">
-              {(() => {
-                const s = catalog.sizes.find((x) => x.key === sel.size);
-                return s?.modifier ? `${s.note} (+${lkr(s.modifier)}). ` : s?.note ? `${s.note}. ` : "";
-              })()}
-              Exact measurements are taken at your fitting appointment.
-            </p>
+            {sel.size === "own" && <OwnMeasurements value={sel.measurements} onChange={(m) => setSel((x) => ({ ...x, measurements: m }))} />}
+            <p className="mt-3 text-[13px] leading-5 text-muted">Once we&apos;ve measured you, we keep your measurements on file — for your next order, just message us on WhatsApp.</p>
           </Group>
 
           {/* Quantity & date */}
@@ -369,11 +362,11 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
               </label>
             </div>
             <p className="mt-3 text-[13px] leading-5 text-muted">
-              Most pieces take 1–3 weeks, so usually ready between {formatDate(readyFrom)} and {formatDate(readyTo)}.
+              Most pieces take 1–3 weeks, so usually ready between {formatDate(readyFrom)} and {formatDate(readyTo)}. Detailed patterns can take 3–6 weeks.
               {price.tooSoon
                 ? " That date is very close — we'll confirm on WhatsApp whether it's possible."
                 : price.rush
-                  ? ` Sooner than ${catalog.settings.standard_lead_days} days adds a ${catalog.settings.rush_fee_percent}% rush fee.`
+                  ? " A rush date may cost extra — we'll confirm in your quotation."
                   : ""}
             </p>
           </Group>
@@ -397,9 +390,9 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
       <div className="fixed inset-x-3 bottom-3 z-30 rounded-[24px] bg-green-900/95 text-white shadow-[0_16px_40px_-12px_rgb(0_0_0/0.45)] backdrop-blur lg:hidden">
         <div className="flex items-center gap-3 py-2.5 pr-2.5 pl-5">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-white/65">Estimate</p>
+            <p className="text-[11px] text-white/65">Starting price</p>
             <p className="truncate text-[17px] font-semibold tabular-nums">
-              LKR <AnimatedNumber value={price.min} />–<AnimatedNumber value={price.max} />
+              LKR <AnimatedNumber value={price.total} />
             </p>
           </div>
           <button type="button" className="btn h-12 shrink-0 bg-white px-6 text-ink hover:bg-ivory" onClick={() => setQuoteOpen(true)}>
@@ -425,5 +418,62 @@ function Group({ title, action, children }: { title: string; action?: React.Reac
       </div>
       {children}
     </section>
+  );
+}
+
+const emptyMeasurements: Measurements = { chart: null, bust: null, waist: null, hip: null, length: null };
+
+function OwnMeasurements({ value, onChange }: { value: Measurements | null; onChange: (m: Measurements) => void }) {
+  const m = value ?? emptyMeasurements;
+  return (
+    <div className="mt-4 rounded-[22px] bg-surface p-5">
+      <p className="text-[15px] font-medium text-ink">Your size from the chart</p>
+      <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-7" role="radiogroup" aria-label="Chart size">
+        {sizeChart.map((r) => {
+          const on = m.chart === r.size;
+          return (
+            <button
+              key={r.size}
+              type="button"
+              role="radio"
+              aria-checked={on}
+              onClick={() => onChange({ ...m, chart: on ? null : r.size })}
+              className={cn("min-h-11 rounded-[14px] text-[14px] font-medium transition-colors", on ? "bg-ink text-white" : "bg-paper text-ink hover:bg-surface-2")}
+            >
+              {r.size}
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-5 text-[15px] font-medium text-ink">
+        Or your measurements <span className="font-normal text-muted">(cm, optional)</span>
+      </p>
+      <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        {MEASURE_FIELDS.map(([k, label]) => (
+          <label key={k} className="block">
+            <span className="mb-1 block text-[13px] text-muted">{label}</span>
+            <input
+              type="number"
+              inputMode="decimal"
+              min={20}
+              max={250}
+              className="input h-11 rounded-[14px] border-0 bg-paper"
+              value={m[k] ?? ""}
+              onChange={(e) => {
+                const n = parseFloat(e.target.value);
+                onChange({ ...m, [k]: Number.isFinite(n) ? n : null });
+              }}
+            />
+          </label>
+        ))}
+      </div>
+      <p className="mt-3 text-[13px] leading-5 text-muted">
+        Not sure how?{" "}
+        <Link href="/size-guide" target="_blank" className="font-medium text-ink underline underline-offset-4">
+          See how to measure
+        </Link>
+        .
+      </p>
+    </div>
   );
 }
