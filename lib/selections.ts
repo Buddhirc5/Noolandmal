@@ -7,6 +7,7 @@ import { HEX_RE } from "./pricing";
 const KEY = /^[a-z0-9-]{1,40}$/;
 
 export const selectionsSchema = z.object({
+  version: z.string().regex(KEY).nullable().default(null),
   colors: z.record(z.string().regex(KEY), z.string().refine((v) => KEY.test(v) || HEX_RE.test(v), "Invalid colour")),
   fabric: z.string().regex(KEY),
   options: z.array(z.string().regex(KEY)).max(40),
@@ -21,6 +22,7 @@ export const selectionsSchema = z.object({
 
 export function encodeSelections(sel: Selections): URLSearchParams {
   const p = new URLSearchParams();
+  if (sel.version) p.set("v", sel.version);
   p.set(
     "c",
     Object.entries(sel.colors)
@@ -56,6 +58,8 @@ export function decodeSelections(
       if (k in out.colors && (KEY.test(v) || HEX_RE.test(v))) out.colors[k] = v;
     }
   }
+  const v = get("v");
+  if (v && KEY.test(v)) out.version = v;
   const f = get("f");
   if (f && KEY.test(f)) out.fabric = f;
   const o = get("o");

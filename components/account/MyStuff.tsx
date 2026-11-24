@@ -2,12 +2,12 @@ import Link from "next/link";
 import { db } from "@/lib/server/db";
 import { getGuestId, getUser } from "@/lib/server/auth";
 import { listDesignCards, loadCatalog } from "@/lib/server/catalog";
-import { resolveLayers } from "@/lib/figure";
 import { colorHex } from "@/lib/colors";
 import { formatDate, lkrRange } from "@/lib/format";
 import Image from "next/image";
+import { photosFor } from "@/lib/photos";
 import { StatusBadge } from "@/components/admin/StatusBadge";
-import type { Configuration, LayerSpec, Order } from "@/lib/types";
+import type { Configuration, Order } from "@/lib/types";
 
 async function mine() {
   const [guestId, user] = await Promise.all([getGuestId(), getUser()]);
@@ -38,7 +38,7 @@ export async function MyDesigns() {
       {configs.map((c) => {
         const card = cards.find((x) => x.design.id === c.design_id);
         const order = orders.find((o) => o.code === c.code);
-        const cover = card ? (card.design.color_images?.[c.selections.colors.main] ?? card.design.images)[0] : undefined;
+        const cover = card ? photosFor({ design: card.design, regions: card.regions }, { version: c.selections.version ?? null, colors: c.selections.colors }).images[0] : undefined;
         return (
           <article key={c.id} className="card flex gap-4 p-4">
             <div className="relative h-28 w-20 shrink-0 overflow-hidden rounded-[16px] bg-surface-2">{cover && <Image src={cover} alt="" fill sizes="80px" className="object-cover" />}</div>

@@ -69,6 +69,7 @@ export function defaultSelections(design: Design, regions: DesignRegion[], catal
   const colors: Record<string, string> = {};
   for (const r of regions) colors[r.key] = r.default_color;
   return {
+    version: null,
     colors,
     fabric: design.default_fabric,
     options: design.default_options.filter((k) => catalog.options.some((o) => o.key === k && o.active)),
@@ -92,6 +93,7 @@ export function validateSelections(
   sel: Selections,
 ): ValidationResult {
   const errors: string[] = [];
+  if (sel.version && !(design.versions ?? []).some((v) => v.key === sel.version)) errors.push("That version of the design isn't available.");
   const fabric = catalog.fabrics.find((f) => f.key === sel.fabric && f.active);
   if (!fabric || !design.fabric_keys.includes(sel.fabric)) errors.push(`Fabric "${sel.fabric}" is not available for this design.`);
 
@@ -149,6 +151,9 @@ export function computePrice(
 ): PriceResult {
   const s = catalog.settings;
   const lines: PriceLine[] = [{ label: `${design.name} (base)`, amount: design.base_price, kind: "base" }];
+
+  const version = sel.version ? (design.versions ?? []).find((v) => v.key === sel.version) : undefined;
+  if (version && version.price !== 0) lines.push({ label: version.name, amount: version.price, kind: "version" });
 
   const fabric = catalog.fabrics.find((f) => f.key === sel.fabric);
   if (fabric && fabric.price_modifier !== 0)

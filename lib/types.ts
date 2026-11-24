@@ -32,13 +32,6 @@ export interface AddonGroup {
   sort: number;
 }
 
-/** Visual part an option switches on the parametric preview. */
-export interface LayerSpec {
-  slot: string;
-  variant: string;
-  region_key?: string;
-}
-
 export interface AddonOption {
   id: ID;
   key: string;
@@ -47,8 +40,8 @@ export interface AddonOption {
   description: string;
   price: number;
   price_type: "fixed" | "per_metre";
+  /** photo shown on the option button (uploaded later) */
   image_url: string | null;
-  layer: LayerSpec | null;
   sort: number;
   active: boolean;
 }
@@ -104,6 +97,8 @@ export interface Design {
   images: string[];
   /** photos of the design made in a specific colour: palette key -> image URLs (first = cover) */
   color_images: Record<string, string[]>;
+  /** photographed variations; empty = design has no versions */
+  versions: DesignVersion[];
   published: boolean;
   featured: boolean;
   sort: number;
@@ -121,18 +116,6 @@ export interface DesignRegion {
   sort: number;
 }
 
-export interface DesignLayer {
-  id: ID;
-  design_id: ID;
-  slot: string;
-  variant: string;
-  region_key: string;
-  z: number;
-  /** raster layer (uploaded in admin) — tinted with the region colour via CSS mask */
-  image_url: string | null;
-  opacity: number;
-}
-
 export interface Catalog {
   palette: PaletteColor[];
   fabrics: Fabric[];
@@ -146,10 +129,20 @@ export interface Catalog {
 export interface DesignBundle {
   design: Design;
   regions: DesignRegion[];
-  layers: DesignLayer[];
+}
+
+/** A photographed variation of a design (e.g. "With ornaments"). Customers pick it by its photo. */
+export interface DesignVersion {
+  key: string;
+  name: string;
+  /** added to the base price (can be 0 or negative) */
+  price: number;
+  images: string[];
 }
 
 export interface Selections {
+  /** chosen DesignVersion key, or null for the design as photographed */
+  version: string | null;
   /** region key -> palette key or "#rrggbb" */
   colors: Record<string, string>;
   fabric: string;
@@ -164,7 +157,7 @@ export interface Selections {
 export interface PriceLine {
   label: string;
   amount: number;
-  kind: "base" | "fabric" | "addon" | "size" | "colour" | "rush";
+  kind: "base" | "version" | "fabric" | "addon" | "size" | "colour" | "rush";
 }
 
 export interface PriceResult {

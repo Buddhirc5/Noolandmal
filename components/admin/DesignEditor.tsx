@@ -5,27 +5,23 @@ import { useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, ImagePlus, Trash2 } from "lucide-react";
 import { Spinner, useAction } from "./ui";
 import { saveDesignAction, uploadDesignAssetAction } from "@/app/admin/actions";
-import { DressFigure } from "@/components/customiser/DressFigure";
-import { RasterPreview } from "@/components/customiser/RasterPreview";
-import { VARIANTS } from "@/lib/figure";
 import { colorHex } from "@/lib/colors";
 import { categories, occasions } from "@/config/site";
-import type { Catalog, Design, DesignLayer, DesignRegion } from "@/lib/types";
+import type { Catalog, Design, DesignRegion, DesignVersion } from "@/lib/types";
 
 type RegionRow = Omit<DesignRegion, "id" | "design_id">;
-type LayerRow = Omit<DesignLayer, "id" | "design_id">;
 type DesignForm = Omit<Design, "id" | "created_at" | "updated_at">;
 
-export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: { id: string | null; design: DesignForm; regions: RegionRow[]; layers: LayerRow[]; catalog: Catalog }) {
+export function DesignEditor({ id, design, regions: r0, catalog }: { id: string | null; design: DesignForm; regions: RegionRow[]; catalog: Catalog }) {
   const router = useRouter();
   const a = useAction();
   const up = useAction();
   const [d, setD] = useState<DesignForm>(design);
   const [regions, setRegions] = useState<RegionRow[]>(r0);
-  const [layers, setLayers] = useState<LayerRow[]>(l0);
   const photoInput = useRef<HTMLInputElement>(null);
-  const [layerUploadIdx, setLayerUploadIdx] = useState<number | null>(null);
-  const layerInput = useRef<HTMLInputElement>(null);
+  const [versionUploadIdx, setVersionUploadIdx] = useState<number | null>(null);
+  const versionInput = useRef<HTMLInputElement>(null);
+  const setVersion = (i: number, patch: Partial<DesignVersion>) => setD((x) => ({ ...x, versions: x.versions.map((v, j) => (j === i ? { ...v, ...patch } : v)) }));
   const colourInput = useRef<HTMLInputElement>(null);
   const [colourKey, setColourKey] = useState(catalog.palette[0]?.key ?? "");
 
@@ -33,10 +29,8 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
   const toggle = (k: "fabric_keys" | "addon_groups" | "default_options" | "occasions", v: string) =>
     setD((x) => ({ ...x, [k]: x[k].includes(v) ? x[k].filter((y) => y !== v) : [...x[k], v] }));
 
-  const colorOf = (key: string) => colorHex(regions.find((r) => r.key === key)?.default_color, catalog.palette);
-  const raster = layers.filter((l) => l.image_url).map((l, i) => ({ ...l, id: String(i), design_id: "" }));
 
-  async function upload(file: File, kind: "photo" | "layer") {
+  async function upload(file: File, kind: "photo" | "option") {
     const fd = new FormData();
     fd.set("file", file);
     fd.set("kind", kind);
@@ -49,7 +43,7 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
       onSubmit={(e) => {
         e.preventDefault();
         a.run(
-          () => saveDesignAction(id, d, regions, layers),
+          () => saveDesignAction(id, d, regions),
           (r) => {
             const newId = (r.data as { id: string }).id;
             if (!id) router.replace(`/admin/designs/${newId}`);
@@ -161,7 +155,7 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
 
         <section className="card space-y-3 p-5">
           <h2 className="font-semibold text-green-900">Colour regions</h2>
-          <p className="text-sm text-muted">Each region gets its own colour picker in the customiser. Layers below refer to these keys (main, accent, overlay…).</p>
+          <p className="text-sm text-muted">Each region gets its own colour picker in the customiser (for example the dress, and an embroidery or lace colour). Use the key "main" for the main fabric — photos by colour follow it.</p>
           {regions.map((r, i) => (
             <div key={i} className="flex flex-wrap items-center gap-2">
               <input className="input w-32 font-mono text-sm" value={r.key} aria-label="Region key" onChange={(e) => setRegions(regions.map((x, j) => (j === i ? { ...x, key: e.target.value } : x)))} />
@@ -184,71 +178,80 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
           </button>
         </section>
 
-        <section className="card space-y-3 p-5">
-          <h2 className="font-semibold text-green-900">Preview layers</h2>
-          <p className="text-sm text-muted">
-            Build the preview from parametric parts (bodice, sleeves, skirt, length, texture, extras), or upload real garment layers: transparent PNGs of each part in white/grey — they&apos;re tinted with the region colour. If any image layer exists, the image stack is used instead of the drawn figure.
-          </p>
-          {layers.map((l, i) => (
-            <div key={i} className="flex flex-wrap items-center gap-2">
-              <select className="input w-28" value={l.slot} aria-label="Slot" onChange={(e) => setLayers(layers.map((x, j) => (j === i ? { ...x, slot: e.target.value, variant: VARIANTS[e.target.value]?.[0] ?? "" } : x)))}>
-                {Object.keys(VARIANTS).map((s) => (
-                  <option key={s}>{s}</option>
-                ))}
-              </select>
-              {l.slot === "image" ? (
-                <span className="flex items-center gap-2">
-                  {l.image_url && <img src={l.image_url} alt="" className="size-10 rounded border border-line object-contain" />}
-                  <button
-                    type="button"
-                    className="btn-secondary min-h-9"
-                    onClick={() => {
-                      setLayerUploadIdx(i);
-                      layerInput.current?.click();
-                    }}
-                  >
-                    {up.pending && layerUploadIdx === i ? <Spinner /> : <ImagePlus className="size-4" aria-hidden />} PNG
+        <section className="card space-y-4 p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-semibold text-ink">Versions</h2>
+              <p className="mt-1 max-w-xl text-sm text-muted">
+                Photographed variations of this design — for example with ornaments, long sleeves or a different neckline. Customers choose a version by tapping its photo, and the gallery switches to that version&apos;s photos.
+              </p>
+            </div>
+            <button type="button" className="btn-secondary" onClick={() => setD((x) => ({ ...x, versions: [...x.versions, { key: `version-${x.versions.length + 1}`, name: "New version", price: 0, images: [] }] }))}>
+              + Add version
+            </button>
+          </div>
+          {d.versions.map((v, i) => (
+            <div key={i} className="rounded-[20px] bg-paper p-4">
+              <div className="flex flex-wrap items-end gap-2">
+                <label className="text-sm">
+                  <span className="label">Name</span>
+                  <input className="input w-56" value={v.name} onChange={(e) => setVersion(i, { name: e.target.value })} />
+                </label>
+                <label className="text-sm">
+                  <span className="label">Key (in links)</span>
+                  <input className="input w-40 font-mono text-sm" value={v.key} onChange={(e) => setVersion(i, { key: e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-") })} />
+                </label>
+                <label className="text-sm">
+                  <span className="label">Price change (LKR)</span>
+                  <input className="input w-36" type="number" step={100} value={v.price} onChange={(e) => setVersion(i, { price: Number(e.target.value) || 0 })} />
+                </label>
+                <span className="ml-auto flex gap-1">
+                  <button type="button" className="btn-ghost min-h-10 px-2" aria-label="Move up" disabled={i === 0} onClick={() => setD((x) => ({ ...x, versions: swap(x.versions, i, i - 1) }))}>
+                    <ArrowLeft className="size-4 rotate-90" aria-hidden />
+                  </button>
+                  <button type="button" className="btn-ghost min-h-10 px-2 text-danger" aria-label="Remove version" onClick={() => confirm("Remove this version?") && setD((x) => ({ ...x, versions: x.versions.filter((_, j) => j !== i) }))}>
+                    <Trash2 className="size-4" aria-hidden />
                   </button>
                 </span>
-              ) : (
-                <select className="input w-40" value={l.variant} aria-label="Variant" onChange={(e) => setLayers(layers.map((x, j) => (j === i ? { ...x, variant: e.target.value } : x)))}>
-                  {(VARIANTS[l.slot] ?? []).map((v) => (
-                    <option key={v}>{v}</option>
-                  ))}
-                </select>
-              )}
-              <select className="input w-36" value={l.region_key} aria-label="Colour region" onChange={(e) => setLayers(layers.map((x, j) => (j === i ? { ...x, region_key: e.target.value } : x)))}>
-                {l.slot === "image" && <option value="">(not tinted)</option>}
-                {regions.map((r) => (
-                  <option key={r.key} value={r.key}>
-                    {r.label}
-                  </option>
+              </div>
+              <div className="mt-3 flex flex-wrap gap-3">
+                {v.images.map((src, k) => (
+                  <div key={src} className="w-24 space-y-1">
+                    <img src={src} alt={`${v.name} photo ${k + 1}`} className="aspect-[4/5] w-full rounded-[14px] object-cover" />
+                    <button type="button" className="btn-ghost min-h-8 w-full px-1.5 text-xs text-danger" onClick={() => setVersion(i, { images: v.images.filter((u) => u !== src) })}>
+                      Remove
+                    </button>
+                  </div>
                 ))}
-              </select>
-              <input className="input w-20" type="number" value={l.z} aria-label="Layer order" title="Layer order" onChange={(e) => setLayers(layers.map((x, j) => (j === i ? { ...x, z: Number(e.target.value) || 0 } : x)))} />
-              <button type="button" className="btn-ghost px-2" aria-label="Remove layer" onClick={() => setLayers(layers.filter((_, j) => j !== i))}>
-                <Trash2 className="size-4" aria-hidden />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVersionUploadIdx(i);
+                    versionInput.current?.click();
+                  }}
+                  className="flex aspect-[4/5] w-24 flex-col items-center justify-center gap-1 rounded-[14px] border border-dashed border-ink/25 text-xs text-ink"
+                >
+                  {up.pending && versionUploadIdx === i ? <Spinner /> : <ImagePlus className="size-5" aria-hidden />} Add photo
+                </button>
+              </div>
+              {!v.images.length && <p className="mt-2 text-xs text-danger">Add at least one photo — the first photo is the button customers tap.</p>}
             </div>
           ))}
           <input
-            ref={layerInput}
+            ref={versionInput}
             type="file"
-            accept="image/png"
+            accept="image/jpeg,image/png,image/webp"
             className="sr-only"
             tabIndex={-1}
-            aria-label="Upload layer PNG"
+            aria-label="Upload version photo"
             onChange={async (e) => {
               const f = e.target.files?.[0];
-              if (!f || layerUploadIdx === null) return;
-              const url = await upload(f, "layer");
-              if (url) setLayers((ls) => ls.map((x, j) => (j === layerUploadIdx ? { ...x, image_url: url } : x)));
+              if (!f || versionUploadIdx === null) return;
+              const url = await upload(f, "photo");
+              if (url) setD((x) => ({ ...x, versions: x.versions.map((v, j) => (j === versionUploadIdx ? { ...v, images: [...v.images, url] } : v)) }));
               e.target.value = "";
             }}
           />
-          <button type="button" className="btn-ghost" onClick={() => setLayers([...layers, { slot: "extra", variant: "bow", region_key: regions[0]?.key ?? "main", z: layers.length, image_url: null, opacity: 1 }])}>
-            + Add layer
-          </button>
         </section>
 
         <section className="card space-y-3 p-5">
@@ -348,14 +351,10 @@ export function DesignEditor({ id, design, regions: r0, layers: l0, catalog }: {
 
       <aside className="space-y-4 xl:sticky xl:top-8 xl:self-start">
         <div className="card overflow-hidden">
-          <div className="relative aspect-[3/5] bg-[#F5F5F7]">
-            {raster.length ? (
-              <RasterPreview layers={raster} colorOf={colorOf} />
-            ) : (
-              <DressFigure layers={layers.filter((l) => !l.image_url)} colorOf={colorOf} idPrefix="ed" className="absolute inset-0 size-full" />
-            )}
+          <div className="relative aspect-[4/5] bg-surface">
+            {d.images[0] ? <img src={d.images[0]} alt="" className="absolute inset-0 size-full object-cover" /> : <span className="absolute inset-0 flex items-center justify-center text-sm text-muted">Add a photo</span>}
           </div>
-          <p className="p-3 text-xs text-muted">Live preview with default colours.</p>
+          <p className="p-3 text-xs text-muted">Cover photo on the collection page. Designs without photos stay hidden from customers.</p>
         </div>
         <button className="btn-primary h-12 w-full" disabled={a.pending}>
           {a.pending && <Spinner />} Save design

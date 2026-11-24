@@ -33,6 +33,7 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
             default_options: [],
             images: [],
             color_images: {},
+            versions: [],
             published: false,
             featured: false,
             sort: count,
@@ -41,11 +42,6 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
           regions={[
             { key: "main", label: "Main fabric", default_color: "deep-green", sort: 0 },
             { key: "accent", label: "Accent", default_color: "gold", sort: 1 },
-          ]}
-          layers={[
-            { slot: "bodice", variant: "v-neck", region_key: "main", z: 0, image_url: null, opacity: 1 },
-            { slot: "skirt", variant: "aline", region_key: "main", z: 1, image_url: null, opacity: 1 },
-            { slot: "length", variant: "midi", region_key: "main", z: 2, image_url: null, opacity: 1 },
           ]}
         />
       </div>
@@ -66,7 +62,6 @@ export default async function EditDesign({ params }: PageProps<"/admin/designs/[
         catalog={catalog}
         design={design}
         regions={b.regions.map(({ key, label, default_color, sort }) => ({ key, label, default_color, sort }))}
-        layers={b.layers.map(({ slot, variant, region_key, z, image_url, opacity }) => ({ slot, variant, region_key, z, image_url, opacity }))}
       />
     </div>
   );

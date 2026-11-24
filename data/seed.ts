@@ -6,10 +6,8 @@ import type {
   AddonOption,
   AddonRule,
   Design,
-  DesignLayer,
   DesignRegion,
   Fabric,
-  LayerSpec,
   PaletteColor,
   Settings,
   SizeOption,
@@ -107,7 +105,8 @@ export const addonGroups: AddonGroup[] = groupRaw.map(([key, name, description, 
   sort: i,
 }));
 
-type OptRow = [string, string, string, number, LayerSpec | null, string?, ("fixed" | "per_metre")?];
+// [group, key, name, price, (legacy preview hint, unused), description?, price type?]
+type OptRow = [string, string, string, number, unknown, string?, ("fixed" | "per_metre")?];
 const optionRaw: OptRow[] = [
   // neckline
   ["neckline", "neck-design", "As designed", 0, null],
@@ -169,7 +168,7 @@ const optionRaw: OptRow[] = [
   ["pockets", "pockets-none", "No pockets", 0, null],
   ["pockets", "pockets-side", "Side seam pockets", 900, { slot: "extra", variant: "pockets", region_key: "main" }],
 ];
-export const addonOptions: AddonOption[] = optionRaw.map(([group_key, key, name, price, layer, description = "", price_type = "fixed"], i) => ({
+export const addonOptions: AddonOption[] = optionRaw.map(([group_key, key, name, price, , description = "", price_type = "fixed"], i) => ({
   id: id("opt", key),
   key,
   group_key,
@@ -178,7 +177,6 @@ export const addonOptions: AddonOption[] = optionRaw.map(([group_key, key, name,
   price,
   price_type,
   image_url: null,
-  layer,
   sort: i,
   active: true,
 }));
@@ -243,9 +241,8 @@ export const settings: Settings = {
 
 // ── Designs ─────────────────────────────────────────────────────────────
 interface DesignSeed {
-  design: Omit<Design, "id" | "images" | "color_images" | "sort" | "published"> & { photos?: boolean };
+  design: Omit<Design, "id" | "images" | "color_images" | "versions" | "sort" | "published"> & { photos?: boolean };
   regions: [string, string, string][];
-  layers: [string, string, string][];
 }
 
 const ALL = ["neckline", "sleeves", "length", "back", "waist", "lining", "embroidery", "buttons", "detail", "pockets"];
@@ -271,7 +268,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Satin dress", "blush"], ["accent", "Leaf appliqué", "plum"], ["overlay", "Tulle overskirt", "blush"]],
-    layers: [["bodice", "strapless", "main"], ["skirt", "column", "main"], ["length", "mini", "main"], ["extra", "overlay-skirt", "overlay"], ["extra", "leaves", "accent"]],
   },
   {
     design: {
@@ -292,7 +288,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Gown", "black"], ["accent", "Satin sash & drape", "black"]],
-    layers: [["bodice", "v-neck", "main"], ["skirt", "column", "main"], ["length", "floor", "main"], ["texture", "sequin", "main"], ["extra", "sash-drape", "accent"]],
   },
   {
     design: {
@@ -313,7 +308,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Skirt & blouse", "mauve"], ["overlay", "Lace drape", "lilac"]],
-    layers: [["bodice", "v-neck", "main"], ["skirt", "aline", "main"], ["length", "floor", "main"], ["extra", "saree-drape", "overlay"]],
   },
   {
     design: {
@@ -334,7 +328,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Dress", "maroon"], ["accent", "Details", "gold"]],
-    layers: [["bodice", "sweetheart", "main"], ["skirt", "column", "main"], ["length", "maxi", "main"], ["extra", "ties", "main"]],
   },
   {
     design: {
@@ -355,7 +348,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Blouse & skirt", "mint"], ["accent", "3D flowers", "sage"]],
-    layers: [["bodice", "crop-v", "main"], ["skirt", "ball", "main"], ["length", "floor", "main"], ["texture", "tulle", "main"], ["extra", "flowers-scatter", "accent"]],
   },
   {
     design: {
@@ -376,7 +368,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Gown", "aqua"], ["accent", "Lace panel", "aqua"], ["overlay", "Tulle cape", "aqua"]],
-    layers: [["bodice", "one-shoulder", "main"], ["skirt", "mermaid", "main"], ["length", "floor", "main"], ["extra", "lace-insert", "accent"], ["extra", "cape", "overlay"], ["extra", "beads", "accent"]],
   },
   {
     design: {
@@ -397,7 +388,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Skirt", "cocoa"], ["top", "Knit top", "ivory"], ["accent", "Cardigan", "cream"]],
-    layers: [["bodice", "scoop", "top"], ["skirt", "tiered", "main"], ["length", "maxi", "main"], ["extra", "cardigan", "accent"]],
   },
   {
     design: {
@@ -416,7 +406,6 @@ const designSeeds: DesignSeed[] = [
       badge: "Kids",
     },
     regions: [["main", "Frock", "dusty-rose"], ["accent", "Bow & trims", "ivory"]],
-    layers: [["bodice", "boat", "main"], ["sleeves", "puff", "main"], ["skirt", "aline", "main"], ["length", "knee", "main"]],
   },
   {
     design: {
@@ -435,7 +424,6 @@ const designSeeds: DesignSeed[] = [
       badge: "Handmade",
     },
     regions: [["main", "Crochet yarn", "ivory"], ["accent", "Flower motif", "mustard"]],
-    layers: [["bodice", "square", "main"], ["skirt", "none", "main"], ["texture", "knit", "main"], ["extra", "flower-3d", "accent"]],
   },
   {
     design: {
@@ -454,7 +442,6 @@ const designSeeds: DesignSeed[] = [
       badge: null,
     },
     regions: [["main", "Blouse", "deep-green"], ["accent", "Trim", "gold"]],
-    layers: [["bodice", "sweetheart-crop", "main"], ["sleeves", "elbow", "main"], ["skirt", "none", "main"], ["extra", "beads", "accent"]],
   },
   {
     design: {
@@ -473,7 +460,6 @@ const designSeeds: DesignSeed[] = [
       badge: null,
     },
     regions: [["main", "Frock", "sky"], ["accent", "Belt & trims", "ivory"]],
-    layers: [["bodice", "boat", "main"], ["sleeves", "cap", "main"], ["skirt", "aline", "main"], ["length", "midi", "main"]],
   },
   {
     design: {
@@ -494,7 +480,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Satin dress", "navy"], ["accent", "Sequin rays", "white"]],
-    layers: [["bodice", "one-shoulder", "main"], ["skirt", "aline", "main"], ["length", "knee", "main"], ["extra", "embroidery", "accent"]],
   },
   {
     design: {
@@ -515,7 +500,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Saree & blouse", "navy"], ["accent", "Silver embroidery", "silver"]],
-    layers: [["bodice", "v-neck", "main"], ["sleeves", "puff", "main"], ["skirt", "column", "main"], ["length", "floor", "main"], ["extra", "print", "accent"], ["extra", "saree-drape", "main"], ["extra", "peplum", "main"], ["extra", "hem-lace", "accent"]],
   },
   {
     design: {
@@ -536,7 +520,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Net saree & blouse", "champagne"], ["overlay", "Lace drape", "champagne"]],
-    layers: [["bodice", "boat", "main"], ["skirt", "column", "main"], ["length", "floor", "main"], ["texture", "lace", "main"], ["extra", "saree-drape", "overlay"], ["extra", "hem-lace", "overlay"]],
   },
   {
     design: {
@@ -557,7 +540,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Top", "cocoa"], ["accent", "Details", "ivory"]],
-    layers: [["bodice", "boat", "main"], ["skirt", "none", "main"], ["extra", "peplum", "main"]],
   },
   {
     design: {
@@ -578,7 +560,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["main", "Print base", "beige"], ["accent", "Botanical print", "deep-green"]],
-    layers: [["bodice", "one-shoulder", "main"], ["skirt", "aline", "main"], ["length", "mini", "main"], ["extra", "print", "accent"], ["extra", "shoulder-bow", "main"]],
   },
   {
     design: {
@@ -599,7 +580,6 @@ const designSeeds: DesignSeed[] = [
       photos: true,
     },
     regions: [["blouse", "Lace blouse", "mauve"], ["main", "Saree", "lilac"]],
-    layers: [["bodice", "boat", "blouse"], ["sleeves", "long", "blouse"], ["texture", "lace", "blouse"], ["skirt", "column", "main"], ["length", "floor", "main"], ["extra", "saree-drape", "main"], ["extra", "crochet-hem", "main"]],
   },
 ];
 
@@ -610,6 +590,7 @@ export const designs: Design[] = designSeeds.map((s, i) => {
     id: id("des", d.slug),
     images: hasPhotos ? photos(d.slug) : [],
     color_images: {},
+    versions: [],
     // only designs with real photography are shown until photos are supplied
     published: Boolean(hasPhotos),
     sort: i,
@@ -629,15 +610,3 @@ export const designRegions: DesignRegion[] = designSeeds.flatMap((s) =>
   })),
 );
 
-export const designLayers: DesignLayer[] = designSeeds.flatMap((s) =>
-  s.layers.map(([slot, variant, region_key], i) => ({
-    id: `lay_${s.design.slug}_${i}`,
-    design_id: id("des", s.design.slug),
-    slot,
-    variant,
-    region_key,
-    z: i,
-    image_url: null,
-    opacity: 1,
-  })),
-);

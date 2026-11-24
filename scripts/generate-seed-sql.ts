@@ -27,6 +27,5 @@ sql += insert("size_options", seed.sizes as never);
 sql += insert("price_settings", [{ id: 1, data: seed.settings }]);
 sql += insert("designs", designs as never);
 sql += insert("design_regions", seed.designRegions as never);
-sql += insert("design_layers", seed.designLayers as never);
 fs.writeFileSync("supabase/seed.sql", sql);
 console.log("wrote supabase/seed.sql");

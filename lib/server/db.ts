@@ -87,7 +87,6 @@ async function seedStore(): Promise<Store> {
     price_settings: [{ id: 1, data: seed.settings, updated_at: new Date().toISOString() }],
     designs: seed.designs as never,
     design_regions: seed.designRegions as never,
-    design_layers: seed.designLayers as never,
   };
 }
 

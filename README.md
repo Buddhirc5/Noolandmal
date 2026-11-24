@@ -70,7 +70,7 @@ app/(site)/         public pages: home, collection, customiser, custom request, 
 app/admin/          admin panel (server actions in app/admin/actions.ts; every action re-checks the admin session)
 app/api/            JSON endpoints used by the browser (save design, uploads, slip, booking, tracking, events)
 lib/pricing.ts      the pure pricing + validation function used by browser AND server
-lib/figure.ts       the parametric, recolourable dress preview (also used for OG images)
+lib/photos.ts       which photos to show (chosen version → chosen colour → design photos)
 lib/whatsapp.ts     wa.me link + message templates (English and Sinhala)
 lib/server/         data layer (Supabase or local JSON), storage, auth, orders/quotes/payments/booking logic
 data/seed.ts        seed catalogue (designs, palette, fabrics, add-ons, rules, sizes, settings)
@@ -83,7 +83,9 @@ messages/           UI strings: en (complete), si / ta (draft, falls back to Eng
 
 **Privacy & access:** guests are identified by an anonymous `nm_guest` cookie. Short codes are references only; private pages (`/q/…`, `/r/…`) additionally require a 128-bit key in the link, the same device, the signed-in owner, or an admin. `/track` swaps code + phone for that link. Reference photos and slips are stored privately and served through 15-minute signed URLs; uploads are decoded and re-encoded server-side (format/size validated, EXIF/GPS removed). Uploads, lookups and form posts are rate-limited.
 
-**Adding a design:** Admin → Designs → New design. Build the preview from parametric parts (bodice, sleeves, skirt, length, textures and extras) or upload real garment layers: transparent PNGs of each part in white/light grey, which the site tints with the chosen colour.
+**Adding a design:** Admin → Designs → New design. Upload photos (the first is the cover), choose fabrics and colour regions. Everything customers see is a photo you uploaded — there are no drawn previews.
+
+**Versions (photographed variations):** in the design editor, "Versions" → Add version → name it (e.g. "With ornaments"), set the price change and upload its photos. Customers pick a version by tapping its photo; the gallery switches to that version and the price updates. **Photos by colour** works the same way for colours of the main fabric. Add-ons (sleeves, ornaments…) are switched off for now (`features.addons` in `config/site.ts`); when switched on, each option shows the photo set in Admin → Catalog → Add-on options (`image_url`).
 
 ## Before launch — replace the placeholders
 

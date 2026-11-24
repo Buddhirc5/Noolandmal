@@ -59,6 +59,30 @@ describe("computePrice", () => {
   });
 });
 
+describe("versions", () => {
+  const withVersions = {
+    ...design,
+    versions: [
+      { key: "with-ornaments", name: "With ornaments", price: 3500, images: ["/a.webp"] },
+      { key: "simple", name: "Simple", price: -1000, images: ["/b.webp"] },
+    ],
+  };
+  it("adds the version price to the estimate", () => {
+    const base = defaultSelections(withVersions, regions, catalog);
+    const plain = computePrice(catalog, withVersions, base, today);
+    const ornate = computePrice(catalog, withVersions, { ...base, version: "with-ornaments" }, today);
+    const simple = computePrice(catalog, withVersions, { ...base, version: "simple" }, today);
+    expect(ornate.total - plain.total).toBe(3500);
+    expect(simple.total - plain.total).toBe(-1000);
+    expect(ornate.lines.find((l) => l.kind === "version")?.label).toBe("With ornaments");
+  });
+  it("rejects a version the design doesn't have", () => {
+    const base = defaultSelections(withVersions, regions, catalog);
+    expect(validateSelections(catalog, withVersions, regions, { ...base, version: "with-ornaments" }).ok).toBe(true);
+    expect(validateSelections(catalog, withVersions, regions, { ...base, version: "nope" }).ok).toBe(false);
+  });
+});
+
 describe("options & validation", () => {
   it("replaces the choice in single-select groups", () => {
     const next = toggleOption(catalog, ["sleeves-cap"], "sleeves-puff");

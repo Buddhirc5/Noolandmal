@@ -6,11 +6,11 @@ import { QuoteDialog } from "./QuoteDialog";
 import { Breakdown } from "./Breakdown";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { computePrice, conflictReason, estimateReadyDate, isCustomColor, toggleOption } from "@/lib/pricing";
-import { luminance } from "@/lib/figure";
-import { colorHex, colorName } from "@/lib/colors";
+import { colorHex, colorName, luminance } from "@/lib/colors";
 import { encodeSelections } from "@/lib/selections";
 import { formatDate, lkr, toISODate, cn } from "@/lib/format";
 import { features } from "@/config/site";
+import { photosFor } from "@/lib/photos";
 import type { Catalog, DesignBundle, Selections } from "@/lib/types";
 
 export interface CustomiserProps {
@@ -20,15 +20,6 @@ export interface CustomiserProps {
   queueWeeks: number;
   savedCode?: string;
   syncUrl?: boolean;
-}
-
-/** Photos for the current main colour if the studio has uploaded them, else the design photos. */
-export function photosFor(bundle: DesignBundle, colors: Record<string, string>) {
-  const { design, regions } = bundle;
-  const primary = regions.find((r) => r.key === "main")?.key ?? regions[0]?.key;
-  const chosen = primary ? colors[primary] : undefined;
-  const variant = chosen ? design.color_images?.[chosen] : undefined;
-  return { images: variant?.length ? variant : design.images, exact: Boolean(variant?.length), primary, chosen };
 }
 
 export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, syncUrl = true }: CustomiserProps) {
@@ -44,13 +35,13 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
   const fabric = catalog.fabrics.find((f) => f.key === sel.fabric);
   const optionByKey = useMemo(() => new Map(catalog.options.map((o) => [o.key, o])), [catalog.options]);
   const groups = features.addons ? catalog.groups.filter((g) => design.addon_groups.includes(g.key)) : [];
-  const gallery = photosFor(bundle, sel.colors);
+  const gallery = photosFor(bundle, sel);
   const images = gallery.images;
   const current = images[Math.min(photo, images.length - 1)];
   const primaryRegion = regions.find((r) => r.key === gallery.primary);
   const colourDiffers = !gallery.exact && primaryRegion && sel.colors[primaryRegion.key] !== primaryRegion.default_color;
 
-  useEffect(() => setPhoto(0), [gallery.chosen]);
+  useEffect(() => setPhoto(0), [gallery.key]);
 
   // keep the URL shareable
   useEffect(() => {
@@ -154,6 +145,33 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
             </p>
           )}
 
+          {/* Version — photographed variations, chosen by photo */}
+          {design.versions.length > 0 && (
+            <Group title="Version">
+              <div className="grid grid-cols-3 gap-3 sm:grid-cols-4" role="radiogroup" aria-label="Version">
+                {[{ key: null as string | null, name: "As shown", price: 0, images: design.images }, ...design.versions].map((v) => {
+                  const on = sel.version === v.key;
+                  return (
+                    <button
+                      key={v.key ?? "default"}
+                      type="button"
+                      role="radio"
+                      aria-checked={on}
+                      onClick={() => setSel((s) => ({ ...s, version: v.key }))}
+                      className="group text-left"
+                    >
+                      <span className={cn("relative block aspect-[4/5] overflow-hidden rounded-[18px] bg-surface transition-shadow", on ? "ring-2 ring-ink ring-offset-2" : "ring-1 ring-black/5")}>
+                        {v.images[0] && <Image src={v.images[0]} alt="" fill sizes="120px" className="object-cover" />}
+                      </span>
+                      <span className="mt-2 block text-[13px] leading-tight font-medium text-ink">{v.name}</span>
+                      <span className="block text-[12px] text-muted">{v.price ? `${v.price > 0 ? "+" : "−"}${Math.abs(v.price).toLocaleString("en-LK")}` : "Included"}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </Group>
+          )}
+
           {/* Colour */}
           <Group title="Colour">
             {regions.map((r) => {
@@ -241,7 +259,12 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                           const reason = on ? null : conflictReason(o.key, sel.options.filter((k) => optionByKey.get(k)?.group_key !== g.key || g.selection === "multi"), catalog.rules);
                           const amount = o.price_type === "per_metre" ? Math.round(o.price * design.fabric_metres) : o.price;
                           return (
-                            <button key={o.key} type="button" aria-pressed={on} disabled={Boolean(reason)} title={reason ?? undefined} onClick={() => setSel((s) => ({ ...s, options: toggleOption(catalog, s.options, o.key) }))} className={cn("chip min-h-11 disabled:opacity-40", on && "chip-active")}>
+                            <button key={o.key} type="button" aria-pressed={on} disabled={Boolean(reason)} title={reason ?? undefined} onClick={() => setSel((s) => ({ ...s, options: toggleOption(catalog, s.options, o.key) }))} className={cn("chip min-h-11 disabled:opacity-40", o.image_url && "py-1 pl-1", on && "chip-active")}>
+                              {o.image_url && (
+                                <span className="relative size-9 shrink-0 overflow-hidden rounded-full bg-surface">
+                                  <Image src={o.image_url} alt="" fill sizes="36px" className="object-cover" />
+                                </span>
+                              )}
                               {o.name}
                               {amount !== 0 && <span className={cn("text-xs", on ? "text-white/70" : "text-muted")}>{amount > 0 ? `+${amount.toLocaleString("en-LK")}` : amount.toLocaleString("en-LK")}</span>}
                             </button>

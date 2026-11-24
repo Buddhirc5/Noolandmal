@@ -1,22 +1,27 @@
 import "server-only";
 import { ImageResponse } from "next/og";
-import { buildFigure, figureToSvg, resolveLayers } from "@/lib/figure";
-import { colorHex, SHEEN } from "@/lib/colors";
 import { flowerSvg } from "@/components/brand/flower";
-import type { Catalog, DesignBundle, LayerSpec, Selections } from "@/lib/types";
+import sharp from "sharp";
+import { site } from "@/config/site";
+import type { DesignBundle, Selections } from "@/lib/types";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 
-export function dressSvgDataUri(bundle: DesignBundle, catalog: Catalog, sel?: Selections): string {
-  const colors = sel?.colors ?? Object.fromEntries(bundle.regions.map((r) => [r.key, r.default_color]));
-  const overrides = (sel?.options ?? bundle.design.default_options).map((k) => catalog.options.find((o) => o.key === k)?.layer).filter(Boolean) as LayerSpec[];
-  const layers = resolveLayers(
-    bundle.layers.filter((l) => !l.image_url).map((l) => ({ slot: l.slot, variant: l.variant, region_key: l.region_key })),
-    overrides,
-    bundle.regions.map((r) => r.key),
-  );
-  const svg = figureToSvg(buildFigure(layers), (r) => colorHex(colors[r], catalog.palette), { sheen: SHEEN[sel?.fabric ?? bundle.design.default_fabric] });
-  return `data:image/svg+xml;base64,${Buffer.from(svg).toString("base64")}`;
+/** First photo of the design (version/colour aware), converted to a PNG data URI for the OG renderer. */
+export async function designPhotoDataUri(bundle: DesignBundle, sel?: Selections): Promise<string | undefined> {
+  const { design } = bundle;
+  const version = sel?.version ? design.versions.find((v) => v.key === sel.version) : undefined;
+  const main = sel?.colors?.main;
+  const src = version?.images[0] ?? (main ? design.color_images[main]?.[0] : undefined) ?? design.images[0];
+  if (!src) return undefined;
+  try {
+    const res = await fetch(new URL(src, site.url));
+    if (!res.ok) return undefined;
+    const png = await sharp(Buffer.from(await res.arrayBuffer())).resize(420, 630, { fit: "cover", position: "top" }).png().toBuffer();
+    return `data:image/png;base64,${png.toString("base64")}`;
+  } catch {
+    return undefined;
+  }
 }
 
 export function ogCard({ eyebrow, title, subtitle, image }: { eyebrow: string; title: string; subtitle: string; image?: string }) {
@@ -41,9 +46,9 @@ export function ogCard({ eyebrow, title, subtitle, image }: { eyebrow: string; t
           </div>
         </div>
         {image && (
-          <div style={{ width: 420, display: "flex", alignItems: "center", justifyContent: "center", background: "#F5F5F7" }}>
+          <div style={{ width: 420, display: "flex", background: "#F5F5F7" }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src={image} width={300} height={600} alt="" />
+            <img src={image} width={420} height={630} alt="" style={{ objectFit: "cover" }} />
           </div>
         )}
       </div>

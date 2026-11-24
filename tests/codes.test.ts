@@ -38,14 +38,14 @@ describe("codes", () => {
 
 describe("selection url encoding", () => {
   it("round-trips", () => {
-    const sel = { colors: { main: "blush", accent: "#aa3366" }, fabric: "satin", options: ["sleeves-puff", "det-bow"], size: "L", qty: 2, neededBy: "2026-12-20", notes: "" };
+    const sel = { version: "with-ornaments", colors: { main: "blush", accent: "#aa3366" }, fabric: "satin", options: ["sleeves-puff", "det-bow"], size: "L", qty: 2, neededBy: "2026-12-20", notes: "" };
     const p = encodeSelections(sel);
     const back = decodeSelections(new URLSearchParams(p.toString()), { ...sel, colors: { main: "x", accent: "y" }, options: [], qty: 1, neededBy: null });
     expect(back).toEqual(sel);
   });
 
   it("ignores malformed values", () => {
-    const base = { colors: { main: "blush" }, fabric: "satin", options: [], size: "M", qty: 1, neededBy: null, notes: "" };
+    const base = { version: null, colors: { main: "blush" }, fabric: "satin", options: [], size: "M", qty: 1, neededBy: null, notes: "" };
     const out = decodeSelections(new URLSearchParams("c=main.<script>,evil.red&q=999&n=tomorrow"), base);
     expect(out).toEqual(base);
   });

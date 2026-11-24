@@ -13,15 +13,13 @@ export function colorName(value: string | undefined, palette: PaletteColor[]): s
   return palette.find((p) => p.key === value)?.name ?? value;
 }
 
-export const SHEEN: Record<string, number> = {
-  satin: 0.32,
-  "silk-blend": 0.28,
-  "sequin-net": 0.25,
-  tulle: 0.12,
-  crepe: 0.1,
-  jersey: 0.12,
-  brocade: 0.2,
-  cotton: 0.06,
-  linen: 0.04,
-  "crochet-cotton": 0.04,
-};
+
+/** Relative luminance (WCAG) of a #rrggbb colour, 0 = black, 1 = white. */
+export function luminance(hex: string) {
+  const n = parseInt(hex.slice(1), 16);
+  const f = (c: number) => {
+    const s = c / 255;
+    return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+  };
+  return 0.2126 * f((n >> 16) & 255) + 0.7152 * f((n >> 8) & 255) + 0.0722 * f(n & 255);
+}

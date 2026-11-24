@@ -9,12 +9,12 @@ import { CustomerPanel, PaymentCard, QuotePanel, StatusPanel } from "@/component
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import Image from "next/image";
 import { Breakdown } from "@/components/customiser/Breakdown";
-import { resolveLayers } from "@/lib/figure";
 import { colorHex, colorName } from "@/lib/colors";
 import { formatDate, formatDateTime } from "@/lib/format";
 import { normalizeCode } from "@/lib/codes";
 import { site } from "@/config/site";
-import type { Configuration, CustomRequest, EventRow, LayerSpec, Payment, RequestFile } from "@/lib/types";
+import type { Configuration, CustomRequest, EventRow, Payment, RequestFile } from "@/lib/types";
+import { photosFor } from "@/lib/photos";
 
 export default async function OrderDetail({ params }: PageProps<"/admin/orders/[code]">) {
   const code = normalizeCode((await params).code);
@@ -35,14 +35,8 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
   const slipUrls = await Promise.all(payments.map((p) => signedUrl("slips", p.slip_path, 900)));
   const quoteUrl = `${site.url}/q/${order.code}?k=${order.access_key}`;
 
-  const layers =
-    bundle && config
-      ? resolveLayers(
-          bundle.layers.filter((l) => !l.image_url).map((l) => ({ slot: l.slot, variant: l.variant, region_key: l.region_key })),
-          config.selections.options.map((k) => catalog.options.find((o) => o.key === k)?.layer).filter(Boolean) as LayerSpec[],
-          bundle.regions.map((r) => r.key),
-        )
-      : [];
+  const cover = bundle && config ? photosFor(bundle, { version: config.selections.version ?? null, colors: config.selections.colors }).images[0] : undefined;
+  const versionName = bundle && config?.selections.version ? bundle.design.versions.find((v) => v.key === config.selections.version)?.name : undefined;
 
   return (
     <div className="space-y-6">
@@ -60,16 +54,14 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
           {config && bundle && (
             <section className="card p-5">
               <div className="flex items-center justify-between gap-3">
-                <h2 className="font-semibold text-green-900">{bundle.design.name}</h2>
+                <h2 className="font-semibold text-ink">{bundle.design.name}{versionName ? ` — ${versionName}` : ""}</h2>
                 <Link href={`/d/${config.code}`} target="_blank" className="text-sm text-green-700">
                   Open configuration ↗
                 </Link>
               </div>
               <div className="mt-4 grid gap-5 sm:grid-cols-[160px_1fr]">
                 <div className="relative aspect-[4/5] overflow-hidden rounded-[18px] bg-surface-2">
-                  {(bundle.design.color_images?.[config.selections.colors.main] ?? bundle.design.images)[0] && (
-                    <Image src={(bundle.design.color_images?.[config.selections.colors.main] ?? bundle.design.images)[0]} alt="" fill sizes="160px" className="object-cover" />
-                  )}
+                  {cover && <Image src={cover} alt="" fill sizes="160px" className="object-cover" />}
                 </div>
                 <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
                   {bundle.regions.map((r) => (

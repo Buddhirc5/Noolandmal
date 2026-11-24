@@ -8,7 +8,7 @@ import { putFile, publicUrl } from "@/lib/server/storage";
 import { processImage, UploadError } from "@/lib/server/images";
 import { audit, generateSlots, getOrder, issueQuote, reviewPayment, setStatus, ServiceError } from "@/lib/server/orders";
 import { loadSettings } from "@/lib/server/catalog";
-import { ORDER_STATUSES, type Design, type DesignLayer, type DesignRegion, type Order, type Settings } from "@/lib/types";
+import { ORDER_STATUSES, type Design, type DesignRegion, type Order, type Settings } from "@/lib/types";
 import { normalizePhone } from "@/lib/format";
 
 type Result = { ok: true; message?: string; data?: unknown } | { ok: false; error: string };
@@ -114,7 +114,6 @@ const tableSchemas = {
     price: z.number().int(),
     price_type: z.enum(["fixed", "per_metre"]),
     image_url: z.string().max(500).nullable(),
-    layer: z.object({ slot: z.string().max(20), variant: z.string().max(40), region_key: z.string().max(40).optional() }).nullable(),
     sort: z.number().int(),
     active: z.boolean(),
   }),
@@ -218,6 +217,10 @@ const designSchema = z.object({
   addon_groups: z.array(key),
   default_options: z.array(key),
   images: z.array(z.string().max(500)).max(12),
+  versions: z
+    .array(z.object({ key, name: z.string().trim().min(1).max(60), price: z.number().int(), images: z.array(z.string().max(500)).max(12) }))
+    .max(30)
+    .default([]),
   color_images: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), z.array(z.string().max(500)).max(12)).default({}),
   published: z.boolean(),
   featured: z.boolean(),
@@ -225,29 +228,23 @@ const designSchema = z.object({
   badge: z.string().max(20).nullable(),
 });
 const regionSchema = z.array(z.object({ key, label: z.string().min(1).max(40), default_color: z.string().min(1).max(40), sort: z.number().int() })).min(1);
-const layerSchema = z.array(
-  z.object({ slot: z.string().min(1).max(20), variant: z.string().max(40), region_key: z.string().max(40), z: z.number().int(), image_url: z.string().max(500).nullable(), opacity: z.number().min(0).max(1) }),
-);
 
 export async function saveDesignAction(
   id: string | null,
   design: z.input<typeof designSchema>,
   regions: z.input<typeof regionSchema>,
-  layers: z.input<typeof layerSchema>,
 ): Promise<Result> {
   const actor = await requireAdmin();
   try {
     const d = designSchema.parse(design);
     if (!d.fabric_keys.includes(d.default_fabric)) throw new ServiceError("Default fabric must be one of the allowed fabrics");
+    if (new Set(d.versions.map((v) => v.key)).size !== d.versions.length) throw new ServiceError("Two versions have the same key");
     const r = regionSchema.parse(regions);
-    const l = layerSchema.parse(layers);
     const clash = await db.get<Design>("designs", { slug: d.slug });
     if (clash && clash.id !== id) throw new ServiceError(`Slug "${d.slug}" is already used`);
     const saved = id ? (await db.update<Design>("designs", { id }, d))[0] : await db.insert<Design>("designs", d);
     await db.remove("design_regions", { design_id: saved.id });
     for (const x of r) await db.insert<DesignRegion>("design_regions", { ...x, design_id: saved.id });
-    await db.remove("design_layers", { design_id: saved.id });
-    for (const x of l) await db.insert<DesignLayer>("design_layers", { ...x, design_id: saved.id });
     await audit(actor, id ? "design.update" : "design.create", "design", saved.id, { slug: d.slug });
     refresh();
     return { ok: true, message: "Design saved", data: { id: saved.id } };
@@ -281,17 +278,11 @@ export async function designQuickAction(id: string, action: "publish" | "unpubli
       void _r;
       await db.insert("design_regions", { ...x, design_id: copy.id });
     }
-    for (const l of await db.list<DesignLayer>("design_layers", { eq: { design_id: id } })) {
-      const { id: _l, ...x } = l;
-      void _l;
-      await db.insert("design_layers", { ...x, design_id: copy.id });
-    }
   }
   if (action === "delete") {
     const used = await db.list("configurations", { eq: { design_id: id }, limit: 1 });
     if (used.length) return { ok: false, error: "Customers have saved this design. Unpublish it instead of deleting." };
     await db.remove("design_regions", { design_id: id });
-    await db.remove("design_layers", { design_id: id });
     await db.remove("designs", { id });
   }
   await audit(actor, `design.${action}`, "design", id, { slug: d.slug });
@@ -299,28 +290,15 @@ export async function designQuickAction(id: string, action: "publish" | "unpubli
   return { ok: true };
 }
 
-/** Upload a design photo or a tintable layer PNG to the public "designs" bucket. */
+/** Upload a design / version / option photo to the public "designs" bucket. */
 export async function uploadDesignAssetAction(formData: FormData): Promise<Result> {
   const actor = await requireAdmin();
   try {
     const file = formData.get("file");
-    const kind = formData.get("kind") === "layer" ? "layer" : "photo";
+    const kind = formData.get("kind") === "option" ? "option" : "photo";
     if (!(file instanceof File) || !file.size) throw new UploadError("Choose a file");
-    let data: Buffer, ext: string, type: string;
-    if (kind === "layer") {
-      // keep transparency: PNG, metadata stripped
-      const sharp = (await import("sharp")).default;
-      const meta = await sharp(Buffer.from(await file.arrayBuffer())).metadata().catch(() => null);
-      if (!meta || meta.format !== "png") throw new UploadError("Layers must be transparent PNG files");
-      data = await sharp(Buffer.from(await file.arrayBuffer())).resize({ width: 1600, height: 2000, fit: "inside", withoutEnlargement: true }).png().toBuffer();
-      ext = "png";
-      type = "image/png";
-    } else {
-      const img = await processImage(file, 1800);
-      data = img.data;
-      ext = img.ext;
-      type = img.contentType;
-    }
+    const img = await processImage(file, 1800);
+    const { data, ext, contentType: type } = img;
     const path = `${kind}s/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
     await putFile("designs", path, data, type);
     await audit(actor, "design.upload", "designs", path);

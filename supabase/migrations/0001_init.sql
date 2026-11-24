@@ -45,7 +45,6 @@ create table public.addon_options (
   price int not null default 0,
   price_type text not null default 'fixed' check (price_type in ('fixed','per_metre')),
   image_url text,
-  layer jsonb,
   sort int not null default 0,
   active boolean not null default true,
   created_at timestamptz not null default now()
@@ -91,6 +90,7 @@ create table public.designs (
   default_options text[] not null default '{}',
   images text[] not null default '{}',
   color_images jsonb not null default '{}',
+  versions jsonb not null default '[]',
   published boolean not null default false,
   featured boolean not null default false,
   sort int not null default 0,
@@ -108,18 +108,6 @@ create table public.design_regions (
   sort int not null default 0,
   created_at timestamptz not null default now(),
   unique (design_id, key)
-);
-
-create table public.design_layers (
-  id text primary key default gen_random_uuid()::text,
-  design_id text not null references public.designs(id) on delete cascade,
-  slot text not null,
-  variant text not null default '',
-  region_key text not null default '',
-  z int not null default 0,
-  image_url text,
-  opacity numeric not null default 1,
-  created_at timestamptz not null default now()
 );
 
 -- ── Customers & orders ─────────────────────────────────────────────────
@@ -273,7 +261,7 @@ do $$
 declare t text;
 begin
   foreach t in array array['palette_colors','fabrics','addon_groups','addon_options','addon_rules','size_options','price_settings',
-    'designs','design_regions','design_layers','profiles','configurations','custom_requests','request_files','orders','quotes',
+    'designs','design_regions','profiles','configurations','custom_requests','request_files','orders','quotes',
     'payments','measurement_slots','measurement_bookings','events','admin_audit_log']
   loop
     execute format('alter table public.%I enable row level security', t);
@@ -289,7 +277,6 @@ create policy "catalog read" on public.addon_rules for select using (true);
 create policy "catalog read" on public.size_options for select using (true);
 create policy "designs read" on public.designs for select using (published);
 create policy "regions read" on public.design_regions for select using (exists (select 1 from public.designs d where d.id = design_id and d.published));
-create policy "layers read" on public.design_layers for select using (exists (select 1 from public.designs d where d.id = design_id and d.published));
 
 -- Signed-in customers may read their own profile. Orders, quotes, slips etc. have
 -- NO client policies at all: guests and users reach them only via server routes

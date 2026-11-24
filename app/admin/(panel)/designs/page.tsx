@@ -2,8 +2,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { listDesignCards, loadCatalog } from "@/lib/server/catalog";
 import { DesignQuick } from "@/components/admin/DesignQuick";
-import { DressFigure } from "@/components/customiser/DressFigure";
-import { colorHex } from "@/lib/colors";
 import { lkr } from "@/lib/format";
 
 export const metadata = { title: "Designs" };
@@ -22,13 +20,13 @@ export default async function Designs() {
         </Link>
       </div>
       <div className="card divide-y divide-line">
-        {cards.map(({ design, regions, layers }) => (
+        {cards.map(({ design }) => (
           <div key={design.id} className="flex flex-wrap items-center gap-4 p-3">
             <div className="relative h-20 w-16 shrink-0 overflow-hidden rounded-xl bg-[#F5F5F7]">
               {design.images[0] ? (
                 <Image src={design.images[0]} alt="" fill sizes="64px" className="object-cover" />
               ) : (
-                <DressFigure layers={layers} colorOf={(r) => colorHex(regions.find((x) => x.key === r)?.default_color, catalog.palette)} idPrefix={`l-${design.slug}`} className="size-full" />
+                <span className="flex size-full items-center justify-center text-center text-[10px] leading-tight text-muted">No photo</span>
               )}
             </div>
             <div className="min-w-0 flex-1">
@@ -38,6 +36,7 @@ export default async function Designs() {
               <p className="text-xs text-muted">
                 {design.category} · base {lkr(design.base_price)} · {design.published ? "Published" : "Hidden"}
                 {design.featured ? " · Featured" : ""}
+                {design.versions.length ? ` · ${design.versions.length} version${design.versions.length > 1 ? "s" : ""}` : ""}
               </p>
             </div>
             <DesignQuick id={design.id} published={design.published} />

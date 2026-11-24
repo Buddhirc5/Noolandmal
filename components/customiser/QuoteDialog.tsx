@@ -61,6 +61,8 @@ export function QuoteDialog({
   }, [open]);
 
   const { design, regions } = bundle;
+  const versionName = selections.version ? design.versions.find((v) => v.key === selections.version)?.name : undefined;
+  const fullName = versionName ? `${design.name} — ${versionName}` : design.name;
   // "As designed" placeholders (neck-design, len-design…) add nothing to the summary
   const optionNames = selections.options.filter((k) => !k.endsWith("-design")).map((k) => catalog.options.find((o) => o.key === k)?.name ?? k);
   const fabricName = catalog.fabrics.find((f) => f.key === selections.fabric)?.name ?? selections.fabric;
@@ -99,7 +101,7 @@ export function QuoteDialog({
         "design",
         {
           code: saved.code,
-          designName: design.name,
+          designName: fullName,
           colours: regions.map((r) => ({ region: r.label, colour: colorName(selections.colors[r.key], catalog.palette) })),
           fabric: fabricName,
           options: optionNames,
@@ -156,7 +158,7 @@ export function QuoteDialog({
         <div className="flex gap-4 rounded-[22px] bg-surface p-3">
           <div className="relative h-32 w-24 shrink-0 overflow-hidden rounded-[16px] bg-paper">{photo && <Image src={photo} alt="" fill sizes="96px" className="object-cover" />}</div>
           <div className="min-w-0 text-sm">
-            <p className="font-semibold text-green-900">{design.name}</p>
+            <p className="font-semibold text-ink">{fullName}</p>
             <ul className="mt-1 space-y-0.5 text-xs leading-5 text-muted">
               {regions.map((r) => (
                 <li key={r.key} className="flex items-center gap-1.5">

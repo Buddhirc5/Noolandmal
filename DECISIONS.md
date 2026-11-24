@@ -18,9 +18,8 @@ Choices made while building, so they're easy to revisit.
 - shadcn/ui wasn't installed: the handful of primitives needed (buttons, chips, cards, inputs, accordion via `<details>`, `<dialog>` modal) are small Tailwind utilities themed with the brand tokens — fewer dependencies, same result.
 
 ## Customiser preview
-- Recolouring photos convincingly needs per-garment masks, which don't exist yet. So the live preview is a **parametric "fashion flat" on a dress form**: each design is a stack of parts (bodice/neckline, sleeves, skirt, length, textures, extras such as leaves, sash, cape, saree drape, flowers). Add-on options can switch or add parts, so choosing "puff sleeves" or "lace hem" changes the drawing. The real photos are shown alongside ("Photo · original colours").
-- When real layer artwork exists, upload transparent PNG layers in the admin: they are tinted with CSS masks and replace the drawing automatically.
-- Fabric choice changes the sheen (satin shiny, linen matte). Changing fabric to one that doesn't offer a chosen colour switches that colour and tells the customer.
+- **Photos only, no drawings.** The drawn/animated dress model was removed completely (code, data table and admin controls). The customiser shows only photos uploaded by the studio: a chosen **version**'s photos, else photos of the chosen **colour**, else the design photos. If a colour has no photo yet, the page says which colour the photos show.
+- **Versions** (`designs.versions`: key, name, price change, photos) cover photographed variations such as ornaments or sleeve styles; they are priced in `computePrice` and named in the WhatsApp message.
 
 ## Architecture
 - **Two data backends behind one tiny interface** (`lib/server/db.ts`): Supabase in production, a JSON file for local development/demos, so the app runs with zero setup. All business logic is written once against that interface.
@@ -36,7 +35,7 @@ Choices made while building, so they're easy to revisit.
 - Analytics: first-party `events` table (WhatsApp clicks, saves, uploads, bookings). Add Vercel Analytics or GA if you want dashboards.
 
 ## Photo-led redesign (latest)
-- **Real photography only.** The drawn dress previews and mock UI widgets were removed from the public site. Designs without photos are unpublished until photos are supplied. The drawing code stays in `lib/figure.ts` for the admin and OG images and can return later (`features.drawnPreview`).
+- **Real photography only.** The drawn dress previews and mock UI widgets were removed from the public site. Designs without photos are unpublished until photos are supplied. Open Graph images use the design photo.
 - **Photos per colour.** `designs.color_images` maps a palette colour to photos of the design made in that colour. Upload them in Admin → Designs → "Photos by colour". When a customer picks that colour, those photos replace the defaults; otherwise the page says which colour the photos show.
 - **Add-ons paused.** `features.addons = false` hides sleeves/embroidery/etc. in the customiser; the data, pricing and admin stay in place for a later update. Included defaults (e.g. lining) are listed as "Includes" in the quote.
 - **No emoji or decorative icons**; only functional icons (menu, close, chevrons, plus/minus, checkmarks, WhatsApp logo).

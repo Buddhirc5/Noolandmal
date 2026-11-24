@@ -9,7 +9,6 @@ import type {
   Catalog,
   Design,
   DesignBundle,
-  DesignLayer,
   DesignRegion,
   Fabric,
   PaletteColor,
@@ -46,9 +45,14 @@ export const loadCatalog = cache(async (): Promise<Catalog> => {
   };
 });
 
+/** Older rows may predate the photo fields. */
+function withDefaults(d: Design): Design {
+  return { ...d, images: d.images ?? [], color_images: d.color_images ?? {}, versions: d.versions ?? [] };
+}
+
 export const listDesigns = cache(async (opts: { includeUnpublished?: boolean } = {}): Promise<Design[]> => {
   const rows = await db.list<Design>("designs", opts.includeUnpublished ? {} : { eq: { published: true } });
-  return rows.sort(bySort);
+  return rows.map(withDefaults).sort(bySort);
 });
 
 export const listAllRegions = cache(async () => db.list<DesignRegion>("design_regions"));
@@ -56,11 +60,8 @@ export const listAllRegions = cache(async () => db.list<DesignRegion>("design_re
 export const getDesignBundle = cache(async (slug: string, includeUnpublished = false): Promise<DesignBundle | null> => {
   const design = await db.get<Design>("designs", { slug });
   if (!design || (!design.published && !includeUnpublished)) return null;
-  const [regions, layers] = await Promise.all([
-    db.list<DesignRegion>("design_regions", { eq: { design_id: design.id } }),
-    db.list<DesignLayer>("design_layers", { eq: { design_id: design.id } }),
-  ]);
-  return { design, regions: regions.sort(bySort), layers: layers.sort((a, b) => a.z - b.z) };
+  const regions = await db.list<DesignRegion>("design_regions", { eq: { design_id: design.id } });
+  return { design: withDefaults(design), regions: regions.sort(bySort) };
 });
 
 export async function getDesignBundleById(id: string): Promise<DesignBundle | null> {
@@ -77,15 +78,12 @@ export const queueWeeks = cache(async (): Promise<number> => {
   return Math.floor(orders.length / Math.max(1, settings.weekly_capacity));
 });
 
-export const listAllLayers = cache(async () => db.list<DesignLayer>("design_layers"));
-
 /** Designs with their regions/layers, for cards and grids. */
 export async function listDesignCards(opts: { includeUnpublished?: boolean } = {}) {
-  const [designs, regions, layers, catalog] = await Promise.all([listDesigns(opts), listAllRegions(), listAllLayers(), loadCatalog()]);
+  const [designs, regions, catalog] = await Promise.all([listDesigns(opts), listAllRegions(), loadCatalog()]);
   return designs.map((d) => ({
     design: d,
     regions: regions.filter((r) => r.design_id === d.id).sort(bySort),
-    layers: layers.filter((l) => l.design_id === d.id).sort((a, b) => a.z - b.z),
     fabrics: catalog.fabrics.filter((f) => d.fabric_keys.includes(f.key)),
   }));
 }
