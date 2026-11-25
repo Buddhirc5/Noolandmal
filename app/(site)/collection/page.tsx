@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DesignCard } from "@/components/DesignCard";
+import { GridView } from "@/components/collection/GridView";
 import { CollectionFilters } from "@/components/collection/Filters";
 import { SectionHeading } from "@/components/ui/SectionHeading";
 import { JsonLd, breadcrumbLd } from "@/components/JsonLd";
@@ -75,15 +76,12 @@ export default async function CollectionPage({ searchParams }: PageProps<"/colle
           />
         </Suspense>
       </div>
-      <p className="mt-8 text-sm text-muted" aria-live="polite">
-        {filtered.length} design{filtered.length === 1 ? "" : "s"}
-      </p>
       {shown.length ? (
-        <div className="mt-4 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <GridView count={filtered.length}>
           {shown.map((c, i) => (
-            <DesignCard key={c.design.id} item={c} palette={catalog.palette} priority={i < 2} headingLevel="h2" />
+            <DesignCard key={c.design.id} item={c} palette={catalog.palette} priority={i < 4} headingLevel="h2" />
           ))}
-        </div>
+        </GridView>
       ) : (
         <div className="card mt-4 flex flex-col items-center p-12 text-center">
           <p className="font-serif text-2xl text-green-900">No designs match those filters</p>

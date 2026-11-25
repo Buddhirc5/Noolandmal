@@ -13,34 +13,34 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
   const photoColours = Object.keys(design.color_images ?? {}).filter((k) => design.color_images[k]?.length);
   const dots = photoColours.length ? photoColours : regions.map((r) => r.default_color);
   return (
-    <div className="group card lift relative flex flex-col overflow-hidden p-2.5">
-      <HeartButton className="absolute top-5 right-5 z-10" item={{ id: design.slug, slug: design.slug, name: design.name, image: photo ?? null, query: "", detail: "", price: design.base_price }} />
+    <div className="group card lift relative flex flex-col overflow-hidden p-2.5 group-data-[view=small]/tiles:rounded-[22px] group-data-[view=small]/tiles:p-1.5">
+      <HeartButton className="absolute top-5 right-5 z-10 group-data-[view=small]/tiles:top-3 group-data-[view=small]/tiles:right-3 group-data-[view=small]/tiles:size-8" item={{ id: design.slug, slug: design.slug, name: design.name, image: photo ?? null, query: "", detail: "", price: design.base_price }} />
       <Link href={`/collection/${design.slug}`} className="flex flex-1 flex-col after:absolute after:inset-0 after:content-['']">
-      <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2">
+      <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2 group-data-[view=small]/tiles:aspect-[3/4] group-data-[view=small]/tiles:rounded-[17px]">
         {photo ? (
           <Image
             src={photo}
             alt={`${design.name} — front view`}
             fill
             priority={priority}
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+            sizes="(max-width: 640px) 50vw, (max-width: 1024px) 50vw, 33vw"
             quality={70}
             className="object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
           <span className="absolute inset-0 flex items-center justify-center text-[13px] text-muted">Photos coming soon</span>
         )}
-        {design.badge && <span className="badge absolute top-3 left-3 bg-paper/95">{design.badge}</span>}
+        {design.badge && <span className="badge absolute top-3 left-3 bg-paper/95 group-data-[view=small]/tiles:top-2 group-data-[view=small]/tiles:left-2 group-data-[view=small]/tiles:px-2 group-data-[view=small]/tiles:text-[10px]">{design.badge}</span>}
       </div>
-      <div className="flex flex-1 flex-col gap-2 px-2.5 pt-4 pb-2">
-        <Heading className="text-xl leading-tight font-semibold tracking-[-0.02em] text-ink">{design.name}</Heading>
+      <div className="flex flex-1 flex-col gap-2 px-2.5 pt-4 pb-2 group-data-[view=small]/tiles:gap-1 group-data-[view=small]/tiles:px-1.5 group-data-[view=small]/tiles:pt-2.5 group-data-[view=small]/tiles:pb-1.5">
+        <Heading className="text-xl leading-tight font-semibold tracking-[-0.02em] text-ink group-data-[view=small]/tiles:line-clamp-2 group-data-[view=small]/tiles:text-[14px] group-data-[view=small]/tiles:tracking-[-0.01em] sm:group-data-[view=small]/tiles:text-[16px]">{design.name}</Heading>
         <div className="mt-auto flex items-center justify-between gap-3">
-          <p className="text-sm text-muted">
+          <p className="text-sm text-muted group-data-[view=small]/tiles:text-[12px]">
             {fromLabel} <span className="font-medium text-ink">{lkr(design.base_price)}</span>
           </p>
           <div className="flex items-center -space-x-1.5" aria-label={`${photoColours.length ? "Photographed in" : "Shown in"} ${dots.map((k) => colorName(k, palette)).join(", ")}`}>
             {dots.slice(0, 5).map((k) => (
-              <span key={k} className="size-4 rounded-full border-2 border-surface ring-1 ring-black/10" style={{ background: colorHex(k, palette) }} />
+              <span key={k} className="size-4 rounded-full border-2 border-surface ring-1 ring-black/10 group-data-[view=small]/tiles:size-3 group-data-[view=small]/tiles:border" style={{ background: colorHex(k, palette) }} />
             ))}
           </div>
         </div>
