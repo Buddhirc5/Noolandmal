@@ -49,3 +49,10 @@ export function phonesMatch(a: string, b: string): boolean {
 export function cn(...c: (string | false | null | undefined)[]): string {
   return c.filter(Boolean).join(" ");
 }
+
+/** "94771234567" -> "+94 77 123 4567" (other countries: "+" and the digits). */
+export function formatPhone(e164: string): string {
+  const d = e164.replace(/\D/g, "");
+  if (/^94\d{9}$/.test(d)) return `+94 ${d.slice(2, 4)} ${d.slice(4, 7)} ${d.slice(7)}`;
+  return d ? `+${d}` : "";
+}

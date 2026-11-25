@@ -5,6 +5,7 @@ import "server-only";
 import { db } from "./db";
 import { audit, currentQuote, ServiceError, setStatus } from "./orders";
 import { listOrderRows } from "./admin-data";
+import { ensureCustomer } from "./customers";
 import { generateAccessKey, generateCode } from "@/lib/codes";
 import { normalizePhone } from "@/lib/format";
 import type { CustomerMeasurement, EventRow, Expense, ExpenseCategory, MeasurementKey, Order, OrderStatus, Payment } from "@/lib/types";
@@ -54,6 +55,7 @@ export async function createManualOrder(
     whatsapp_clicked_at: null,
     paid_in_full: false,
   });
+  await ensureCustomer(input.phone, input.name);
   await audit(actor, "order.create_manual", "order", code, { title: input.title });
   return order;
 }
@@ -102,6 +104,7 @@ export async function saveMeasurements(input: { phone: string; name: string; val
   const phone = normalizePhone(input.phone);
   const existing = await getMeasurements(phone);
   const row = { name: input.name, values: input.values, notes: input.notes, taken_on: input.takenOn, updated_at: new Date().toISOString() };
+  await ensureCustomer(phone, input.name);
   if (existing) await db.update("customer_measurements", { id: existing.id }, row);
   else await db.insert("customer_measurements", { phone, ...row });
   await audit(actor, "measurements.save", "customer", phone);

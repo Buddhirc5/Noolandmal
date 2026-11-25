@@ -10,6 +10,7 @@ import { audit, generateSlots, getOrder, issueQuote, reviewPayment, setStatus, S
 import { loadSettings } from "@/lib/server/catalog";
 import { ORDER_STATUSES, type Design, type DesignRegion, type Order, type Settings } from "@/lib/types";
 import { normalizePhone } from "@/lib/format";
+import { ensureCustomer } from "@/lib/server/customers";
 
 type Result = { ok: true; message?: string; data?: unknown } | { ok: false; error: string };
 const fail = (e: unknown): Result => ({ ok: false, error: e instanceof ServiceError || e instanceof UploadError || e instanceof z.ZodError ? (e instanceof z.ZodError ? e.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ") : e.message) : "Unexpected error" });
@@ -40,6 +41,7 @@ export async function updateOrderAction(input: z.input<typeof orderPatch>): Prom
     const { code: _code, ...patch } = v;
     void _code;
     await db.update<Order>("orders", { id: order.id }, { ...patch, customer_phone: v.customer_phone ? normalizePhone(v.customer_phone) : "" });
+    if (v.customer_phone) await ensureCustomer(v.customer_phone, v.customer_name);
     await audit(actor, "order.update", "order", order.code, {});
     refresh();
     return { ok: true, message: "Saved" };

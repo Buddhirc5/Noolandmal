@@ -104,6 +104,7 @@ export async function createConfiguration(input: {
     whatsapp_clicked_at: null,
     paid_in_full: false,
   });
+  if (input.phone) await import("./customers").then((m) => m.ensureCustomer(input.phone, input.name)).catch(() => null);
   await logEvent("configuration_saved", code, input.guestId, { slug: input.slug, total: price.total });
   return { config, order };
 }

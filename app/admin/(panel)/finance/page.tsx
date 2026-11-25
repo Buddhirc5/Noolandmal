@@ -18,22 +18,22 @@ export default async function Finance() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Money &amp; profit</h1>
+        <h1 className="text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">Money &amp; profit</h1>
         <p className="mt-1 max-w-2xl text-sm text-muted">
           Money in is every advance and balance you record on an order. Add what you spend — fabric, accessories, transport — and the profit works itself out, month by month.
         </p>
       </div>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2.5 md:gap-3 xl:grid-cols-4">
         {[
           [`Received · ${monthLabel(cur.month, true)}`, cur.income],
           [`Spent · ${monthLabel(cur.month, true)}`, cur.expenses],
           [`Profit · ${monthLabel(cur.month, true)}`, cur.profit],
           ["Profit · last 12 months", f.totals.profit],
         ].map(([l, v], i) => (
-          <div key={l as string} className={cn("card p-5", i === 2 && "bg-ink text-white")}>
-            <p className={cn("text-sm", i === 2 ? "text-white/70" : "text-muted")}>{l}</p>
-            <p className={cn("mt-2 text-3xl font-semibold tracking-tight tabular-nums", (v as number) < 0 && "text-danger")}>{lkr(v as number)}</p>
+          <div key={l as string} className={cn("card p-4 md:p-5", i === 2 && "bg-ink text-white")}>
+            <p className={cn("text-[13px] md:text-sm", i === 2 ? "text-white/70" : "text-muted")}>{l}</p>
+            <p className={cn("mt-2 text-xl font-semibold tracking-tight tabular-nums md:text-3xl", (v as number) < 0 && "text-danger")}>{lkr(v as number)}</p>
           </div>
         ))}
       </section>

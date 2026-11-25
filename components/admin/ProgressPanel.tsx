@@ -47,17 +47,17 @@ export function ProgressPanel({ order, quote, payments, today }: { order: Order;
 
   const payForm = (v: { amount: number; paidOn: string }, set: (x: { amount: number; paidOn: string }) => void, type: "advance" | "final", label: string) => (
     <form
-      className="flex flex-wrap items-center gap-2"
+      className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap sm:items-center"
       onSubmit={(e) => {
         e.preventDefault();
         a.run(() => recordPaymentAction({ code: order.code, type, amount: v.amount, paidOn: v.paidOn }));
       }}
     >
       <label className="sr-only" htmlFor={`${type}-amt`}>Amount</label>
-      <input id={`${type}-amt`} className="input h-10 w-32" type="number" min={1} value={v.amount || ""} placeholder="LKR" onChange={(e) => set({ ...v, amount: Number(e.target.value) || 0 })} />
+      <input id={`${type}-amt`} className="input h-11 min-w-0 sm:w-32" type="number" min={1} value={v.amount || ""} placeholder="LKR" onChange={(e) => set({ ...v, amount: Number(e.target.value) || 0 })} />
       <label className="sr-only" htmlFor={`${type}-date`}>Date received</label>
-      <input id={`${type}-date`} className="input h-10 w-40" type="date" max={today} value={v.paidOn} onChange={(e) => set({ ...v, paidOn: e.target.value })} />
-      <button className="btn-primary h-10" disabled={a.pending || !v.amount}>
+      <input id={`${type}-date`} className="input h-11 min-w-0 sm:w-40" type="date" max={today} value={v.paidOn} onChange={(e) => set({ ...v, paidOn: e.target.value })} />
+      <button className="btn-primary col-span-2 h-11" disabled={a.pending || !v.amount}>
         {a.pending && <Spinner />} {label}
       </button>
     </form>
@@ -65,7 +65,7 @@ export function ProgressPanel({ order, quote, payments, today }: { order: Order;
 
   return (
     <section className="card p-5">
-      <div className="flex items-baseline justify-between gap-3">
+      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
         <h2 className="font-semibold text-green-900">Progress</h2>
         {total > 0 && (
           <p className="text-sm tabular-nums">
@@ -82,7 +82,7 @@ export function ProgressPanel({ order, quote, payments, today }: { order: Order;
             </button>
           )}
         </Row>
-        <Row done={Boolean(quote)} title="Quotation sent" sub={quote ? `${lkr(total)} · ${formatDate(quote.created_at)}` : "Fill in the quotation below, then send it on WhatsApp"} />
+        <Row done={Boolean(quote)} title="Quotation sent" sub={quote ? `${lkr(total)} · ${formatDate(quote.created_at)}` : "Make the quotation below and share the PDF"} />
         <Row done={advanceDone} title="Advance paid" sub={advanceDone ? approved.filter((p) => p.type === "advance").map((p) => `${lkr(p.amount)} on ${formatDate(p.paid_on ?? p.created_at)}`).join(", ") : "Record it once the money is in your account"}>
           {!advanceDone && payForm(adv, setAdv, "advance", "Advance received")}
         </Row>

@@ -4,7 +4,7 @@ import { listOrderRows } from "@/lib/server/admin-data";
 import { db } from "@/lib/server/db";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import { formatDate, lkr, normalizePhone } from "@/lib/format";
-import type { CustomerMeasurement, Payment } from "@/lib/types";
+import type { Customer, CustomerMeasurement, Payment } from "@/lib/types";
 
 export const metadata = { title: "Customers" };
 
@@ -16,10 +16,11 @@ async function openCustomer(form: FormData) {
 
 export default async function Customers({ searchParams }: PageProps<"/admin/customers">) {
   const q = String((await searchParams).q ?? "").toLowerCase().trim();
-  const [rows, measurements, payments] = await Promise.all([
+  const [rows, measurements, payments, customers] = await Promise.all([
     listOrderRows(),
     db.list<CustomerMeasurement>("customer_measurements"),
     db.list<Payment>("payments", { eq: { status: "approved" } }),
+    db.list<Customer>("customers"),
   ]);
   const paidByOrder = new Map<string, number>();
   for (const p of payments) paidByOrder.set(p.order_id, (paidByOrder.get(p.order_id) ?? 0) + p.amount);
@@ -34,23 +35,28 @@ export default async function Customers({ searchParams }: PageProps<"/admin/cust
     groups.set(r.order.customer_phone, g);
   }
   for (const m of measurements) if (!groups.has(m.phone)) groups.set(m.phone, { phone: m.phone, name: m.name, rows: [] });
+  for (const c of customers) {
+    const g = groups.get(c.phone);
+    if (g) g.name = c.name || g.name;
+    else groups.set(c.phone, { phone: c.phone, name: c.name, rows: [] });
+  }
   let list = [...groups.values()];
   if (q) list = list.filter((g) => `${g.name} ${g.phone}`.toLowerCase().includes(q));
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-4xl font-semibold tracking-tight text-green-900">Customers</h1>
-        <p className="mt-1 text-sm text-muted">Everyone with a WhatsApp number, their orders, what they&apos;ve paid and their saved measurements.</p>
+        <h1 className="text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">Customers</h1>
+        <p className="mt-1 text-sm text-muted">Each customer&apos;s WhatsApp number is their ID — orders, measurements, quotations and invoices all hang off it.</p>
       </div>
       <div className="flex flex-wrap gap-3">
-        <form className="flex gap-2" action="/admin/customers">
-          <input name="q" defaultValue={q} placeholder="Search name or number…" className="input max-w-xs rounded-full" />
+        <form className="flex w-full gap-2 md:w-auto" action="/admin/customers">
+          <input name="q" defaultValue={q} placeholder="Search name or number…" className="input h-11 min-w-0 flex-1 rounded-full" />
           <button className="btn-secondary">Search</button>
         </form>
-        <form className="flex gap-2" action={openCustomer}>
-          <input name="phone" placeholder="07X XXX XXXX" className="input max-w-[11rem] rounded-full" aria-label="Customer WhatsApp number" />
-          <button className="btn-secondary">Add measurements for a number</button>
+        <form className="flex w-full gap-2 md:w-auto" action={openCustomer}>
+          <input name="phone" type="tel" inputMode="tel" placeholder="07X XXX XXXX" className="input h-11 min-w-0 flex-1 rounded-full" aria-label="Customer WhatsApp number" />
+          <button className="btn-secondary h-11 shrink-0">Open number</button>
         </form>
       </div>
       <div className="card divide-y divide-line">

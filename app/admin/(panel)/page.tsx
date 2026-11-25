@@ -19,34 +19,34 @@ export default async function Dashboard() {
     <div className="space-y-8">
       <div className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="text-4xl font-semibold tracking-tight text-green-900">Dashboard</h1>
+          <h1 className="text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">Dashboard</h1>
           <p className="mt-1 text-sm text-muted">WhatsApp is where you talk and get paid — tick things off here.</p>
         </div>
-        <Link href="/admin/orders/new" className="btn-primary">
+        <Link href="/admin/orders/new" className="btn-primary hidden lg:inline-flex">
           New order
         </Link>
       </div>
 
-      <section className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
+      <section className="grid grid-cols-2 gap-2.5 md:gap-3 xl:grid-cols-5">
         {tickets.map((c) => (
-          <Link key={c.label} href={c.href} className="card card-hover p-5">
-            <p className="text-sm text-muted">{c.label}</p>
-            <p className="mt-2 text-4xl font-semibold tracking-tight text-ink tabular-nums">{c.value}</p>
-            <p className="mt-1 text-xs text-muted">{c.hint}</p>
+          <Link key={c.label} href={c.href} className="card card-hover p-4 last:col-span-2 md:p-5 xl:last:col-span-1">
+            <p className="text-[13px] leading-snug text-muted md:text-sm">{c.label}</p>
+            <p className="mt-2 text-3xl font-semibold tracking-tight text-ink tabular-nums md:text-4xl">{c.value}</p>
+            <p className="mt-1 hidden text-xs text-muted md:block">{c.hint}</p>
           </Link>
         ))}
       </section>
 
-      <section className="grid gap-3 md:grid-cols-4">
+      <section className="grid grid-cols-2 gap-2.5 md:grid-cols-4 md:gap-3">
         {[
           [`Received in ${monthName}`, lkr(month.income)],
           [`Spent in ${monthName}`, lkr(month.expenses)],
           [`Profit in ${monthName}`, lkr(month.profit)],
           ["Visitors, last 7 days", week.visitors.toLocaleString("en-LK")],
         ].map(([l, v], i) => (
-          <Link key={l} href={i === 3 ? "/admin/analytics" : "/admin/finance"} className={`card card-hover p-5 ${i === 2 ? "bg-ink text-white" : ""}`}>
+          <Link key={l} href={i === 3 ? "/admin/analytics" : "/admin/finance"} className={`card card-hover p-4 md:p-5 ${i === 2 ? "bg-ink text-white" : ""}`}>
             <p className={`text-sm ${i === 2 ? "text-white/70" : "text-muted"}`}>{l}</p>
-            <p className="mt-2 text-2xl font-semibold tracking-tight tabular-nums">{v}</p>
+            <p className="mt-2 text-xl font-semibold tracking-tight tabular-nums md:text-2xl">{v}</p>
           </Link>
         ))}
       </section>

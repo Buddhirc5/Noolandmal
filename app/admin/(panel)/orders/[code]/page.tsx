@@ -5,7 +5,7 @@ import { db } from "@/lib/server/db";
 import { signedUrl } from "@/lib/server/storage";
 import { getDesignBundleById, loadCatalog } from "@/lib/server/catalog";
 import { currentQuote, getOrder, orderBooking } from "@/lib/server/orders";
-import { CustomerPanel, PaymentCard, QuotePanel, StatusPanel } from "@/components/admin/OrderPanels";
+import { CustomerPanel, PaymentCard, StatusPanel } from "@/components/admin/OrderPanels";
 import { StatusBadge } from "@/components/admin/StatusBadge";
 import Image from "next/image";
 import { Breakdown } from "@/components/customiser/Breakdown";
@@ -19,6 +19,10 @@ import { describeMeasurements } from "@/lib/measurements";
 import { ProgressPanel } from "@/components/admin/ProgressPanel";
 import { MeasurementsPanel } from "@/components/admin/MeasurementsPanel";
 import { getMeasurements, lkDate } from "@/lib/server/studio";
+import { listDocuments, suggestedLines } from "@/lib/server/documents";
+import { DocumentForm } from "@/components/admin/DocumentForm";
+import { DocumentActions } from "@/components/admin/DocumentActions";
+import { lkr } from "@/lib/format";
 
 export default async function OrderDetail({ params }: PageProps<"/admin/orders/[code]">) {
   const code = normalizeCode((await params).code);
@@ -36,6 +40,11 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
   const bundle = config ? await getDesignBundleById(config.design_id) : null;
   const saved = await getMeasurements(order.customer_phone);
   const today = lkDate(new Date());
+  const docs = await listDocuments({ orderId: order.id });
+  const colourName = config && bundle ? bundle.regions.map((r) => colorName(config.selections.colors[r.key], catalog.palette)).join(" / ") : "";
+  const designLabel = bundle ? [bundle.design.name, bundle.design.versions.find((v) => v.key === config?.selections.version)?.name, colourName].filter(Boolean).join(" — ") : null;
+  const lastQuote = docs.find((d) => d.kind === "quote");
+  const lines = lastQuote ? lastQuote.items : await suggestedLines(order, designLabel, config?.price_total ?? 0);
   const customerSent = config?.selections.size === "own" ? describeMeasurements(config.selections, catalog) : null;
   const files = request ? await db.list<RequestFile>("request_files", { eq: { custom_request_id: request.id } }) : [];
   const fileUrls = await Promise.all(files.map((f) => signedUrl("references", f.path, 900)));
@@ -48,16 +57,16 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center gap-3">
-        <Link href="/admin/requests" className="text-sm text-muted hover:text-green-900">
-          ← Requests
+        <Link href="/admin/requests" className="w-full text-sm text-muted hover:text-green-900 md:w-auto">
+          ← Orders
         </Link>
-        <h1 className="text-4xl font-semibold tracking-tight text-green-900">{order.code}</h1>
+        <h1 className="font-mono text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">{order.code}</h1>
         <StatusBadge status={order.status} />
         {order.whatsapp_clicked_at && <span className="badge bg-green-50 text-green-900">WhatsApp opened {formatDateTime(order.whatsapp_clicked_at)}</span>}
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-6">
+        <div className="min-w-0 space-y-6">
           {config && bundle && (
             <section className="card p-5">
               <div className="flex items-center justify-between gap-3">
@@ -157,15 +166,40 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
             </section>
           )}
 
-          <QuotePanel
-            order={order}
-            quote={quote}
-            suggested={config?.price_total ?? 0}
-            advancePercent={catalog.settings.advance_percent}
-            validDays={catalog.settings.quote_valid_days}
-            districts={catalog.settings.delivery_fees}
-            quoteUrl={quoteUrl}
-          />
+          <section id="documents" className="card scroll-mt-20 space-y-5 p-5">
+            <div>
+              <h2 className="font-semibold text-green-900">Quotations &amp; invoices</h2>
+              <p className="mt-0.5 text-sm text-muted">Saved and numbered. Share the PDF straight to the customer on WhatsApp.</p>
+            </div>
+            {docs.length > 0 && (
+              <ul className="space-y-3">
+                {docs.map((d) => (
+                  <li key={d.id} className="rounded-[18px] bg-surface p-4">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <p className="font-semibold text-ink">
+                        {d.kind === "quote" ? "Quotation" : "Invoice"} {d.number}
+                      </p>
+                      <p className="font-semibold tabular-nums">{lkr(d.total)}</p>
+                    </div>
+                    <p className="mb-3 text-xs text-muted">Issued {formatDate(d.issued_on)}</p>
+                    <DocumentActions id={d.id} number={d.number} kind={d.kind} compact canDelete />
+                  </li>
+                ))}
+              </ul>
+            )}
+            <DocumentForm
+              orderCode={order.code}
+              phone={order.customer_phone}
+              name={order.customer_name}
+              lines={lines}
+              advancePercent={catalog.settings.advance_percent}
+              validDays={catalog.settings.quote_valid_days}
+              deliveryFee={lastQuote?.delivery_fee ?? quote?.delivery_fee ?? 0}
+              discount={lastQuote?.discount ?? 0}
+              defaultKind={quote ? "invoice" : "quote"}
+              today={today}
+            />
+          </section>
 
           {payments.some((p) => p.method !== "whatsapp") && (
             <section className="space-y-3">
@@ -177,7 +211,7 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
           <MeasurementsPanel phone={order.customer_phone} name={order.customer_name} saved={saved} customerSent={customerSent} today={today} />
         </div>
 
-        <div className="space-y-6">
+        <div className="order-first min-w-0 space-y-6 xl:order-none">
           <ProgressPanel key={`${quote?.id ?? "none"}-${payments.length}`} order={order} quote={quote} payments={payments} today={today} />
           <CustomerPanel order={order} districts={catalog.settings.delivery_fees} />
           <StatusPanel order={order} trackUrl={quoteUrl} />

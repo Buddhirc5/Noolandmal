@@ -397,3 +397,45 @@ export interface Expense {
   note: string;
   created_at: string;
 }
+
+/** A customer. The WhatsApp number (E.164 digits, e.g. 94771234567) is the unique ID. */
+export interface Customer {
+  id: ID;
+  phone: string;
+  name: string;
+  notes: string;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface DocLine {
+  description: string;
+  qty: number;
+  unit_price: number;
+}
+
+/** A numbered quotation (QT-0001) or invoice (INV-0001), rendered to PDF on demand. */
+export interface StudioDocument {
+  id: ID;
+  number: string;
+  kind: "quote" | "invoice";
+  order_id: ID | null;
+  order_code: string | null;
+  customer_phone: string;
+  customer_name: string;
+  items: DocLine[];
+  subtotal: number;
+  discount: number;
+  delivery_fee: number;
+  total: number;
+  advance_percent: number;
+  advance_amount: number;
+  /** invoices: money already received when it was issued */
+  paid: number;
+  notes: string;
+  issued_on: string;
+  /** quotes: valid until · invoices: due by */
+  due_on: string | null;
+  created_by: string;
+  created_at: string;
+}

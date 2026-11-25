@@ -33,7 +33,7 @@ export async function markReceivedAction(code: string): Promise<Result> {
 
 const manual = z.object({
   name: z.string().trim().min(1, "Add the customer's name").max(80),
-  phone: z.string().trim().max(20),
+  phone: z.string().trim().min(9, "Add the customer's WhatsApp number — it's their ID").max(20),
   title: z.string().trim().min(2, "Describe what you're making").max(120),
   details: z.string().trim().max(2000),
   neededBy: isoDate.nullable(),
