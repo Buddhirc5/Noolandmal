@@ -30,8 +30,8 @@ export async function listOrderRows(): Promise<OrderRow[]> {
     const q = quotes.filter((x) => x.order_id === o.id && x.status !== "superseded").sort((a, b) => (a.created_at < b.created_at ? 1 : -1))[0] ?? null;
     return {
       order: o,
-      title: c ? (dname.get(c.design_id) ?? c.design_slug) : r ? `Custom: ${r.occasion || "request"}` : o.code,
-      estimate: c ? `${c.price_min.toLocaleString("en-LK")} – ${c.price_max.toLocaleString("en-LK")}` : r?.budget ?? null,
+      title: c ? (dname.get(c.design_id) ?? c.design_slug) : r ? `Custom: ${r.occasion || "request"}` : o.title || o.code,
+      estimate: c ? `from ${c.price_min.toLocaleString("en-LK")}` : r?.budget ?? null,
       quote: q,
       pendingSlips: payments.filter((p) => p.order_id === o.id).length,
     };

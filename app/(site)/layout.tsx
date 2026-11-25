@@ -3,6 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { WhatsAppFab } from "@/components/layout/WhatsAppFab";
 import { JsonLd, organizationLd } from "@/components/JsonLd";
 import { RevealObserver } from "@/components/motion/RevealObserver";
+import { PageView } from "@/components/analytics/PageView";
 import { accountsEnabled, getUser } from "@/lib/server/auth";
 
 export default async function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -19,6 +20,7 @@ export default async function SiteLayout({ children }: { children: React.ReactNo
       <Footer />
       <WhatsAppFab />
       <RevealObserver />
+      <PageView />
       <JsonLd data={organizationLd()} />
     </>
   );

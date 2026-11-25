@@ -255,7 +255,14 @@ export interface Order {
   id: ID;
   code: string;
   access_key: string;
-  kind: "design" | "custom";
+  /** design = customiser code, custom = request form, manual = added by the studio in admin */
+  kind: "design" | "custom" | "manual";
+  /** manual orders: what's being made */
+  title?: string | null;
+  details?: string | null;
+  needed_by?: string | null;
+  /** when the studio confirmed the code arrived on WhatsApp */
+  received_at?: string | null;
   configuration_id: ID | null;
   custom_request_id: ID | null;
   guest_id: string | null;
@@ -291,10 +298,14 @@ export interface Quote {
 export interface Payment {
   id: ID;
   order_id: ID;
-  quote_id: ID;
+  quote_id: ID | null;
   type: "advance" | "final";
   amount: number;
   slip_path: string;
+  /** slip = uploaded by the customer; whatsapp = recorded by the studio after payment on WhatsApp */
+  method?: "slip" | "whatsapp";
+  /** date the money arrived (manual records); falls back to created_at */
+  paid_on?: string | null;
   status: "pending" | "approved" | "rejected";
   reject_reason: string | null;
   reviewed_by: string | null;
@@ -336,5 +347,51 @@ export interface AuditRow {
   entity: string;
   entity_id: string | null;
   detail: Record<string, unknown>;
+  created_at: string;
+}
+
+export const MEASUREMENT_FIELDS = [
+  ["bust", "Bust"],
+  ["underbust", "Under-bust"],
+  ["waist", "Waist"],
+  ["hip", "Hip"],
+  ["shoulder", "Shoulder width"],
+  ["arm", "Arm round"],
+  ["sleeve", "Sleeve length"],
+  ["blouse_length", "Blouse length"],
+  ["dress_length", "Dress length"],
+  ["neck_front", "Neck depth (front)"],
+  ["neck_back", "Neck depth (back)"],
+] as const;
+export type MeasurementKey = (typeof MEASUREMENT_FIELDS)[number][0];
+
+/** A customer's saved body measurements (cm), keyed by phone. */
+export interface CustomerMeasurement {
+  id: ID;
+  phone: string;
+  name: string;
+  values: Partial<Record<MeasurementKey, number>>;
+  notes: string;
+  taken_on: string | null;
+  updated_at: string;
+  created_at: string;
+}
+
+export const EXPENSE_CATEGORIES = [
+  ["fabric", "Fabric & clothes"],
+  ["accessories", "Accessories & trims"],
+  ["transport", "Transport"],
+  ["tailoring", "Tailoring help"],
+  ["packaging", "Packaging"],
+  ["other", "Other"],
+] as const;
+export type ExpenseCategory = (typeof EXPENSE_CATEGORIES)[number][0];
+
+export interface Expense {
+  id: ID;
+  spent_on: string;
+  category: ExpenseCategory;
+  amount: number;
+  note: string;
   created_at: string;
 }

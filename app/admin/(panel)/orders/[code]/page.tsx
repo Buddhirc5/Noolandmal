@@ -16,6 +16,9 @@ import { site } from "@/config/site";
 import type { Configuration, CustomRequest, EventRow, Payment, RequestFile } from "@/lib/types";
 import { photosFor } from "@/lib/photos";
 import { describeMeasurements } from "@/lib/measurements";
+import { ProgressPanel } from "@/components/admin/ProgressPanel";
+import { MeasurementsPanel } from "@/components/admin/MeasurementsPanel";
+import { getMeasurements, lkDate } from "@/lib/server/studio";
 
 export default async function OrderDetail({ params }: PageProps<"/admin/orders/[code]">) {
   const code = normalizeCode((await params).code);
@@ -31,9 +34,12 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
     db.list<EventRow>("events", { eq: { code: order.code }, order: { column: "created_at", ascending: false }, limit: 30 }),
   ]);
   const bundle = config ? await getDesignBundleById(config.design_id) : null;
+  const saved = await getMeasurements(order.customer_phone);
+  const today = lkDate(new Date());
+  const customerSent = config?.selections.size === "own" ? describeMeasurements(config.selections, catalog) : null;
   const files = request ? await db.list<RequestFile>("request_files", { eq: { custom_request_id: request.id } }) : [];
   const fileUrls = await Promise.all(files.map((f) => signedUrl("references", f.path, 900)));
-  const slipUrls = await Promise.all(payments.map((p) => signedUrl("slips", p.slip_path, 900)));
+  const slipUrls = await Promise.all(payments.map((p) => (p.slip_path ? signedUrl("slips", p.slip_path, 900) : Promise.resolve(""))));
   const quoteUrl = `${site.url}/q/${order.code}?k=${order.access_key}`;
 
   const cover = bundle && config ? photosFor(bundle, { version: config.selections.version ?? null, colors: config.selections.colors }).images[0] : undefined;
@@ -94,6 +100,21 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
             </section>
           )}
 
+          {order.kind === "manual" && (
+            <section className="card space-y-3 p-5">
+              <div className="flex items-center justify-between gap-3">
+                <h2 className="font-semibold text-ink">{order.title || "Studio order"}</h2>
+                <span className="rounded-full bg-surface px-2.5 py-0.5 text-xs text-muted">Added by studio</span>
+              </div>
+              <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1.5 text-sm">
+                <dt className="text-muted">Needed by</dt>
+                <dd>{order.needed_by ? formatDate(order.needed_by) : "Flexible"}</dd>
+                <dt className="text-muted">Details</dt>
+                <dd className="whitespace-pre-wrap">{order.details || "—"}</dd>
+              </dl>
+            </section>
+          )}
+
           {request && (
             <section className="card space-y-4 p-5">
               <div className="flex items-center justify-between">
@@ -146,15 +167,20 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
             quoteUrl={quoteUrl}
           />
 
-          <section className="space-y-3">
-            <h2 className="font-semibold text-green-900">Payments</h2>
-            {payments.length ? payments.map((p, i) => <PaymentCard key={p.id} payment={p} slipUrl={slipUrls[i]} />) : <p className="text-sm text-muted">No slips uploaded yet.</p>}
-          </section>
+          {payments.some((p) => p.method !== "whatsapp") && (
+            <section className="space-y-3">
+              <h2 className="font-semibold text-green-900">Slips uploaded by the customer</h2>
+              {payments.map((p, i) => (p.method !== "whatsapp" ? <PaymentCard key={p.id} payment={p} slipUrl={slipUrls[i]} /> : null))}
+            </section>
+          )}
+
+          <MeasurementsPanel phone={order.customer_phone} name={order.customer_name} saved={saved} customerSent={customerSent} today={today} />
         </div>
 
         <div className="space-y-6">
-          <StatusPanel order={order} trackUrl={quoteUrl} />
+          <ProgressPanel key={`${quote?.id ?? "none"}-${payments.length}`} order={order} quote={quote} payments={payments} today={today} />
           <CustomerPanel order={order} districts={catalog.settings.delivery_fees} />
+          <StatusPanel order={order} trackUrl={quoteUrl} />
           <section className="card p-5 text-sm">
             <h2 className="font-semibold text-green-900">Measurement</h2>
             {booking?.slot ? (

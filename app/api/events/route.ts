@@ -8,7 +8,7 @@ const schema = z.object({ type: z.string().regex(/^[a-z_]{3,40}$/), code: z.stri
 
 /** Lightweight analytics beacon (e.g. WhatsApp enquiry clicks). */
 export async function POST(req: Request) {
-  if (!(await rateLimit("events", 60, 60))) return new NextResponse(null, { status: 429 });
+  if (!(await rateLimit("events", 120, 60))) return new NextResponse(null, { status: 429 });
   const body = await req.text();
   let parsed;
   try {

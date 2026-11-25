@@ -4,10 +4,12 @@ import { signedUrl } from "@/lib/server/storage";
 import { PaymentCard } from "@/components/admin/OrderPanels";
 import type { Order, Payment } from "@/lib/types";
 
-export const metadata = { title: "Payments" };
+export const metadata = { title: "Payment slips" };
 
 export default async function Payments() {
-  const [payments, orders] = await Promise.all([db.list<Payment>("payments", { order: { column: "created_at", ascending: false } }), db.list<Order>("orders")]);
+  const [all, orders] = await Promise.all([db.list<Payment>("payments", { order: { column: "created_at", ascending: false } }), db.list<Order>("orders")]);
+  // only slips customers uploaded; payments recorded from WhatsApp live on each order
+  const payments = all.filter((p) => p.method !== "whatsapp" && p.slip_path);
   const byId = new Map(orders.map((o) => [o.id, o]));
   const pending = payments.filter((p) => p.status === "pending");
   const recent = payments.filter((p) => p.status !== "pending").slice(0, 20);

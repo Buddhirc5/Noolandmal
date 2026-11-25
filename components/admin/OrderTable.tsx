@@ -25,7 +25,13 @@ export function OrderTable({ rows, empty = "Nothing here yet." }: { rows: OrderR
                 <Link href={`/admin/orders/${order.code}`} className="font-medium text-green-900 underline-offset-2 hover:underline">
                   {order.code}
                 </Link>
-                {order.whatsapp_clicked_at && <span className="ml-2 text-[10px] text-success" title="Customer opened WhatsApp">● WA</span>}
+                {order.kind === "manual" ? (
+                  <span className="ml-2 rounded-full bg-surface px-2 py-0.5 text-[10px] text-muted">added by studio</span>
+                ) : order.received_at ? (
+                  <span className="ml-2 rounded-full bg-ink px-2 py-0.5 text-[10px] text-white">received</span>
+                ) : ["draft", "quote_requested"].includes(order.status) ? (
+                  <span className="ml-2 rounded-full bg-rose-50 px-2 py-0.5 text-[10px] text-orchid">{order.whatsapp_clicked_at ? "sent · not received" : "not sent yet"}</span>
+                ) : null}
               </td>
               <td className="px-4 py-3">{title}</td>
               <td className="px-4 py-3">

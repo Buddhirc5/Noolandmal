@@ -6,12 +6,14 @@ import { requireAdmin } from "@/lib/server/auth";
 import { dbMode } from "@/lib/server/db";
 import { db } from "@/lib/server/db";
 import { logoutAction } from "../actions";
+import type { Order } from "@/lib/types";
 
 export const metadata: Metadata = { title: { default: "Admin", template: "%s · Admin · Nool & Mal" }, robots: { index: false, follow: false } };
 
 export default async function AdminLayout({ children }: { children: React.ReactNode }) {
   const admin = await requireAdmin();
-  const [requests, slips] = await Promise.all([db.list("orders", { eq: { status: "quote_requested" } }), db.list("payments", { eq: { status: "pending" } })]);
+  const [orders, slips] = await Promise.all([db.list<Order>("orders"), db.list("payments", { eq: { status: "pending" } })]);
+  const notReceived = orders.filter((o) => o.kind !== "manual" && !o.received_at && o.status === "quote_requested").length;
   return (
     <div className="min-h-dvh bg-ivory lg:grid lg:grid-cols-[240px_1fr]">
       <aside className="border-b border-line bg-paper p-3 lg:sticky lg:top-0 lg:h-dvh lg:self-start lg:border-r lg:border-b-0 lg:p-4">
@@ -23,7 +25,7 @@ export default async function AdminLayout({ children }: { children: React.ReactN
             View site
           </Link>
         </div>
-        <AdminNav badges={{ "/admin/requests": requests.length, "/admin/payments": slips.length }} />
+        <AdminNav badges={{ "/admin/requests": notReceived, "/admin/payments": slips.length }} />
         <div className="mt-6 hidden space-y-2 border-t border-line pt-4 text-xs text-muted lg:block">
           <p className="truncate">{admin}</p>
           <p>
