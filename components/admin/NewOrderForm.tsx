@@ -5,6 +5,8 @@ import { useEffect, useState } from "react";
 import { Spinner, useAction } from "./ui";
 import { createManualOrderAction } from "@/app/admin/studio-actions";
 import { lookupCustomerAction } from "@/app/admin/customer-actions";
+import { parsePhone } from "@/lib/phone";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 
 type Lookup = Awaited<ReturnType<typeof lookupCustomerAction>>;
 
@@ -20,9 +22,9 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
   const [checking, setChecking] = useState(false);
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setV((x) => ({ ...x, [k]: e.target.value }));
 
+  const parsed = parsePhone(v.phone);
   useEffect(() => {
-    const digits = v.phone.replace(/\D/g, "");
-    if (digits.length < 9) return setFound(null);
+    if (!parsePhone(v.phone).ok) return setFound(null);
     setChecking(true);
     const t = setTimeout(async () => {
       const r = await lookupCustomerAction(v.phone);
@@ -48,8 +50,9 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
         <h2 className="font-semibold text-ink">Customer</h2>
         <label className="block text-sm">
           <span className="label">WhatsApp number — their customer ID</span>
-          <input className="input h-12 text-[17px] tabular-nums" type="tel" inputMode="tel" autoComplete="off" value={v.phone} onChange={set("phone")} placeholder="07X XXX XXXX" required />
+          <input className="input h-12 text-[17px] tabular-nums" type="tel" inputMode="tel" autoComplete="off" value={v.phone} onChange={set("phone")} placeholder="077 123 4567" required />
         </label>
+        {!found && <PhoneHint value={v.phone} />}
         {checking && <p className="text-sm text-muted">Checking…</p>}
         {!checking && found?.valid && found.exists && (
           <div className="rounded-[18px] bg-ink p-4 text-white">
@@ -64,8 +67,7 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
             </Link>
           </div>
         )}
-        {!checking && found?.valid && !found.exists && <p className="rounded-[14px] bg-rose-50 px-4 py-2.5 text-sm text-orchid">New customer — +{found.phone} will be saved as their ID.</p>}
-        {found && !found.valid && <p className="text-sm text-danger">That doesn&apos;t look like a full number yet.</p>}
+        {!checking && found?.valid && !found.exists && parsed.ok && <p className="rounded-[14px] bg-rose-50 px-4 py-2.5 text-sm text-orchid">New customer — {parsed.display} will be saved as their ID.</p>}
         <label className="block text-sm">
           <span className="label">Name</span>
           <input className="input h-12" value={v.name} onChange={set("name")} required />
@@ -99,7 +101,7 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
         </label>
       </section>
 
-      <button className="btn-primary h-14 w-full text-[16px]" disabled={a.pending || (found !== null && !found.valid)}>
+      <button className="btn-primary h-14 w-full text-[16px]" disabled={a.pending || !parsed.ok}>
         {a.pending && <Spinner />} Create order
       </button>
       <a.Feedback />

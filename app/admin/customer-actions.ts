@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/server/auth";
 import { ServiceError } from "@/lib/server/orders";
 import { changeCustomerPhone, lookupCustomer, updateCustomer } from "@/lib/server/customers";
 import { createDocument, deleteDocument } from "@/lib/server/documents";
+import { optionalPhoneField } from "@/lib/phone";
 
 type Result = { ok: true; message?: string; data?: unknown } | { ok: false; error: string };
 const fail = (e: unknown): Result => ({ ok: false, error: e instanceof z.ZodError ? e.issues.map((i) => i.message).join("; ") : e instanceof ServiceError ? e.message : "Unexpected error" });
@@ -40,7 +41,7 @@ export async function changePhoneAction(from: string, to: string): Promise<Resul
 const doc = z.object({
   kind: z.enum(["quote", "invoice"]),
   orderCode: z.string().max(12).nullable(),
-  phone: z.string().trim().max(20),
+  phone: optionalPhoneField(),
   name: z.string().trim().max(80),
   items: z
     .array(z.object({ description: z.string().trim().min(1, "Every item needs a description").max(200), qty: z.number().int().min(1).max(100), unit_price: z.number().int().min(0).max(10_000_000) }))

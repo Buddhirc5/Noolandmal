@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
+import { optionalPhoneField } from "@/lib/phone";
 import { selectionsSchema } from "@/lib/selections";
 import { createConfiguration, ServiceError } from "@/lib/server/orders";
 import { getGuestId, getUser } from "@/lib/server/auth";
@@ -10,12 +11,7 @@ const body = z.object({
   selections: selectionsSchema,
   clientTotal: z.number().finite().nonnegative(),
   name: z.string().trim().max(80).default(""),
-  phone: z
-    .string()
-    .trim()
-    .max(20)
-    .regex(/^[+\d\s()-]*$/, "Phone number can only contain digits")
-    .default(""),
+  phone: optionalPhoneField().default(""),
 });
 
 export async function POST(req: Request) {

@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Spinner, useAction } from "./ui";
 import { changePhoneAction, updateCustomerAction } from "@/app/admin/customer-actions";
+import { parsePhone } from "@/lib/phone";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 
 /** Name, notes and — when a customer gets a new number — moving everything to it. */
 export function CustomerEditor({ phone, name, notes }: { phone: string; name: string; notes: string }) {
@@ -52,11 +54,12 @@ export function CustomerEditor({ phone, name, notes }: { phone: string; name: st
           >
             <label className="block text-sm">
               <span className="label">New WhatsApp number</span>
-              <input className="input h-12 tabular-nums" type="tel" inputMode="tel" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="07X XXX XXXX" />
+              <input className="input h-12 tabular-nums" type="tel" inputMode="tel" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} placeholder="077 123 4567" />
+              <PhoneHint value={newPhone} />
             </label>
             <p className="text-xs text-muted">Orders, measurements, quotations and invoices all move to the new number.</p>
             <div className="flex items-center gap-3">
-              <button className="btn-primary h-11" disabled={b.pending || newPhone.replace(/\D/g, "").length < 9}>
+              <button className="btn-primary h-11" disabled={b.pending || !parsePhone(newPhone).ok}>
                 {b.pending && <Spinner />} Change number
               </button>
               <button type="button" className="text-sm text-muted" onClick={() => setChanging(false)}>

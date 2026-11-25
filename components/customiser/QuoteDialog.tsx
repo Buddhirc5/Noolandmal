@@ -1,6 +1,8 @@
 "use client";
 import Link from "next/link";
 import { describeMeasurements } from "@/lib/measurements";
+import { parsePhone } from "@/lib/phone";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { Loader2, X } from "lucide-react";
@@ -70,6 +72,10 @@ export function QuoteDialog({
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (phone.trim() && !parsePhone(phone).ok) {
+      setError("Please check your WhatsApp number, or leave it empty.");
+      return;
+    }
     setBusy(true);
     setError(null);
     setErrors([]);
@@ -196,7 +202,8 @@ export function QuoteDialog({
                 <label className="label" htmlFor="q-phone">
                   WhatsApp number <span className="font-normal text-muted">(optional)</span>
                 </label>
-                <input id="q-phone" className="input" type="tel" inputMode="tel" autoComplete="tel" placeholder="07X XXX XXXX" maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} />
+                <input id="q-phone" className="input" type="tel" inputMode="tel" autoComplete="tel" placeholder="077 123 4567" maxLength={24} value={phone} onChange={(e) => setPhone(e.target.value)} aria-invalid={Boolean(phone.trim()) && !parsePhone(phone).ok} />
+                {phone.trim() && <PhoneHint value={phone} showHint={false} />}
               </div>
             </div>
             <p className="-mt-1 text-xs text-muted">Add your number to track the order later with your code.</p>

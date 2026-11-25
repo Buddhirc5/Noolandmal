@@ -4,17 +4,18 @@ import { useMemo, useState } from "react";
 import { ExternalLink } from "lucide-react";
 import { CopyButton, Spinner, useAction } from "./ui";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 import { issueQuoteAction, reviewPaymentAction, setStatusAction, updateOrderAction } from "@/app/admin/actions";
 import { buildMessage, STATUS_MESSAGES, waLink } from "@/lib/whatsapp";
 import { STATUS_INFO } from "@/lib/status";
-import { formatDate, formatDateTime, lkr } from "@/lib/format";
+import { formatDate, formatDateTime, formatPhone, lkr } from "@/lib/format";
 import { ORDER_STATUSES, type DeliveryFee, type Order, type OrderStatus, type Payment, type Quote } from "@/lib/types";
 
 export function CustomerPanel({ order, districts }: { order: Order; districts: DeliveryFee[] }) {
   const a = useAction();
   const [v, setV] = useState({
     customer_name: order.customer_name,
-    customer_phone: order.customer_phone ? `+${order.customer_phone}` : "",
+    customer_phone: order.customer_phone ? formatPhone(order.customer_phone) : "",
     internal_notes: order.internal_notes,
     fulfilment: order.fulfilment,
     district: order.district,
@@ -36,7 +37,8 @@ export function CustomerPanel({ order, districts }: { order: Order; districts: D
         </label>
         <label className="text-sm">
           <span className="label">WhatsApp</span>
-          <input className="input" type="tel" value={v.customer_phone} onChange={(e) => setV({ ...v, customer_phone: e.target.value })} placeholder="+94…" />
+          <input className="input" type="tel" inputMode="tel" value={v.customer_phone} onChange={(e) => setV({ ...v, customer_phone: e.target.value })} placeholder="077 123 4567" />
+          <PhoneHint value={v.customer_phone} showHint={false} />
         </label>
         <label className="text-sm">
           <span className="label">Fulfilment</span>

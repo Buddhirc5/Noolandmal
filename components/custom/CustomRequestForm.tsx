@@ -11,6 +11,7 @@ import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { useLocale } from "@/components/I18nProvider";
 import { occasions } from "@/config/site";
 import { toISODate, cn } from "@/lib/format";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 
 interface Photo {
   file: File;
@@ -262,8 +263,8 @@ export function CustomRequestForm() {
             <label className="label" htmlFor="phone">
               WhatsApp number
             </label>
-            <input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="07X XXX XXXX" className="input" {...register("phone")} aria-invalid={Boolean(errors.phone)} />
-            {err(errors.phone?.message)}
+            <input id="phone" type="tel" inputMode="tel" autoComplete="tel" placeholder="077 123 4567" className="input" {...register("phone")} aria-invalid={Boolean(errors.phone)} />
+            {errors.phone ? err(errors.phone.message) : <PhoneHint value={watch("phone") ?? ""} />}
           </div>
         </div>
       </section>

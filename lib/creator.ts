@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { phoneField } from "./phone";
 
 export const PLATFORMS = ["Instagram", "TikTok", "YouTube", "Facebook"] as const;
 export const FOLLOWER_RANGES = ["1,000 – 5,000", "5,000 – 20,000", "20,000 – 100,000", "100,000+"] as const;
@@ -7,12 +8,7 @@ export type CreatorStatus = (typeof CREATOR_STATUSES)[number];
 
 export const creatorSchema = z.object({
   name: z.string().trim().min(2, "Please tell us your name").max(80),
-  phone: z
-    .string()
-    .trim()
-    .min(9, "Enter your WhatsApp number")
-    .max(20)
-    .regex(/^[+\d\s()-]+$/, "Phone number can only contain digits"),
+  phone: phoneField(),
   email: z.string().trim().max(120).email("Enter a valid email").or(z.literal("")).optional(),
   platform: z.enum(PLATFORMS, { message: "Choose your main platform" }),
   followers: z.enum(FOLLOWER_RANGES, { message: "Choose your follower range" }),

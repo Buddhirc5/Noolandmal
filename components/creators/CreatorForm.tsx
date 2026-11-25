@@ -7,6 +7,7 @@ import { creatorSchema, FOLLOWER_RANGES, PLATFORMS, type CreatorInput } from "@/
 import { waLink } from "@/lib/whatsapp";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { creatorProgram } from "@/config/site";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 
 export function CreatorForm({ designs }: { designs: string[] }) {
   const [done, setDone] = useState<{ code: string; values: CreatorInput } | null>(null);
@@ -14,6 +15,7 @@ export function CreatorForm({ designs }: { designs: string[] }) {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors, isSubmitting },
   } = useForm<CreatorInput>({ resolver: zodResolver(creatorSchema), defaultValues: { email: "", design: "", videoUrl: "", notes: "" } });
 
@@ -64,8 +66,8 @@ export function CreatorForm({ designs }: { designs: string[] }) {
         </div>
         <div>
           <label className="label" htmlFor="c-phone">WhatsApp number</label>
-          <input id="c-phone" className="input" type="tel" inputMode="tel" autoComplete="tel" placeholder="07X XXX XXXX" {...register("phone")} aria-invalid={Boolean(errors.phone)} />
-          {err(errors.phone?.message)}
+          <input id="c-phone" className="input" type="tel" inputMode="tel" autoComplete="tel" placeholder="077 123 4567" {...register("phone")} aria-invalid={Boolean(errors.phone)} />
+          {errors.phone ? err(errors.phone.message) : <PhoneHint value={watch("phone") ?? ""} />}
         </div>
       </div>
       <div>

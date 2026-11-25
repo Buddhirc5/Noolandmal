@@ -1,3 +1,4 @@
+import { parsePhone } from "./phone";
 export function lkr(n: number): string {
   return "LKR " + Math.round(n).toLocaleString("en-LK");
 }
@@ -31,8 +32,11 @@ export function toISODate(d: Date): string {
   return `${y}-${m}-${day}`;
 }
 
-/** Normalises Sri Lankan phone numbers to E.164 digits (94XXXXXXXXX). */
+/** Normalises a phone number to E.164 digits (94XXXXXXXXX); see lib/phone.ts for the rules. */
 export function normalizePhone(input: string): string {
+  const r = parsePhone(input);
+  if (r.ok) return r.e164;
+  // invalid input: best effort, so lookups never crash
   let d = input.replace(/\D/g, "");
   if (d.startsWith("00")) d = d.slice(2);
   if (d.startsWith("0") && d.length === 10) d = "94" + d.slice(1);
@@ -53,6 +57,7 @@ export function cn(...c: (string | false | null | undefined)[]): string {
 /** "94771234567" -> "+94 77 123 4567" (other countries: "+" and the digits). */
 export function formatPhone(e164: string): string {
   const d = e164.replace(/\D/g, "");
-  if (/^94\d{9}$/.test(d)) return `+94 ${d.slice(2, 4)} ${d.slice(4, 7)} ${d.slice(7)}`;
-  return d ? `+${d}` : "";
+  if (!d) return "";
+  const r = parsePhone(d.startsWith("94") ? d : `+${d}`);
+  return r.ok ? r.display : `+${d}`;
 }

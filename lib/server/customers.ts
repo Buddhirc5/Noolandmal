@@ -5,9 +5,11 @@ import "server-only";
 import { db } from "./db";
 import { audit, ServiceError } from "./orders";
 import { normalizePhone } from "@/lib/format";
+import { parsePhone } from "@/lib/phone";
 import type { Customer, CustomerMeasurement, Order, StudioDocument } from "@/lib/types";
 
-export const isValidPhone = (p: string) => /^\d{9,15}$/.test(p);
+/** For numbers already normalised to E.164 digits. */
+export const isValidPhone = (e164: string) => /^\d+$/.test(e164) && parsePhone(`+${e164}`).ok;
 
 export async function getCustomer(phone: string) {
   if (!phone) return null;
@@ -62,8 +64,9 @@ export async function updateCustomer(phone: string, patch: { name: string; notes
 /** Moves a customer — orders, measurements and documents — to a new number. */
 export async function changeCustomerPhone(oldRaw: string, newRaw: string, actor: string) {
   const from = normalizePhone(oldRaw);
-  const to = normalizePhone(newRaw);
-  if (!isValidPhone(to)) throw new ServiceError("Enter a valid WhatsApp number");
+  const parsed = parsePhone(newRaw);
+  if (!parsed.ok) throw new ServiceError(parsed.error);
+  const to = parsed.e164;
   if (from === to) return to;
   const taken = await lookupCustomer(to);
   if (taken.valid && taken.exists) throw new ServiceError(`+${to} already belongs to ${taken.name || "another customer"}. Open that customer instead.`, 409);

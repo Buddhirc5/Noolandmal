@@ -1,7 +1,7 @@
 import "server-only";
 import { db } from "./db";
 import { audit, currentQuote, issueQuote, ServiceError } from "./orders";
-import { ensureCustomer } from "./customers";
+import { ensureCustomer, isValidPhone } from "./customers";
 import { lkDate } from "./studio";
 import { loadSettings } from "./catalog";
 import { normalizePhone } from "@/lib/format";
@@ -43,6 +43,7 @@ export async function createDocument(input: DocumentInput, actor: string): Promi
   const order = input.orderCode ? await db.get<Order>("orders", { code: input.orderCode }) : null;
   if (input.orderCode && !order) throw new ServiceError("Order not found", 404);
   const phone = normalizePhone(input.phone || order?.customer_phone || "");
+  if (!isValidPhone(phone)) throw new ServiceError("Add a valid WhatsApp number for the customer, e.g. 077 123 4567");
   const name = input.name || order?.customer_name || "";
   if (!input.items.length) throw new ServiceError("Add at least one item");
   const { subtotal, total } = docTotals(input.items, input.discount, input.deliveryFee);

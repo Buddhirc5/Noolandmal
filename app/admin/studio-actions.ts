@@ -5,6 +5,7 @@ import { requireAdmin } from "@/lib/server/auth";
 import { getOrder, ServiceError } from "@/lib/server/orders";
 import { addExpense, createManualOrder, deleteExpense, markReceived, recordPayment, removePayment, saveMeasurements } from "@/lib/server/studio";
 import { EXPENSE_CATEGORIES, MEASUREMENT_FIELDS } from "@/lib/types";
+import { phoneField } from "@/lib/phone";
 
 type Result = { ok: true; message?: string; data?: unknown } | { ok: false; error: string };
 const fail = (e: unknown): Result => ({
@@ -33,7 +34,7 @@ export async function markReceivedAction(code: string): Promise<Result> {
 
 const manual = z.object({
   name: z.string().trim().min(1, "Add the customer's name").max(80),
-  phone: z.string().trim().min(9, "Add the customer's WhatsApp number — it's their ID").max(20),
+  phone: phoneField("Add the customer's WhatsApp number — it's their ID"),
   title: z.string().trim().min(2, "Describe what you're making").max(120),
   details: z.string().trim().max(2000),
   neededBy: isoDate.nullable(),
@@ -78,7 +79,7 @@ export async function removePaymentAction(id: string): Promise<Result> {
 
 const measureKeys = MEASUREMENT_FIELDS.map(([k]) => k) as [string, ...string[]];
 const measurements = z.object({
-  phone: z.string().trim().min(9, "Add the customer's WhatsApp number first"),
+  phone: phoneField("Add the customer's WhatsApp number first"),
   name: z.string().trim().max(80),
   values: z.partialRecord(z.enum(measureKeys), z.number().min(0).max(300)),
   notes: z.string().max(2000),

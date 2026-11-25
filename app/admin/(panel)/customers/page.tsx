@@ -3,19 +3,22 @@ import { redirect } from "next/navigation";
 import { listOrderRows } from "@/lib/server/admin-data";
 import { db } from "@/lib/server/db";
 import { StatusBadge } from "@/components/admin/StatusBadge";
-import { formatDate, lkr, normalizePhone } from "@/lib/format";
+import { formatDate, lkr } from "@/lib/format";
+import { parsePhone } from "@/lib/phone";
 import type { Customer, CustomerMeasurement, Payment } from "@/lib/types";
 
 export const metadata = { title: "Customers" };
 
 async function openCustomer(form: FormData) {
   "use server";
-  const phone = normalizePhone(String(form.get("phone") ?? ""));
-  if (phone.length >= 9) redirect(`/admin/customers/${phone}`);
+  const r = parsePhone(String(form.get("phone") ?? ""));
+  redirect(r.ok ? `/admin/customers/${r.e164}` : `/admin/customers?bad=${encodeURIComponent(r.error)}`);
 }
 
 export default async function Customers({ searchParams }: PageProps<"/admin/customers">) {
-  const q = String((await searchParams).q ?? "").toLowerCase().trim();
+  const sp = await searchParams;
+  const q = String(sp.q ?? "").toLowerCase().trim();
+  const bad = typeof sp.bad === "string" ? sp.bad.slice(0, 160) : null;
   const [rows, measurements, payments, customers] = await Promise.all([
     listOrderRows(),
     db.list<CustomerMeasurement>("customer_measurements"),
@@ -55,10 +58,15 @@ export default async function Customers({ searchParams }: PageProps<"/admin/cust
           <button className="btn-secondary">Search</button>
         </form>
         <form className="flex w-full gap-2 md:w-auto" action={openCustomer}>
-          <input name="phone" type="tel" inputMode="tel" placeholder="07X XXX XXXX" className="input h-11 min-w-0 flex-1 rounded-full" aria-label="Customer WhatsApp number" />
+          <input name="phone" type="tel" inputMode="tel" placeholder="077 123 4567" className="input h-11 min-w-0 flex-1 rounded-full" aria-label="Customer WhatsApp number" />
           <button className="btn-secondary h-11 shrink-0">Open number</button>
         </form>
       </div>
+      {bad && (
+        <p role="alert" className="rounded-[14px] bg-rose-50 px-4 py-2.5 text-sm text-danger">
+          {bad}
+        </p>
+      )}
       <div className="card divide-y divide-line">
         {list.map((g) => {
           const paid = g.rows.reduce((a, r) => a + (paidByOrder.get(r.order.id) ?? 0), 0);

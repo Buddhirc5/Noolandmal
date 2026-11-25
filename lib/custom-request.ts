@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { phoneField } from "./phone";
 
 export const BUDGETS = ["Under LKR 10,000", "LKR 10,000 – 25,000", "LKR 25,000 – 45,000", "LKR 45,000 – 75,000", "Over LKR 75,000"] as const;
 export const MAX_PHOTOS = 5;
@@ -14,12 +15,7 @@ const optionalDate = z
 
 export const customRequestSchema = z.object({
   name: z.string().trim().min(2, "Please tell us your name").max(80),
-  phone: z
-    .string()
-    .trim()
-    .min(9, "Enter your WhatsApp number")
-    .max(20)
-    .regex(/^[+\d\s()-]+$/, "Phone number can only contain digits"),
+  phone: phoneField(),
   occasion: z.string().trim().min(1, "Choose an occasion").max(40),
   neededBy: optionalDate,
   budget: z.string().max(40).optional(),

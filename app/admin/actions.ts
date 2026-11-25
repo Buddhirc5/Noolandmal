@@ -11,6 +11,7 @@ import { loadSettings } from "@/lib/server/catalog";
 import { ORDER_STATUSES, type Design, type DesignRegion, type Order, type Settings } from "@/lib/types";
 import { normalizePhone } from "@/lib/format";
 import { ensureCustomer } from "@/lib/server/customers";
+import { optionalPhoneField } from "@/lib/phone";
 
 type Result = { ok: true; message?: string; data?: unknown } | { ok: false; error: string };
 const fail = (e: unknown): Result => ({ ok: false, error: e instanceof ServiceError || e instanceof UploadError || e instanceof z.ZodError ? (e instanceof z.ZodError ? e.issues.map((i) => `${i.path.join(".")}: ${i.message}`).join("; ") : e.message) : "Unexpected error" });
@@ -25,7 +26,7 @@ export async function logoutAction() {
 const orderPatch = z.object({
   code: z.string(),
   customer_name: z.string().trim().max(80),
-  customer_phone: z.string().trim().max(20),
+  customer_phone: optionalPhoneField(),
   internal_notes: z.string().max(4000),
   fulfilment: z.enum(["pickup", "delivery"]),
   district: z.string().max(60).nullable(),

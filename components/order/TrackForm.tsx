@@ -1,4 +1,5 @@
 "use client";
+import { PhoneHint } from "@/components/ui/PhoneHint";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Loader2 } from "lucide-react";
@@ -33,7 +34,8 @@ export function TrackForm({ initialCode }: { initialCode: string }) {
         <label className="label" htmlFor="t-phone">
           WhatsApp number used for the order
         </label>
-        <input id="t-phone" className="input" type="tel" inputMode="tel" placeholder="07X XXX XXXX" required maxLength={20} value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" />
+        <input id="t-phone" className="input" type="tel" inputMode="tel" placeholder="077 123 4567" required maxLength={24} value={phone} onChange={(e) => setPhone(e.target.value)} autoComplete="tel" />
+        {phone.trim() && <PhoneHint value={phone} showHint={false} />}
       </div>
       {error && (
         <p role="alert" className="rounded-xl bg-rose-50 p-3 text-sm text-[#8a2f2a]">
