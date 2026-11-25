@@ -17,7 +17,7 @@ export default function Privacy() {
         </ul>
         <h2>How we protect it</h2>
         <ul>
-          <li>Photos and slips are stored privately. Only our team, or someone holding your private link, can view them, and links expire after a few minutes.</li>
+          <li>Photos and slips are stored privately. Only Roshini, or someone holding your private link, can view them, and links expire after a few minutes.</li>
           <li>We remove location data (EXIF GPS) from uploaded photos.</li>
           <li>We never sell your data or use your photos publicly without asking.</li>
         </ul>

@@ -52,10 +52,10 @@ export default function Designer() {
       <section className="container-x pt-24 md:pt-32">
         <div className="mx-auto max-w-3xl space-y-6 text-[17px] leading-8 text-ink/80" data-reveal>
           <h2 className="h-display text-[2.2rem] leading-tight text-ink sm:text-[2.8rem]">
-            <Accent text="Twenty years, *two thousand* fittings" />
+            <Accent text="Twenty years, *six thousand* pieces" />
           </h2>
           <p>
-            {site.designer.split(" ")[0]} learned to sew as a girl and has never really stopped. Over two decades she has made more than 2,000 pieces — each one cut to a single customer&apos;s measurements, never from a production line.
+            {site.designer.split(" ")[0]} learned to sew as a girl and has never really stopped. Over two decades she has made more than 6,000 pieces — each one cut to a single customer&apos;s measurements, never from a production line.
           </p>
           <p>
             That experience shows in the details customers keep coming back for: a bodice that sits flat without pulling, a drape that falls the same way on both sides, pearls and lace placed by hand so they stay put through a long evening.

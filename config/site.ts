@@ -16,7 +16,7 @@ export const site = {
   email: "hello@noolandmal.lk", // PLACEHOLDER
   designer: "Roshini Shyama",
   designerYears: "20+",
-  designerPieces: "2000+",
+  designerPieces: "6000+",
   /** Studio address & map pin */
   studio: {
     street: "No 85, Senanayake Mawatha",

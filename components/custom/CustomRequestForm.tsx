@@ -121,7 +121,7 @@ export function CustomRequestForm() {
         <p className="eyebrow mt-4">Request saved</p>
         <p className="mt-1 text-5xl font-semibold tracking-wider text-green-900">{done.code}</p>
         <p className="mx-auto mt-3 max-w-md text-[15px] leading-7 text-muted">
-          {done.photoCount > 0 ? "Your photos are saved. Our team will open them from your code. " : ""}
+          {done.photoCount > 0 ? "Your photos are saved. Roshini will open them from your code. " : ""}
           Tap below to send your request on WhatsApp — the message is ready, just press send.
         </p>
         <div className="mt-5 flex justify-center gap-2">

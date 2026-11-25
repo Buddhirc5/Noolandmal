@@ -6,7 +6,7 @@ Choices made while building, so they're easy to revisit.
 - **First catalogue = the 7 lookbook photo sets supplied.** Each 2×2 collage was split into front / back / detail / angle shots (`scripts/split-catalog-images.mjs`). Four extra designs without photos (kids' frock, crochet top, saree blouse, everyday frock) fill the categories from the brief; they use the drawn preview only.
 - Design names, descriptions and **all prices are placeholders** I wrote from the photos. Base prices assume the default fabric modifier is added on top (e.g. Noir gown = 32,000 + sequin net 9,000).
 - **Testimonials are labelled samples** in `config/site.ts` and must be replaced with real ones before launch.
-- The family story says "Amma … with crochet and fashion design by her daughter" (the owner's mother-in-law and wife). Edit `messages/en.ts` if you prefer different wording.
+- The story says Roshini Shyama designs, cuts and sews every piece herself in her Kotte studio (she runs the business alone). Edit `messages/en.ts` to change the wording.
 - "Length" options are priced relative to the design as shown ("As designed" = 0; mini −1,500 … train +3,500) so a design's default length never adds a confusing line to the price.
 - Default ±8 % estimate range, 21-day lead time, 20 % rush fee (under 21 days), warning under 7 days, 50 % advance, 7-day quote validity, weekly capacity 6 — all editable in admin.
 
