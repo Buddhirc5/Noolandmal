@@ -36,6 +36,7 @@ const paletteRaw: [string, string, string][] = [
   ["orchid", "Orchid", "#880651"],
   ["mulberry", "Mulberry", "#520630"],
   ["lilac", "Lilac", "#C9B3D6"],
+  ["lavender", "Lavender", "#B3AFD0"],
   ["mauve", "Mauve", "#9C7A97"],
   ["plum", "Plum", "#4A1F3D"],
   ["maroon", "Maroon", "#6E1423"],
@@ -663,6 +664,25 @@ const designSeeds: DesignSeed[] = [
     },
     regions: [["main", "Organza", "blush"]],
   },
+  {
+    design: {
+      slug: "satin-capelet-wrap-gown",
+      name: "Satin Capelet Wrap Gown",
+      category: "dress",
+      occasions: ["Wedding", "Engagement", "Party"],
+      description:
+        "A two-piece in liquid satin: a boat-neck capelet that falls past the elbows, over a draped wrap skirt with a high front slit and a soft sweep. Shown in ivory, blush, mint and lavender.",
+      base_price: 23500,
+      fabric_metres: 5.5,
+      default_fabric: "satin",
+      fabric_keys: ["satin", "silk-blend", "crepe"],
+      addon_groups: ["length", "lining"],
+      default_options: ["len-design", "lining-full"],
+      featured: true,
+      badge: "New",
+    },
+    regions: [["main", "Satin", "ivory"]],
+  },
 ];
 
 export const designs: Design[] = designSeeds.map((s, i) => {
@@ -683,13 +703,16 @@ export const designs: Design[] = designSeeds.map((s, i) => {
 
 // Designs photographed as versions (one photo set per version)
 const mdPhotos = (v: string) => ["front", "back", "detail", "angle"].map((x) => `/catalog/pleated-midi-dress/${v}/${x}.webp`);
+/** A version's colour photos; the colour it was originally shot in keeps its full photo set first. */
+const versionColours = (v: string, keys: string[], shotIn: string) =>
+  Object.fromEntries(keys.map((k) => [k, k === shotIn ? [...mdPhotos(v), `/catalog/pleated-midi-dress/${v}/colours/${k}.webp`] : [`/catalog/pleated-midi-dress/${v}/colours/${k}.webp`]]));
 for (const d of designs) {
   if (d.slug !== "pleated-midi-dress") continue;
   d.images = mdPhotos("high-neck-halter");
   d.published = true;
   d.versions = [
-    { key: "off-shoulder-fold", name: "Off-shoulder fold", price: 1500, images: mdPhotos("off-shoulder-fold") },
-    { key: "v-wrap-halter", name: "V-wrap halter", price: 0, images: mdPhotos("v-wrap-halter") },
+    { key: "off-shoulder-fold", name: "Off-shoulder fold", price: 1500, images: mdPhotos("off-shoulder-fold"), color_images: versionColours("off-shoulder-fold", ["black", "navy", "dusty-rose", "emerald"], "navy") },
+    { key: "v-wrap-halter", name: "V-wrap halter", price: 0, images: mdPhotos("v-wrap-halter"), color_images: versionColours("v-wrap-halter", ["black", "sage", "dusty-rose", "lavender"], "navy") },
   ];
 }
 
@@ -704,12 +727,32 @@ const colourPhotos: Record<string, string[]> = {
   "noir-sequin-sash-gown": ["maroon", "emerald", "royal-blue", "gold"],
   "blush-leaf-tulle-gown": ["purple", "teal", "dusty-rose", "navy"],
   "cocoa-linen-peplum-top": ["sage", "blush", "lilac", "sky"],
+  "botanical-bow-shoulder-mini": ["beige", "lilac", "blush", "sage"],
+  "lilac-ruffle-saree": ["lilac", "ivory", "sage", "dusty-rose"],
+  "champagne-lace-high-neck-saree": ["champagne", "lilac", "blush", "mint"],
+  "navy-silver-peplum-drape-saree": ["navy", "emerald", "rose-pink", "ivory"],
+  "navy-sequin-fan-party-dress": ["navy", "emerald", "blush", "plum"],
+  "satin-capelet-wrap-gown": ["ivory", "blush", "mint", "lavender"],
+  "pleated-midi-dress": ["navy", "sage", "dusty-rose", "lavender"],
+};
+// photographed only as colour collages: the colour photos are the design's photos
+const colourOnly = new Set(["satin-halter-a-line-gown", "satin-capelet-wrap-gown"]);
+const mainColour = (slug: string) => {
+  const r = designSeeds.find((s) => s.design.slug === slug)!.regions;
+  return (r.find(([k]) => k === "main") ?? r[0])[2];
 };
 for (const d of designs) {
   const keys = colourPhotos[d.slug];
   if (!keys) continue;
-  d.color_images = Object.fromEntries(keys.map((k) => [k, [`/catalog/${d.slug}/colours/${k}.webp`]]));
-  if (d.slug === "satin-halter-a-line-gown") {
+  const shotIn = mainColour(d.slug);
+  d.color_images = Object.fromEntries(
+    keys.map((k) => {
+      const photo = `/catalog/${d.slug}/colours/${k}.webp`;
+      // the colour the design was originally photographed in keeps its full photo set
+      return [k, k === shotIn && !colourOnly.has(d.slug) && d.images.length ? [...d.images, photo] : [photo]];
+    }),
+  );
+  if (colourOnly.has(d.slug)) {
     d.images = keys.map((k) => `/catalog/${d.slug}/colours/${k}.webp`);
     d.published = true;
   }

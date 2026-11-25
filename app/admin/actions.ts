@@ -218,7 +218,15 @@ const designSchema = z.object({
   default_options: z.array(key),
   images: z.array(z.string().max(500)).max(12),
   versions: z
-    .array(z.object({ key, name: z.string().trim().min(1).max(60), price: z.number().int(), images: z.array(z.string().max(500)).max(12) }))
+    .array(
+      z.object({
+        key,
+        name: z.string().trim().min(1).max(60),
+        price: z.number().int(),
+        images: z.array(z.string().max(500)).max(12),
+        color_images: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), z.array(z.string().max(500)).max(12)).optional(),
+      }),
+    )
     .max(30)
     .default([]),
   color_images: z.record(z.string().regex(/^[a-z0-9-]{1,40}$/), z.array(z.string().max(500)).max(12)).default({}),

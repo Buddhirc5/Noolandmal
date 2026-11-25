@@ -1,5 +1,6 @@
 // Splits 2x2 colour collages (top-left, top-right, bottom-left, bottom-right) into
 // per-colour photos at public/catalog/<slug>/colours/<colour-key>.webp
+// (a "slug/version" target writes public/catalog/<slug>/<version>/colours/…)
 // Usage: node scripts/split-colour-images.mjs <srcDir>
 import sharp from "sharp";
 import fs from "node:fs";
@@ -15,6 +16,16 @@ const MAP = {
   "3f693e2c-image.jpg": ["noir-sequin-sash-gown", ["maroon", "emerald", "royal-blue", "gold"]],
   "5bc868bd-image.jpg": ["blush-leaf-tulle-gown", ["purple", "teal", "dusty-rose", "navy"]],
   "f56d08b2-image.jpg": ["cocoa-linen-peplum-top", ["sage", "blush", "lilac", "sky"]],
+  "306620e2-image.jpg": ["botanical-bow-shoulder-mini", ["beige", "lilac", "blush", "sage"]],
+  "214e6197-image.jpg": ["lilac-ruffle-saree", ["lilac", "ivory", "sage", "dusty-rose"]],
+  "3100369c-image.jpg": ["champagne-lace-high-neck-saree", ["champagne", "lilac", "blush", "mint"]],
+  "dbcf58cd-image.jpg": ["navy-silver-peplum-drape-saree", ["navy", "emerald", "rose-pink", "ivory"]],
+  "9b688396-image.jpg": ["navy-sequin-fan-party-dress", ["navy", "emerald", "blush", "plum"]],
+  "f8998e98-image.jpg": ["satin-capelet-wrap-gown", ["ivory", "blush", "mint", "lavender"]],
+  // pleated midi: the design's own (high-neck halter) photos, then each version's
+  "750fd966-image.jpg": ["pleated-midi-dress", ["navy", "sage", "dusty-rose", "lavender"]],
+  "6cb23931-image.jpg": ["pleated-midi-dress/off-shoulder-fold", ["black", "navy", "dusty-rose", "emerald"]],
+  "1115ac89-image.jpg": ["pleated-midi-dress/v-wrap-halter", ["black", "sage", "dusty-rose", "lavender"]],
 };
 const src = process.argv[2];
 if (!src) throw new Error("usage: split-colour-images.mjs <srcDir>");

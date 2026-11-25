@@ -12,7 +12,7 @@ import { formatDate, toISODate, cn } from "@/lib/format";
 import { MEASURE_FIELDS } from "@/lib/measurements";
 import { sizeChart } from "@/data/size-chart";
 import { features } from "@/config/site";
-import { photosFor } from "@/lib/photos";
+import { colourPhotosFor, photosFor } from "@/lib/photos";
 import type { Catalog, DesignBundle, Measurements, Selections } from "@/lib/types";
 
 export interface CustomiserProps {
@@ -59,7 +59,8 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
     return () => clearTimeout(id);
   }, [notice]);
 
-  const photographed = Object.entries(design.color_images ?? {}).filter(([k, v]) => v.length && catalog.palette.some((p) => p.key === k && p.active) && (!fabric?.available_colors || fabric.available_colors.includes(k)));
+  const colourSet = colourPhotosFor(bundle, sel.version);
+  const photographed = Object.entries(colourSet).filter(([k, v]) => v.length && catalog.palette.some((p) => p.key === k && p.active) && (!fabric?.available_colors || fabric.available_colors.includes(k)));
   const setColour = (region: string, key: string) => setSel((s) => ({ ...s, colors: { ...s.colors, [region]: key } }));
 
   const available = (key: string) => !fabric?.available_colors || fabric.available_colors.includes(key);
@@ -228,7 +229,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                             style={{ background: c.hex }}
                           >
                             {on && <Check className={cn("absolute inset-0 m-auto size-4", luminance(c.hex) > 0.45 ? "text-ink" : "text-white")} strokeWidth={2.5} aria-hidden />}
-                            {r.key === primaryRegion?.key && design.color_images?.[c.key]?.length ? (
+                            {r.key === primaryRegion?.key && colourSet[c.key]?.length ? (
                               <span className="absolute -right-0.5 -bottom-0.5 size-3 rounded-full border-2 border-paper bg-pink" title="Photo available" />
                             ) : null}
                           </button>

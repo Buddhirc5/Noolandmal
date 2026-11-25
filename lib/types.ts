@@ -138,6 +138,8 @@ export interface DesignVersion {
   /** added to the base price (can be 0 or negative) */
   price: number;
   images: string[];
+  /** photos of this version in other colours (palette key -> photos) */
+  color_images?: Record<string, string[]>;
 }
 
 export interface Selections {
