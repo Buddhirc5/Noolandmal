@@ -7,6 +7,7 @@ const ta: Partial<Record<MessageKey, string>> = {
   "nav.custom": "தனிப்பயன் கோரிக்கை",
   "nav.pricing": "விலை",
   "nav.faq": "கேள்விகள்",
+  "nav.gallery": "காட்சியகம்",
   "nav.login": "உள்நுழைக",
   "nav.account": "என் வடிவமைப்புகள்",
   "nav.track": "ஆர்டரைக் கண்காணிக்க",

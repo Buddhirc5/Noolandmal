@@ -43,7 +43,7 @@ function wrap(text: string, font: PDFFont, size: number, width: number): string[
   return out;
 }
 
-export async function renderDocumentPdf(doc: StudioDocument, settings: Settings): Promise<Uint8Array> {
+export async function renderDocumentPdf(doc: StudioDocument, settings: Settings, extra: { referralCode?: string | null; friendDiscount?: number } = {}): Promise<Uint8Array> {
   const pdf = await PDFDocument.create();
   pdf.setTitle(`${doc.kind === "quote" ? "Quotation" : "Invoice"} ${doc.number} · ${site.name}`);
   pdf.setAuthor(site.name);
@@ -184,6 +184,13 @@ export async function renderDocumentPdf(doc: StudioDocument, settings: Settings)
     text(page, "•", M + half, ty, { size: 8, color: PINK });
     ls.forEach((l, i) => text(page, l, M + half + 9, ty - i * 10.5, { size: 8, color: MUTED }));
     ty -= ls.length * 10.5 + 4;
+  }
+
+  // ── Referral ────────────────────────────────────────────
+  if (extra.referralCode) {
+    page.drawRectangle({ x: M, y: 92, width: A4.w - 2 * M, height: 26, color: SOFT });
+    text(page, "SHARE & SAVE", M + 12, 102, { size: 7, color: PINK, font: bold });
+    text(page, `Your code ${extra.referralCode}: friends get ${money(extra.friendDiscount ?? 0)} off their first order, and you earn credit.`, M + 82, 102, { size: 8.5 });
   }
 
   // ── Footer ──────────────────────────────────────────────

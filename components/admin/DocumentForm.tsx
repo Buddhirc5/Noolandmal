@@ -5,6 +5,7 @@ import { Spinner, useAction } from "./ui";
 import { DocumentActions } from "./DocumentActions";
 import { createDocumentAction } from "@/app/admin/customer-actions";
 import { lkr, cn } from "@/lib/format";
+import { promoDiscount } from "@/lib/promo";
 import type { DocLine } from "@/lib/types";
 
 interface Props {
@@ -16,6 +17,10 @@ interface Props {
   validDays: number;
   deliveryFee?: number;
   discount?: number;
+  /** the order's discount / referral code, if any */
+  promo?: { code: string; label: string; type: "percent" | "fixed"; value: number; minTotal: number } | null;
+  /** this customer's unused referral credit */
+  credit?: number;
   defaultKind?: "quote" | "invoice";
   today: string;
 }
@@ -27,7 +32,7 @@ const addDays = (iso: string, d: number) => {
 };
 
 /** Builds a quotation or invoice; saving numbers it and makes the PDF ready to share. */
-export function DocumentForm({ orderCode, phone, name, lines, advancePercent, validDays, deliveryFee = 0, discount: initialDiscount = 0, defaultKind = "quote", today }: Props) {
+export function DocumentForm({ orderCode, phone, name, lines, advancePercent, validDays, deliveryFee = 0, discount: initialDiscount = 0, promo = null, credit = 0, defaultKind = "quote", today }: Props) {
   const a = useAction();
   const [kind, setKind] = useState<"quote" | "invoice">(defaultKind);
   const [items, setItems] = useState<DocLine[]>(lines.length ? lines : [{ description: "", qty: 1, unit_price: 0 }]);
@@ -36,6 +41,7 @@ export function DocumentForm({ orderCode, phone, name, lines, advancePercent, va
   const [adv, setAdv] = useState(advancePercent);
   const [notes, setNotes] = useState("");
   const [due, setDue] = useState(addDays(today, defaultKind === "quote" ? validDays : 0));
+  const [creditUsed, setCreditUsed] = useState(false);
   const [made, setMade] = useState<{ id: string; number: string; kind: "quote" | "invoice" } | null>(null);
 
   const subtotal = items.reduce((s, l) => s + l.qty * l.unit_price, 0);
@@ -67,7 +73,7 @@ export function DocumentForm({ orderCode, phone, name, lines, advancePercent, va
       onSubmit={(e) => {
         e.preventDefault();
         a.run(
-          () => createDocumentAction({ kind, orderCode, phone, name, items, discount, deliveryFee: delivery, advancePercent: kind === "quote" ? adv : 0, notes, dueOn: due || null }),
+          () => createDocumentAction({ kind, orderCode, phone, name, items, discount, deliveryFee: delivery, advancePercent: kind === "quote" ? adv : 0, notes, dueOn: due || null, useCredit: creditUsed }),
           (r) => setMade({ ...(r.data as { id: string; number: string }), kind }),
         );
       }}
@@ -120,6 +126,37 @@ export function DocumentForm({ orderCode, phone, name, lines, advancePercent, va
           <Plus className="size-4" aria-hidden /> Add item
         </button>
       </div>
+
+      {(promo || credit > 0) && (
+        <div className="space-y-2">
+          {promo && (
+            <div className="flex items-center justify-between gap-3 rounded-[16px] bg-rose-50 px-4 py-3 text-sm">
+              <span>
+                <b className="font-semibold">{promo.code}</b> — {promo.label}
+              </span>
+              <button type="button" className="btn-secondary h-9 shrink-0 px-3 text-[13px]" onClick={() => setDiscount(promoDiscount(promo, subtotal) + (creditUsed ? credit : 0))}>
+                Apply {lkr(promoDiscount(promo, subtotal))}
+              </button>
+            </div>
+          )}
+          {credit > 0 && (
+            <label className="flex items-center justify-between gap-3 rounded-[16px] bg-surface px-4 py-3 text-sm">
+              <span>
+                Referral credit available: <b className="font-semibold">{lkr(credit)}</b>
+              </span>
+              <input
+                type="checkbox"
+                className="size-5 accent-[var(--color-pink)]"
+                checked={creditUsed}
+                onChange={(e) => {
+                  setCreditUsed(e.target.checked);
+                  setDiscount((d) => Math.max(0, d + (e.target.checked ? credit : -credit)));
+                }}
+              />
+            </label>
+          )}
+        </div>
+      )}
 
       <div className="grid grid-cols-2 gap-3">
         <label className="text-sm">

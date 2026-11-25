@@ -20,6 +20,7 @@ import { ProgressPanel } from "@/components/admin/ProgressPanel";
 import { MeasurementsPanel } from "@/components/admin/MeasurementsPanel";
 import { getMeasurements, lkDate } from "@/lib/server/studio";
 import { listDocuments, suggestedLines } from "@/lib/server/documents";
+import { creditFor, promoForOrder } from "@/lib/server/promos";
 import { DocumentForm } from "@/components/admin/DocumentForm";
 import { DocumentActions } from "@/components/admin/DocumentActions";
 import { lkr } from "@/lib/format";
@@ -44,6 +45,8 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
   const colourName = config && bundle ? bundle.regions.map((r) => colorName(config.selections.colors[r.key], catalog.palette)).join(" / ") : "";
   const designLabel = bundle ? [bundle.design.name, bundle.design.versions.find((v) => v.key === config?.selections.version)?.name, colourName].filter(Boolean).join(" — ") : null;
   const lastQuote = docs.find((d) => d.kind === "quote");
+  const promo = await promoForOrder(order);
+  const credit = order.customer_phone ? (await creditFor(order.customer_phone)).available : 0;
   const lines = lastQuote ? lastQuote.items : await suggestedLines(order, designLabel, config?.price_total ?? 0);
   const customerSent = config?.selections.size === "own" ? describeMeasurements(config.selections, catalog) : null;
   const files = request ? await db.list<RequestFile>("request_files", { eq: { custom_request_id: request.id } }) : [];
@@ -62,6 +65,11 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
         </Link>
         <h1 className="font-mono text-3xl font-semibold tracking-tight text-green-900 md:text-4xl">{order.code}</h1>
         <StatusBadge status={order.status} />
+        {order.promo_code && (
+          <span className="badge bg-rose-50 text-orchid">
+            {order.promo_kind === "referral" ? "Referral" : "Code"} {order.promo_code} · {order.promo_label}
+          </span>
+        )}
         {order.whatsapp_clicked_at && <span className="badge bg-green-50 text-green-900">WhatsApp opened {formatDateTime(order.whatsapp_clicked_at)}</span>}
       </div>
 
@@ -196,6 +204,8 @@ export default async function OrderDetail({ params }: PageProps<"/admin/orders/[
               validDays={catalog.settings.quote_valid_days}
               deliveryFee={lastQuote?.delivery_fee ?? quote?.delivery_fee ?? 0}
               discount={lastQuote?.discount ?? 0}
+              promo={promo && promo.ok ? { code: promo.code, label: promo.label, type: promo.type, value: promo.value, minTotal: promo.minTotal } : null}
+              credit={credit}
               defaultKind={quote ? "invoice" : "quote"}
               today={today}
             />

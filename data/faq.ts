@@ -40,6 +40,10 @@ export const faqs: { q: string; a: string; home?: boolean }[] = [
     a: "The preview is a guide. Fabric colours vary slightly between dye lots and screens, so we can share real fabric swatch photos on WhatsApp before cutting. Any colour is free to choose; occasionally a colour or fabric isn't available, and we'll tell you when we send your quotation.",
   },
   {
+    q: "Do you have discount codes or a referral reward?",
+    a: "Yes. Enter a discount code when you tap “Get my quote”, and it's taken off your quotation. After your first order you also get your own referral code: a friend gets money off their first piece, and you get credit for your next one. See /refer.",
+  },
+  {
     q: "Do you deliver outside Colombo?",
     a: "Yes, island-wide by courier. Delivery fees depend on the district and are added to your quote. You're also welcome to collect from the studio.",
   },

@@ -52,6 +52,7 @@ export const navLinks = [
   { href: "/collection", key: "nav.collection" },
   { href: "/how-it-works", key: "nav.how" },
   { href: "/custom", key: "nav.custom" },
+  { href: "/gallery", key: "nav.gallery" },
   { href: "/pricing", key: "nav.pricing" },
   { href: "/faq", key: "nav.faq" },
 ] as const;
@@ -88,6 +89,14 @@ export const creatorProgram = {
   postWithinDays: 14,
   hashtag: "#noolandmalpartner",
   handle: "@noolandmal",
+};
+
+/** Referral programme. PLACEHOLDER amounts — confirm with Roshini. */
+export const referral = {
+  /** off the friend's first order */
+  friendDiscount: 1000,
+  /** credit for the customer who referred them, once the friend pays */
+  reward: 1000,
 };
 
 export const occasions = ["Wedding", "Homecoming", "Engagement", "Party", "Office", "Casual", "Festival", "Kids"] as const;

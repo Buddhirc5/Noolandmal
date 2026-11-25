@@ -86,6 +86,7 @@ async function seedStore(): Promise<Store> {
     size_options: seed.sizes as never,
     price_settings: [{ id: 1, data: seed.settings, updated_at: new Date().toISOString() }],
     designs: seed.designs as never,
+    gallery_items: (await import("@/data/gallery")).galleryItems as never,
     design_regions: seed.designRegions as never,
   };
 }

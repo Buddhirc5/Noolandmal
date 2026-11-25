@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { listGallery } from "@/lib/server/gallery";
 import Link from "next/link";
 import { FannedPhotos } from "@/components/home/FannedPhotos";
 import { Parallax } from "@/components/motion/Parallax";
@@ -20,7 +21,8 @@ const img = (slug: string, view: "front" | "back" | "detail" | "angle") => `/cat
 
 export default async function HomePage() {
   const t = await getT();
-  const [cards, catalog] = await Promise.all([listDesignCards(), loadCatalog()]);
+  const [cards, catalog, allGallery] = await Promise.all([listDesignCards(), loadCatalog(), listGallery()]);
+  const gallery = [...allGallery.filter((g) => g.featured), ...allGallery.filter((g) => !g.featured)];
   const bySlug = new Map(cards.map((c) => [c.design.slug, c]));
   const featured = cards.filter((c) => c.design.featured).slice(0, 6);
 
@@ -175,6 +177,31 @@ export default async function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* GALLERY */}
+      {gallery.length > 0 && (
+        <section className="container-x pt-24 md:pt-32">
+          <div className="grid items-end gap-6 md:grid-cols-2">
+            <SectionHeading eyebrow="Gallery" title="Made for *real* customers" align="left" />
+            <p className="text-[16px] leading-7 text-muted md:text-right">
+              Finished pieces from the studio.{" "}
+              <Link href="/gallery" className="font-semibold text-ink underline-offset-4 hover:underline">
+                See the gallery
+              </Link>
+            </p>
+          </div>
+          <div className="mt-10 grid grid-cols-2 gap-3 md:grid-cols-4" data-reveal-stagger>
+            {gallery
+              .flatMap((g) => g.images.map((src) => ({ src, g })))
+              .slice(0, 4)
+              .map(({ src, g }, i) => (
+                <Link key={src} href={`/gallery/${g.slug}`} className={`group relative aspect-[3/4] overflow-hidden rounded-[24px] bg-surface ${i % 2 ? "md:mt-10" : ""}`}>
+                  <Image src={src} alt={g.title} fill sizes="(max-width: 768px) 50vw, 25vw" quality={65} className="object-cover object-top transition-transform duration-500 group-hover:scale-[1.04]" />
+                </Link>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* TESTIMONIALS */}
       <section className="container-x pt-24 md:pt-32">

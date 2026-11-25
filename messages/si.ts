@@ -7,6 +7,7 @@ const si: Partial<Record<MessageKey, string>> = {
   "nav.custom": "විශේෂ ඉල්ලීම",
   "nav.pricing": "මිල ගණන්",
   "nav.faq": "නිතර අසන ප්‍රශ්න",
+  "nav.gallery": "ගැලරිය",
   "nav.login": "පිවිසෙන්න",
   "nav.account": "මගේ නිර්මාණ",
   "nav.track": "ඇණවුම සොයන්න",

@@ -52,6 +52,7 @@ const doc = z.object({
   advancePercent: z.number().min(0).max(100),
   notes: z.string().max(1000),
   dueOn: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  useCredit: z.boolean().optional(),
 });
 
 export async function createDocumentAction(input: z.input<typeof doc>): Promise<Result> {
@@ -70,6 +71,70 @@ export async function deleteDocumentAction(id: string): Promise<Result> {
   try {
     await deleteDocument(id, actor);
     refresh();
+    return { ok: true, message: "Deleted" };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+const discount = z.object({
+  id: z.string().nullable(),
+  code: z.string().trim().min(3, "Codes need at least 3 characters").max(20),
+  kind: z.enum(["percent", "fixed"]),
+  value: z.number().int().min(1, "Enter how much off"),
+  min_total: z.number().int().min(0),
+  starts_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  ends_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+  max_uses: z.number().int().min(1).nullable(),
+  active: z.boolean(),
+  note: z.string().max(200),
+});
+
+export async function saveDiscountCodeAction(input: z.input<typeof discount>): Promise<Result> {
+  const actor = await requireAdmin();
+  try {
+    const { saveDiscountCode } = await import("@/lib/server/promos");
+    await saveDiscountCode(discount.parse(input), actor);
+    refresh();
+    return { ok: true, message: "Saved" };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+const galleryItem = z.object({
+  id: z.string().nullable(),
+  title: z.string().trim().min(3, "Give the piece a title").max(120),
+  occasion: z.string().trim().max(40),
+  story: z.string().trim().max(1500),
+  design_slug: z.string().max(80).nullable(),
+  images: z.array(z.string().max(500)).min(1, "Add at least one photo").max(12),
+  published: z.boolean(),
+  featured: z.boolean(),
+  sort: z.number().int(),
+  made_on: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+});
+
+export async function saveGalleryItemAction(input: z.input<typeof galleryItem>): Promise<Result> {
+  const actor = await requireAdmin();
+  try {
+    const { saveGalleryItem } = await import("@/lib/server/gallery");
+    const item = await saveGalleryItem(galleryItem.parse(input), actor);
+    refresh();
+    revalidatePath("/gallery", "layout");
+    return { ok: true, message: "Saved", data: item.id };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
+export async function deleteGalleryItemAction(id: string): Promise<Result> {
+  const actor = await requireAdmin();
+  try {
+    const { deleteGalleryItem } = await import("@/lib/server/gallery");
+    await deleteGalleryItem(id, actor);
+    refresh();
+    revalidatePath("/gallery", "layout");
     return { ok: true, message: "Deleted" };
   } catch (e) {
     return fail(e);

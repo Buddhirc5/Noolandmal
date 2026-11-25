@@ -265,6 +265,12 @@ export interface Order {
   needed_by?: string | null;
   /** when the studio confirmed the code arrived on WhatsApp */
   received_at?: string | null;
+  /** discount or referral code the customer used */
+  promo_code?: string | null;
+  promo_kind?: "discount" | "referral" | null;
+  promo_label?: string | null;
+  /** referral: the customer who referred this one */
+  referrer_phone?: string | null;
   configuration_id: ID | null;
   custom_request_id: ID | null;
   guest_id: string | null;
@@ -404,6 +410,8 @@ export interface Customer {
   phone: string;
   name: string;
   notes: string;
+  /** their personal code to share with friends, e.g. HASARA567 */
+  referral_code?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -437,5 +445,50 @@ export interface StudioDocument {
   /** quotes: valid until · invoices: due by */
   due_on: string | null;
   created_by: string;
+  created_at: string;
+}
+
+/** A finished piece shown in the public gallery. */
+export interface GalleryItem {
+  id: ID;
+  slug: string;
+  title: string;
+  /** e.g. "Homecoming" */
+  occasion: string;
+  story: string;
+  /** optional catalogue design it was based on */
+  design_slug: string | null;
+  images: string[];
+  published: boolean;
+  featured: boolean;
+  sort: number;
+  made_on: string | null;
+  created_at: string;
+}
+
+export interface DiscountCode {
+  id: ID;
+  code: string;
+  kind: "percent" | "fixed";
+  /** percent (1–90) or rupees */
+  value: number;
+  min_total: number;
+  starts_on: string | null;
+  ends_on: string | null;
+  max_uses: number | null;
+  active: boolean;
+  note: string;
+  created_at: string;
+}
+
+/** Credit a customer earns when a friend's first order is paid. */
+export interface ReferralReward {
+  id: ID;
+  referrer_phone: string;
+  referred_phone: string;
+  order_code: string;
+  amount: number;
+  status: "earned" | "used";
+  used_in: string | null;
   created_at: string;
 }

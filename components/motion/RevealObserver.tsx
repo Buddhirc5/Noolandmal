@@ -28,9 +28,14 @@ export function RevealObserver() {
           el.style.setProperty("--reveal-delay", `${Math.min(i, 8) * 80}ms`);
         });
       });
-      document.querySelectorAll<HTMLElement>("[data-reveal]:not([data-in])").forEach((el) => {
-        if (reduce) el.setAttribute("data-in", "");
-        else io.observe(el);
+      document.querySelectorAll<HTMLElement>("[data-reveal]:not([data-in]):not([data-armed])").forEach((el) => {
+        // never hide what's already on screen — it would delay the first paint
+        if (reduce || el.getBoundingClientRect().top < window.innerHeight * 0.92) {
+          el.setAttribute("data-in", "");
+          return;
+        }
+        el.setAttribute("data-armed", "");
+        io.observe(el);
       });
     };
     scan();

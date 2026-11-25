@@ -37,6 +37,8 @@ export interface DocumentInput {
   advancePercent: number;
   notes: string;
   dueOn: string | null;
+  /** spend the customer's referral credit (already included in `discount`) */
+  useCredit?: boolean;
 }
 
 export async function createDocument(input: DocumentInput, actor: string): Promise<StudioDocument> {
@@ -82,6 +84,7 @@ export async function createDocument(input: DocumentInput, actor: string): Promi
       actor,
     );
   }
+  if (input.useCredit) await import("./promos").then((m) => m.useCredit(phone, doc.number));
   await audit(actor, `document.${input.kind}`, "document", doc.number, { order: order?.code, total });
   return doc;
 }

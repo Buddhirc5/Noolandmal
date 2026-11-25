@@ -39,6 +39,7 @@ const manual = z.object({
   details: z.string().trim().max(2000),
   neededBy: isoDate.nullable(),
   designId: z.string().max(80).nullable(),
+  promoCode: z.string().trim().max(20).nullable().optional(),
 });
 
 export async function createManualOrderAction(input: z.input<typeof manual>): Promise<Result> {

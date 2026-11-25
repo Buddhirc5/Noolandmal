@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { Check, Minus, Plus } from "lucide-react";
 import { QuoteDialog } from "./QuoteDialog";
+import { HeartButton } from "@/components/wishlist/HeartButton";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { computePrice, conflictReason, estimateReadyDate, isCustomColor, toggleOption } from "@/lib/pricing";
 import { colorHex, colorName, luminance } from "@/lib/colors";
@@ -86,6 +87,16 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
   const readyFrom = estimateReadyDate(today, catalog.settings.standard_lead_days, queueWeeks);
   const readyTo = estimateReadyDate(today, catalog.settings.standard_lead_days + 14, queueWeeks);
   const fabrics = catalog.fabrics.filter((f) => f.active && design.fabric_keys.includes(f.key));
+  const versionName = sel.version ? design.versions.find((v) => v.key === sel.version)?.name : null;
+  const wish = {
+    id: [design.slug, sel.version ?? "", primaryRegion ? sel.colors[primaryRegion.key] : ""].join("|"),
+    slug: design.slug,
+    name: design.name,
+    image: images[0] ?? null,
+    query: encodeSelections({ ...sel, notes: "", neededBy: null }).toString(),
+    detail: [versionName, primaryRegion ? colorName(sel.colors[primaryRegion.key], catalog.palette) : null, fabric?.name].filter(Boolean).join(" · "),
+    price: price.unit,
+  };
 
   return (
     <div className="pb-28 lg:pb-16">
@@ -380,9 +391,12 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
             <textarea id="notes" rows={3} maxLength={1000} className="input min-h-28 rounded-[18px] border-0 bg-surface" placeholder="Anything we should know — a slit, a modest neckline, matching a saree…" value={sel.notes} onChange={(e) => setSel((s) => ({ ...s, notes: e.target.value }))} />
           </Group>
 
-          <button type="button" className="btn-primary mt-10 hidden h-14 w-full text-[16px] lg:flex" onClick={() => setQuoteOpen(true)}>
-            Get my quote
-          </button>
+          <div className="mt-10 hidden gap-3 lg:flex">
+            <button type="button" className="btn-primary h-14 flex-1 text-[16px]" onClick={() => setQuoteOpen(true)}>
+              Get my quote
+            </button>
+            <HeartButton item={wish} label />
+          </div>
           <p className="mt-3 hidden text-center text-[13px] text-muted lg:block">You&apos;ll get a design code to send us on WhatsApp.</p>
         </div>
       </div>
@@ -396,6 +410,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
               LKR <AnimatedNumber value={price.total} />
             </p>
           </div>
+          <HeartButton item={wish} className="size-12 shrink-0 bg-white/10 shadow-none [&_svg]:text-white" />
           <button type="button" className="btn h-12 shrink-0 bg-white px-6 text-ink hover:bg-ivory" onClick={() => setQuoteOpen(true)}>
             Get quote
           </button>

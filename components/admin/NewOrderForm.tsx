@@ -7,6 +7,7 @@ import { createManualOrderAction } from "@/app/admin/studio-actions";
 import { lookupCustomerAction } from "@/app/admin/customer-actions";
 import { parsePhone } from "@/lib/phone";
 import { PhoneHint } from "@/components/ui/PhoneHint";
+import { PromoField, type AppliedPromo } from "@/components/ui/PromoField";
 
 type Lookup = Awaited<ReturnType<typeof lookupCustomerAction>>;
 
@@ -19,6 +20,7 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
   const router = useRouter();
   const [v, setV] = useState({ name: "", phone: initialPhone, title: "", details: "", neededBy: "", designId: "" });
   const [found, setFound] = useState<Lookup | null>(null);
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [checking, setChecking] = useState(false);
   const set = (k: keyof typeof v) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setV((x) => ({ ...x, [k]: e.target.value }));
 
@@ -41,7 +43,7 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
       onSubmit={(e) => {
         e.preventDefault();
         a.run(
-          () => createManualOrderAction({ ...v, neededBy: v.neededBy || null, designId: v.designId || null }),
+          () => createManualOrderAction({ ...v, neededBy: v.neededBy || null, designId: v.designId || null, promoCode: promo?.code ?? null }),
           (r) => router.push(`/admin/orders/${r.data as string}#documents`),
         );
       }}
@@ -95,6 +97,7 @@ export function NewOrderForm({ designs, today, initialPhone = "" }: { designs: {
           <span className="label">Details</span>
           <textarea className="input" rows={3} value={v.details} onChange={set("details")} placeholder="Fabric, colour, neckline, sleeves, reference photo on WhatsApp…" />
         </label>
+        <PromoField phone={v.phone} value={promo} onChange={setPromo} compact />
         <label className="block text-sm">
           <span className="label">Needed by <span className="font-normal text-muted">(optional)</span></span>
           <input className="input h-12" type="date" min={today} value={v.neededBy} onChange={set("neededBy")} />

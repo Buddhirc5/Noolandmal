@@ -26,7 +26,7 @@ export async function markReceived(order: Order, actor: string) {
 }
 
 export async function createManualOrder(
-  input: { name: string; phone: string; title: string; details: string; neededBy: string | null; designId: string | null },
+  input: { name: string; phone: string; title: string; details: string; neededBy: string | null; designId: string | null; promoCode?: string | null },
   actor: string,
 ): Promise<Order> {
   let code = generateCode("NM");
@@ -56,6 +56,7 @@ export async function createManualOrder(
     paid_in_full: false,
   });
   await ensureCustomer(input.phone, input.name);
+  if (input.promoCode) await import("./promos").then((m) => m.attachPromo(order.id, input.promoCode, normalizePhone(input.phone))).catch(() => null);
   await audit(actor, "order.create_manual", "order", code, { title: input.title });
   return order;
 }
@@ -79,6 +80,7 @@ export async function recordPayment(order: Order, input: { type: "advance" | "fi
   if (q && q.status === "issued") await db.update("quotes", { id: q.id }, { status: "accepted", accepted_at: new Date().toISOString() });
   if (input.type === "advance" && ["draft", "quote_requested", "quoted"].includes(order.status)) await setStatus(order, "advance_paid", actor);
   if (input.type === "final") await db.update<Order>("orders", { id: order.id }, { paid_in_full: true });
+  await import("./promos").then((m) => m.rewardReferrer(order)).catch(() => null);
   await audit(actor, "payment.record", "order", order.code, { type: input.type, amount: input.amount });
 }
 

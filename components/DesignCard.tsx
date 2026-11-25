@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { colorHex, colorName } from "@/lib/colors";
 import { lkr } from "@/lib/format";
+import { HeartButton } from "@/components/wishlist/HeartButton";
 import type { PaletteColor } from "@/lib/types";
 import type { DesignCardData } from "@/lib/server/catalog";
 
@@ -12,7 +13,9 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
   const photoColours = Object.keys(design.color_images ?? {}).filter((k) => design.color_images[k]?.length);
   const dots = photoColours.length ? photoColours : regions.map((r) => r.default_color);
   return (
-    <Link href={`/collection/${design.slug}`} className="group card lift flex flex-col overflow-hidden p-2.5">
+    <div className="group card lift relative flex flex-col overflow-hidden p-2.5">
+      <HeartButton className="absolute top-5 right-5 z-10" item={{ id: design.slug, slug: design.slug, name: design.name, image: photo ?? null, query: "", detail: "", price: design.base_price }} />
+      <Link href={`/collection/${design.slug}`} className="flex flex-1 flex-col after:absolute after:inset-0 after:content-['']">
       <div className="relative aspect-[4/5] overflow-hidden rounded-[22px] bg-surface-2">
         {photo ? (
           <Image
@@ -42,6 +45,7 @@ export function DesignCard({ item, palette, priority = false, fromLabel = "from"
           </div>
         </div>
       </div>
-    </Link>
+      </Link>
+    </div>
   );
 }

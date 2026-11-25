@@ -4,6 +4,8 @@ import { listOrderRows } from "@/lib/server/admin-data";
 import { getMeasurements, lkDate } from "@/lib/server/studio";
 import { getCustomer, lookupCustomer } from "@/lib/server/customers";
 import { listDocuments } from "@/lib/server/documents";
+import { creditFor, ensureReferralCode } from "@/lib/server/promos";
+import { referral } from "@/config/site";
 import { db } from "@/lib/server/db";
 import { loadSettings } from "@/lib/server/catalog";
 import { MeasurementsPanel } from "@/components/admin/MeasurementsPanel";
@@ -27,6 +29,8 @@ export default async function Customer({ params }: PageProps<"/admin/customers/[
   const payments = mine.length ? await db.list<Payment>("payments", { in: { column: "order_id", values: mine.map((r) => r.order.id) } }) : [];
   const paid = payments.filter((p) => p.status === "approved").reduce((a, p) => a + p.amount, 0);
   const today = lkDate(new Date());
+  const refCode = customer ? await ensureReferralCode(customer) : null;
+  const credit = await creditFor(phone);
   return (
     <div className="space-y-6">
       <div>
@@ -87,12 +91,29 @@ export default async function Customer({ params }: PageProps<"/admin/customers/[
             <details className="card p-5">
               <summary className="cursor-pointer font-medium text-ink">Quick quotation or invoice (no order)</summary>
               <div className="mt-4">
-                <DocumentForm orderCode={null} phone={phone} name={name} lines={[]} advancePercent={settings.advance_percent} validDays={settings.quote_valid_days} today={today} />
+                <DocumentForm orderCode={null} phone={phone} name={name} lines={[]} advancePercent={settings.advance_percent} validDays={settings.quote_valid_days} credit={credit.available} today={today} />
               </div>
             </details>
           </section>
         </div>
         <div className="order-first min-w-0 space-y-6 xl:order-none">
+          {refCode && (
+            <section className="card p-5">
+              <p className="text-[13px] text-muted">Their referral code</p>
+              <p className="mt-1 font-mono text-2xl font-semibold tracking-wider">{refCode}</p>
+              <p className="mt-1 text-sm text-muted">
+                Friends get {lkr(referral.friendDiscount)} off their first order. Credit earned: <b className="text-ink">{lkr(credit.rows.reduce((a, r) => a + r.amount, 0))}</b> · available <b className="text-ink">{lkr(credit.available)}</b>
+              </p>
+              <a
+                className="btn-wa mt-3 h-11"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={waLink(`Hi ${name.split(" ")[0] || ""}! Your Nool & Mal referral code is *${refCode}*. Share it with friends — they get ${lkr(referral.friendDiscount)} off their first order, and you get ${lkr(referral.reward)} off your next one when they order.`, phone)}
+              >
+                <WhatsAppIcon className="size-4" /> Send them their code
+              </a>
+            </section>
+          )}
           <CustomerEditor phone={phone} name={name} notes={customer?.notes ?? ""} />
           <MeasurementsPanel phone={phone} name={name} saved={saved} today={today} />
         </div>

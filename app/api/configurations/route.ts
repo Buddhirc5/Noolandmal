@@ -12,6 +12,7 @@ const body = z.object({
   clientTotal: z.number().finite().nonnegative(),
   name: z.string().trim().max(80).default(""),
   phone: optionalPhoneField().default(""),
+  promoCode: z.string().trim().max(20).nullable().optional(),
 });
 
 export async function POST(req: Request) {

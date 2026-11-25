@@ -1,8 +1,9 @@
 "use client";
+import { WishlistCount } from "@/components/wishlist/HeartButton";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, Heart } from "lucide-react";
 import { Logo } from "@/components/brand/Logo";
 import { navLinks } from "@/config/site";
 import { useT } from "@/components/I18nProvider";
@@ -60,6 +61,10 @@ export function Header({ signedIn, accountsEnabled }: { signedIn: boolean; accou
         <div className="flex items-center gap-1.5 sm:gap-2">
           <Link href={accountHref} className="hidden rounded-full px-3 py-2 text-[15px] font-medium text-white hover:bg-white/10 sm:inline-flex">
             {accountLabel}
+          </Link>
+          <Link href="/wishlist" aria-label={t("nav.wishlist")} className="relative inline-flex size-10 items-center justify-center rounded-full text-white hover:bg-white/10 sm:size-11">
+            <Heart className="size-5" aria-hidden />
+            <WishlistCount />
           </Link>
           <Link href="/collection" className="btn-gold min-h-10 px-4 text-[14px] sm:min-h-11 sm:px-5 sm:text-[15px]">
             <span className="sm:hidden">{t("cta.short")}</span>

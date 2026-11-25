@@ -10,7 +10,7 @@ export async function Footer() {
   const cols = [
     { title: t("footer.shop"), links: [["/collection", t("nav.collection")], ["/custom", t("nav.custom")], ["/pricing", t("nav.pricing")], ["/guides", "Guides"]] },
     { title: t("footer.help"), links: [["/how-it-works", t("nav.how")], ["/faq", t("nav.faq")], ["/size-guide", "Size chart"], ["/track", t("nav.track")], ["/contact", "Contact"]] },
-    { title: t("footer.company"), links: [["/designer", site.designer], ["/creators", "Creator programme"], ["/terms", "Terms"], ["/privacy", "Privacy"], ["/account", t("nav.account")]] },
+    { title: t("footer.company"), links: [["/designer", site.designer], ["/gallery", "Gallery"], ["/refer", "Refer a friend"], ["/creators", "Creator programme"], ["/terms", "Terms"], ["/privacy", "Privacy"], ["/account", t("nav.account")]] },
   ];
   return (
     <footer className="z-0 overflow-hidden bg-ink text-white md:sticky md:bottom-0">
@@ -61,9 +61,8 @@ export async function Footer() {
         </p>
         <LanguageToggle dark />
       </div>
-      <p aria-hidden className="pointer-events-none -mb-[0.22em] text-center font-logo text-[21vw] leading-[0.9] font-semibold tracking-tight whitespace-nowrap text-white/[0.07] select-none">
-        Nool &amp; Mal
-      </p>
+      {/* decorative: drawn with ::before so it isn't read out or treated as body text */}
+      <div aria-hidden data-text="Nool & Mal" className="pointer-events-none -mb-[0.22em] text-center font-logo text-[21vw] leading-[0.9] font-semibold tracking-tight whitespace-nowrap text-white/[0.07] select-none before:content-[attr(data-text)]" />
     </footer>
   );
 }

@@ -28,7 +28,8 @@ export async function ensureCustomer(rawPhone: string, name: string): Promise<Cu
     }
     return existing;
   }
-  return db.insert<Customer>("customers", { phone, name, notes: "", updated_at: new Date().toISOString() });
+  const { makeReferralCode } = await import("./promos");
+  return db.insert<Customer>("customers", { phone, name, notes: "", referral_code: await makeReferralCode(name, phone), updated_at: new Date().toISOString() });
 }
 
 /** Everything the "new order" form needs to know about a number. */

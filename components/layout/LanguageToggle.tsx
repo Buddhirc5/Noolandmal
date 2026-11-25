@@ -23,6 +23,9 @@ export function LanguageToggle({ className, dark = false }: { className?: string
             document.cookie = `${LOCALE_COOKIE}=${l}; path=/; max-age=31536000; samesite=lax`;
             start(() => router.refresh());
           }}
+          // on English pages, draw "සිංහල / தமிழ்" with the phone's own font so the
+          // Sinhala and Tamil web fonts (~180 KB) aren't downloaded for two words
+          style={l !== "en" && locale === "en" ? { fontFamily: "system-ui, sans-serif" } : undefined}
           className={`min-h-9 rounded-full px-3 transition-colors ${l === locale ? (dark ? "bg-white text-ink" : "bg-ink text-white") : dark ? "text-white/80 hover:bg-white/10" : "text-ink hover:bg-surface"}`}
         >
           {l === "en" ? "EN" : LOCALE_NAMES[l]}

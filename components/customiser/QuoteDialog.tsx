@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { describeMeasurements } from "@/lib/measurements";
 import { parsePhone } from "@/lib/phone";
+import { PromoField, type AppliedPromo } from "@/components/ui/PromoField";
 import { PhoneHint } from "@/components/ui/PhoneHint";
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
@@ -41,6 +42,7 @@ export function QuoteDialog({
   const locale = useLocale();
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [promo, setPromo] = useState<AppliedPromo | null>(null);
   const [lang, setLang] = useState<WaLang>(locale === "si" ? "si" : "en");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,7 +85,7 @@ export function QuoteDialog({
       const res = await fetch("/api/configurations", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ slug: design.slug, selections, clientTotal: price.total, name: name.trim(), phone: phone.trim() }),
+        body: JSON.stringify({ slug: design.slug, selections, clientTotal: price.total, name: name.trim(), phone: phone.trim(), promoCode: promo?.code ?? null }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -114,6 +116,7 @@ export function QuoteDialog({
           size: sizeLabel,
           qty: selections.qty,
           neededBy: selections.neededBy,
+          promo: promo ? `${promo.code} (${promo.label})` : null,
           min: saved.min,
           max: saved.max,
           link,
@@ -207,6 +210,7 @@ export function QuoteDialog({
               </div>
             </div>
             <p className="-mt-1 text-xs text-muted">Add your number to track the order later with your code.</p>
+            <PromoField phone={phone} value={promo} onChange={setPromo} compact />
             <fieldset>
               <legend className="label">WhatsApp message language</legend>
               <div className="flex gap-2">

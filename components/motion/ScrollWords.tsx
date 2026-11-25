@@ -21,7 +21,7 @@ export function ScrollWords({ text, className }: { text: string; className?: str
       // 0 when the paragraph's top is at 85% of the viewport, 1 when its bottom reaches 45%
       const p = Math.min(1, Math.max(0, (vh * 0.85 - r.top) / (r.height + vh * 0.4)));
       const lit = p * spans.length;
-      spans.forEach((s, i) => (s.style.opacity = String(Math.min(1, Math.max(0.16, lit - i + 0.16)))));
+      spans.forEach((s, i) => (s.style.opacity = String(Math.min(1, Math.max(0.45, lit - i + 0.45)))));
     };
     const onScroll = () => {
       if (!raf) raf = requestAnimationFrame(update);
@@ -39,7 +39,7 @@ export function ScrollWords({ text, className }: { text: string; className?: str
         const m = w.raw.match(/^\*(.+?)\*([.,!?]?)$/);
         return (
           <span key={i}>
-            <span data-w className="transition-opacity duration-300" style={{ opacity: 0.16 }}>
+            <span data-w className="transition-opacity duration-300" style={{ opacity: 0.45 }}>
               {m ? (
                 <>
                   <em className="accent">{m[1]}</em>

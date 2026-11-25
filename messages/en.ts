@@ -4,6 +4,8 @@ const en = {
   "nav.custom": "Custom request",
   "nav.pricing": "Pricing & quotes",
   "nav.faq": "FAQ",
+  "nav.gallery": "Gallery",
+  "nav.wishlist": "Wishlist",
   "nav.login": "Log in",
   "nav.account": "My designs",
   "nav.track": "Track order",

@@ -13,6 +13,8 @@ export interface DesignQuotePayload {
   size: string;
   qty: number;
   neededBy: string | null;
+  /** e.g. "HOMECOMING10 (10% off)" */
+  promo?: string | null;
   min: number;
   max: number;
   link: string;
@@ -68,6 +70,7 @@ const T = {
     neededBy: "Needed by",
     flexible: "flexible",
     estimate: "Starting price",
+    promo: "Code",
     link: "Link",
     custom: (c: string) => `I have a custom design request *${c}*.`,
     occasion: "Occasion",
@@ -92,6 +95,7 @@ const T = {
     neededBy: "අවශ්‍ය දිනය",
     flexible: "නම්‍යශීලී",
     estimate: "ආරම්භක මිල",
+    promo: "කේතය",
     link: "සබැඳිය",
     custom: (c: string) => `මට *${c}* විශේෂ නිර්මාණ ඉල්ලීමක් තිබේ.`,
     occasion: "අවස්ථාව",
@@ -120,6 +124,7 @@ export function buildMessage<K extends keyof Payloads>(type: K, payload: Payload
         `${t.size}: ${p.size} · ${t.qty}: ${p.qty}`,
         `${t.neededBy}: ${p.neededBy ? formatDate(p.neededBy) : t.flexible}`,
         `${t.estimate}: ${p.min === p.max ? lkr(p.min) : lkrRange(p.min, p.max)}`,
+        ...(p.promo ? [`${t.promo}: ${p.promo}`] : []),
         `${t.link}: ${p.link}`,
       ].join("\n");
     }

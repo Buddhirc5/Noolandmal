@@ -58,6 +58,7 @@ export async function createConfiguration(input: {
   userId: string | null;
   name: string;
   phone: string;
+  promoCode?: string | null;
 }): Promise<{ config: Configuration; order: Order }> {
   const bundle = await getDesignBundle(input.slug);
   if (!bundle) throw new ServiceError("Design not found", 404);
@@ -105,6 +106,7 @@ export async function createConfiguration(input: {
     paid_in_full: false,
   });
   if (input.phone) await import("./customers").then((m) => m.ensureCustomer(input.phone, input.name)).catch(() => null);
+  if (input.promoCode) await import("./promos").then((m) => m.attachPromo(order.id, input.promoCode, input.phone ? normalizePhone(input.phone) : null)).catch(() => null);
   await logEvent("configuration_saved", code, input.guestId, { slug: input.slug, total: price.total });
   return { config, order };
 }
@@ -291,6 +293,7 @@ export async function reviewPayment(paymentId: string, approve: boolean, reason:
   if (order && approve) {
     if (p.type === "advance" && ["draft", "quote_requested", "quoted"].includes(order.status)) await setStatus(order, "advance_paid", actor);
     if (p.type === "final") await db.update<Order>("orders", { id: order.id }, { paid_in_full: true });
+    await import("./promos").then((m) => m.rewardReferrer(order)).catch(() => null);
   }
   await audit(actor, approve ? "payment.approve" : "payment.reject", "payment", p.id, { order: order?.code, type: p.type, reason });
 }

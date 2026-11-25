@@ -4,14 +4,16 @@ import type { MetadataRoute } from "next";
 import { site } from "@/config/site";
 import { listDesigns } from "@/lib/server/catalog";
 import { guides } from "@/data/guides";
+import { listGallery } from "@/lib/server/gallery";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const designs = await listDesigns();
+  const [designs, gallery] = await Promise.all([listDesigns(), listGallery()]);
   const alt = (path: string) => ({ languages: { en: `${site.url}${path}`, si: `${site.url}${path}?lang=si`, ta: `${site.url}${path}?lang=ta` } });
-  const pages = ["/", "/collection", "/custom", "/how-it-works", "/pricing", "/faq", "/designer", "/creators", "/size-guide", "/guides", "/contact", "/track", "/terms", "/privacy"];
+  const pages = ["/", "/collection", "/custom", "/how-it-works", "/pricing", "/faq", "/designer", "/gallery", "/refer", "/creators", "/size-guide", "/guides", "/contact", "/track", "/terms", "/privacy"];
   return [
     ...pages.map((p) => ({ url: `${site.url}${p}`, changeFrequency: "weekly" as const, priority: p === "/" ? 1 : 0.7, alternates: alt(p) })),
     ...designs.map((d) => ({ url: `${site.url}/collection/${d.slug}`, lastModified: d.updated_at, priority: 0.8, alternates: alt(`/collection/${d.slug}`) })),
+    ...gallery.map((g) => ({ url: `${site.url}/gallery/${g.slug}`, lastModified: g.created_at, priority: 0.6 })),
     ...guides.map((g) => ({ url: `${site.url}/guides/${g.slug}`, lastModified: g.updated, priority: 0.6 })),
   ];
 }
