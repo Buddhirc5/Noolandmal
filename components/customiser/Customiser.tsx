@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Check, Minus, Plus } from "lucide-react";
 import { QuoteDialog } from "./QuoteDialog";
 import { HeartButton } from "@/components/wishlist/HeartButton";
+import { DateField } from "@/components/ui/DateField";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { computePrice, conflictReason, estimateReadyDate, isCustomColor, toggleOption } from "@/lib/pricing";
 import { colorHex, colorName, luminance } from "@/lib/colors";
@@ -368,10 +369,12 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
                   </button>
                 </div>
               </div>
-              <label className="flex items-center justify-between gap-3 rounded-[18px] bg-surface py-2 pr-3 pl-4">
-                <span className="text-[15px] text-ink">Needed by</span>
-                <input type="date" className="min-h-11 min-w-0 bg-transparent text-right text-[15px] text-ink focus:outline-none" min={minDate} value={sel.neededBy ?? ""} onChange={(e) => setSel((s) => ({ ...s, neededBy: e.target.value || null }))} />
-              </label>
+              <div className="flex items-center justify-between gap-3 rounded-[18px] bg-surface py-2 pr-3 pl-4">
+                <label htmlFor="needed-by" className="shrink-0 text-[15px] text-ink">
+                  Needed by
+                </label>
+                <DateField id="needed-by" className="min-w-0 flex-1" min={minDate} value={sel.neededBy} onChange={(v) => setSel((s) => ({ ...s, neededBy: v }))} />
+              </div>
             </div>
             <p className="mt-3 text-[13px] leading-5 text-muted">
               Most pieces take 1–3 weeks, so usually ready between {formatDate(readyFrom)} and {formatDate(readyTo)}. Detailed patterns can take 3–6 weeks.

@@ -12,6 +12,7 @@ import { useLocale } from "@/components/I18nProvider";
 import { occasions } from "@/config/site";
 import { toISODate, cn } from "@/lib/format";
 import { PhoneHint } from "@/components/ui/PhoneHint";
+import { DateField } from "@/components/ui/DateField";
 
 interface Photo {
   file: File;
@@ -39,6 +40,7 @@ export function CustomRequestForm() {
     register,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<CustomRequestInput>({ resolver: zodResolver(customRequestSchema), defaultValues: { occasion: "", budget: "", neededBy: "", referenceUrl: "", notes: "", sizeNotes: "" } });
 
@@ -219,7 +221,9 @@ export function CustomRequestForm() {
             <label className="label" htmlFor="neededBy">
               Needed by <span className="font-normal text-muted">(optional)</span>
             </label>
-            <input id="neededBy" type="date" min={toISODate(new Date())} className="input" {...register("neededBy")} />
+            <div className="input flex items-center py-0">
+              <DateField id="neededBy" align="left" className="w-full" min={toISODate(new Date())} value={watch("neededBy")} onChange={(v) => setValue("neededBy", v ?? "", { shouldValidate: true })} />
+            </div>
             {err(errors.neededBy?.message)}
           </div>
           <div className="sm:col-span-2">
