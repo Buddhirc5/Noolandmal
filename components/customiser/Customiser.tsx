@@ -6,6 +6,7 @@ import { Check, Minus, Plus } from "lucide-react";
 import { QuoteDialog } from "./QuoteDialog";
 import { HeartButton } from "@/components/wishlist/HeartButton";
 import { DateField } from "@/components/ui/DateField";
+import { SwipeGallery } from "@/components/ui/PhotoViewer";
 import { AnimatedNumber } from "@/components/ui/AnimatedNumber";
 import { computePrice, conflictReason, estimateReadyDate, isCustomColor, toggleOption } from "@/lib/pricing";
 import { colorHex, colorName, luminance } from "@/lib/colors";
@@ -67,27 +68,11 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
 
   const available = (key: string) => !fabric?.available_colors || fabric.available_colors.includes(key);
 
-  const setFabric = (key: string) => {
-    const f = catalog.fabrics.find((x) => x.key === key);
-    if (!f) return;
-    const colors = { ...sel.colors };
-    const swapped: string[] = [];
-    for (const r of regions) {
-      const v = colors[r.key];
-      if (v && !isCustomColor(v) && f.available_colors && !f.available_colors.includes(v)) {
-        colors[r.key] = f.available_colors[0];
-        swapped.push(`${colorName(v, catalog.palette)} to ${colorName(colors[r.key], catalog.palette)}`);
-      }
-    }
-    if (swapped.length) setNotice(`${f.name} isn't made in every colour, so we changed ${swapped.join(" and ")}.`);
-    setSel((s) => ({ ...s, fabric: key, colors }));
-  };
 
   const minDate = toISODate(new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1));
   // most pieces take 1–3 weeks: earliest is the standard lead, latest two weeks after
   const readyFrom = estimateReadyDate(today, catalog.settings.standard_lead_days, queueWeeks);
   const readyTo = estimateReadyDate(today, catalog.settings.standard_lead_days + 14, queueWeeks);
-  const fabrics = catalog.fabrics.filter((f) => f.active && design.fabric_keys.includes(f.key));
   const versionName = sel.version ? design.versions.find((v) => v.key === sel.version)?.name : null;
   const wish = {
     id: [design.slug, sel.version ?? "", primaryRegion ? sel.colors[primaryRegion.key] : ""].join("|"),
@@ -104,9 +89,11 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
       <div className="grid gap-8 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
         {/* GALLERY */}
         <div className="min-w-0 lg:sticky lg:top-28 lg:self-start">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[32px] bg-surface">
-            {current && <Image key={current} src={current} alt={`${design.name}, photo ${photo + 1} of ${images.length}`} fill priority quality={70} sizes="(max-width: 1024px) 100vw, 55vw" className="animate-photo-in object-cover" />}
-          </div>
+          {current ? (
+            <SwipeGallery key={gallery.key} images={images} alt={design.name} index={Math.min(photo, images.length - 1)} onIndex={setPhoto} />
+          ) : (
+            <div className="aspect-[4/5] rounded-[32px] bg-surface" />
+          )}
           {images.length > 1 && (
             <div className="mt-3 flex gap-2.5 overflow-x-auto p-1 [scrollbar-width:none]" role="tablist" aria-label="Photos">
               {images.map((src, i) => (
@@ -141,6 +128,12 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
           <p className="eyebrow">{design.category.replace("-", " ")}</p>
           <h1 className="h-display mt-3 text-[2.4rem] leading-[1.05] sm:text-5xl">{design.name}</h1>
           <p className="mt-4 text-[16px] leading-7 text-muted">{design.description}</p>
+          {fabric && (
+            <p className="mt-3 text-[14px] text-ink">
+              Made in <b className="font-semibold">{fabric.name.toLowerCase()}</b>
+              <span className="text-muted"> — {fabric.note.replace(/\.$/, "")}.</span>
+            </p>
+          )}
 
           <div className="mt-6 rounded-[24px] bg-surface p-5">
             <p className="text-[13px] text-muted">Starting price</p>
@@ -148,7 +141,7 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
               LKR <AnimatedNumber value={price.total} />
             </p>
             <p className="mt-2 text-[13px] leading-5 text-muted">
-              Choose a colour at no extra cost. Fabric, extra details and your date are agreed on WhatsApp, then we send your final quotation.
+              Choose a colour at no extra cost. Extra details and your date are agreed on WhatsApp, then we send your final quotation.
             </p>
           </div>
 
@@ -261,32 +254,6 @@ export function Customiser({ bundle, catalog, initial, queueWeeks, savedCode, sy
             })}
             {photographed.length > 0 && <p className="mb-2 flex items-center gap-1.5 text-[13px] text-muted"><span className="size-2.5 rounded-full bg-pink" /> Pink dot: we have a photo in this colour.</p>}
             <p className="text-[13px] leading-5 text-muted">Any colour, no extra cost — use the colour wheel for an exact shade. We confirm the fabric is available in your colour before sending the quotation.</p>
-          </Group>
-
-          {/* Fabric */}
-          <Group title="Preferred fabric">
-            <div className="overflow-hidden rounded-[22px] bg-surface" role="radiogroup" aria-label="Fabric">
-              {fabrics.map((f, i) => {
-                const on = f.key === sel.fabric;
-                return (
-                  <button
-                    key={f.key}
-                    type="button"
-                    role="radio"
-                    aria-checked={on}
-                    onClick={() => setFabric(f.key)}
-                    className={cn("flex w-full items-center gap-4 px-5 py-4 text-left transition-colors hover:bg-surface-2", i > 0 && "border-t border-black/5")}
-                  >
-                    <span className={cn("flex size-6 shrink-0 items-center justify-center rounded-full border-2", on ? "border-ink bg-ink" : "border-ink/25")}>{on && <span className="size-2 rounded-full bg-white" />}</span>
-                    <span className="min-w-0 flex-1">
-                      <span className="block text-[15px] font-medium text-ink">{f.name}</span>
-                      <span className="block text-[13px] leading-5 text-muted">{f.note}</span>
-                    </span>
-                  </button>
-                );
-              })}
-            </div>
-            <p className="mt-3 text-[13px] leading-5 text-muted">Fabric can change the final price, and some fabrics sell out — we&apos;ll confirm both in your quotation.</p>
           </Group>
 
           {/* Add-ons (switched off until a later update) */}

@@ -98,7 +98,7 @@ export default async function HomePage() {
 
       {/* COLLECTION */}
       <section className="container-x pt-24 md:pt-32">
-        <SectionHeading eyebrow={t("collection.eyebrow")} title={t("collection.title")} sub="Every design is a starting point. Open one to choose your colour, fabric and size." />
+        <SectionHeading eyebrow={t("collection.eyebrow")} title={t("collection.title")} sub="Every design is a starting point. Open one to choose your colour and how we take your measurements." />
         <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3" data-reveal-stagger>
           {featured.map((c) => (
             <DesignCard key={c.design.id} item={c} palette={catalog.palette} fromLabel={t("collection.from")} />

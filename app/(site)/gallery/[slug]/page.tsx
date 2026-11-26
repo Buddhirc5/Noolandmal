@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getGalleryItem, listGallery } from "@/lib/server/gallery";
 import { getDesignBundle } from "@/lib/server/catalog";
 import { JsonLd } from "@/components/JsonLd";
+import { PhotoGrid } from "@/components/ui/PhotoGrid";
 import { WhatsAppIcon } from "@/components/ui/WhatsAppIcon";
 import { site } from "@/config/site";
 import { waLink } from "@/lib/whatsapp";
@@ -25,23 +26,13 @@ export default async function GalleryPiece({ params }: PageProps<"/gallery/[slug
   if (!g || !g.published) notFound();
   const [design, others] = await Promise.all([g.design_slug ? getDesignBundle(g.design_slug) : null, listGallery()]);
   const more = others.filter((x) => x.id !== g.id).slice(0, 3);
-  const [first, ...rest] = g.images;
   return (
     <div className="container-x py-10 md:py-14">
       <Link href="/gallery" className="text-sm text-muted hover:text-ink">
         ← Gallery
       </Link>
       <div className="mt-6 grid gap-8 lg:grid-cols-[1.2fr_0.8fr] lg:gap-14">
-        <div className="grid grid-cols-2 gap-3">
-          <div className="relative col-span-2 aspect-[4/5] overflow-hidden rounded-[32px] bg-surface sm:aspect-[3/4]">
-            <Image src={first} alt={`${g.title} — photo 1`} fill priority sizes="(max-width: 1024px) 100vw, 60vw" quality={75} className="object-cover object-top" />
-          </div>
-          {rest.map((src, i) => (
-            <div key={src} className={`relative aspect-[3/4] overflow-hidden rounded-[24px] bg-surface ${rest.length % 2 && i === rest.length - 1 ? "col-span-2 aspect-[4/5]" : ""}`}>
-              <Image src={src} alt={`${g.title} — photo ${i + 2}`} fill sizes="(max-width: 1024px) 50vw, 30vw" quality={70} className="object-cover object-top" />
-            </div>
-          ))}
-        </div>
+        <PhotoGrid images={g.images} alt={g.title} />
         <div className="lg:sticky lg:top-28 lg:self-start">
           {g.occasion && <p className="eyebrow">{g.occasion}</p>}
           <h1 className="h-display mt-3 text-[2.3rem] leading-[1.05] sm:text-5xl">{g.title}</h1>

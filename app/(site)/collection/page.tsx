@@ -39,7 +39,7 @@ export default async function CollectionPage({ searchParams }: PageProps<"/colle
     const d = c.design;
     if (category && d.category !== category) return false;
     if (occasion && !d.occasions.includes(occasion)) return false;
-    if (fabric && !d.fabric_keys.includes(fabric)) return false;
+    if (fabric && d.default_fabric !== fabric) return false;
     if (price) {
       const p = fromPrice(c);
       if (p < price.min || p > price.max) return false;
@@ -65,7 +65,7 @@ export default async function CollectionPage({ searchParams }: PageProps<"/colle
 
   return (
     <div className="container-x py-10 md:py-16">
-      <SectionHeading as="h1" eyebrow="The collection" title="Choose a design to make yours" sub="Every design is a starting point. Open one to change colours, fabric and details — the price updates as you go." />
+      <SectionHeading as="h1" eyebrow="The collection" title="Choose a design to make yours" sub="Every design is a starting point. Open one to choose your colour, see the starting price and get your quote on WhatsApp." />
       <div className="mt-8">
         <Suspense fallback={<div className="skeleton h-12" />}>
           <CollectionFilters

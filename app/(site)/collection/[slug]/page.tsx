@@ -25,7 +25,8 @@ export default async function DesignPage({ params, searchParams }: PageProps<"/c
   if (!bundle) notFound();
   const base = defaultSelections(bundle.design, bundle.regions, catalog);
   const sp = await searchParams;
-  const initial = decodeSelections(sp as Record<string, string>, base);
+  // each design is made in its one fabric
+  const initial = { ...decodeSelections(sp as Record<string, string>, base), fabric: base.fabric };
 
   // Product structured data: the starting price (final price is quoted on WhatsApp)
   const low = computePrice(catalog, bundle.design, base).min;

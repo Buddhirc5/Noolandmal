@@ -26,7 +26,7 @@ export default async function Pricing() {
 
   const steps = [
     ["Starting price", "Every design shows the price for the design as photographed. Choosing a colour costs nothing extra."],
-    ["Chat on WhatsApp", "Send your design code. We talk through fabric, extra details, colour availability and your date."],
+    ["Chat on WhatsApp", "Send your design code. We talk through extra details, colour availability and your date."],
     ["One final quotation", `${site.designer.split(" ")[0]} sends one quotation. Once it's agreed, nothing changes — pay the advance and confirm your appointment.`],
   ];
 
@@ -80,7 +80,6 @@ export default async function Pricing() {
           <h2 className="text-[1.35rem] font-semibold tracking-[-0.02em] text-ink">What&apos;s agreed in your quotation</h2>
           <ul className="mt-4 space-y-3 text-[15px] leading-7 text-ink/80">
             {[
-              "Fabric — your preferred fabric, or the closest available alternative.",
               "Extra details or changes to the design, where they're possible.",
               "Your date. Most pieces take 1–3 weeks; detailed patterns 3–6 weeks. Rush orders may cost extra.",
               "Colours — any colour at no extra cost, subject to availability.",

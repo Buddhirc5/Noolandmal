@@ -3,7 +3,7 @@
 export const faqs: { q: string; a: string; home?: boolean }[] = [
   {
     q: "How much does a custom dress cost in Sri Lanka?",
-    a: "At Nool & Mal, made-to-order pieces start from about LKR 5,500 for a saree blouse, LKR 6,500 for a crochet top and LKR 8,900 for an everyday cotton frock. Occasion gowns are typically LKR 14,500 – 45,000 and bridal sets from LKR 58,000. Each design shows its starting price. Colours cost nothing extra; fabric, extra details and rush dates are agreed on WhatsApp, and we send one final quotation before you pay anything.",
+    a: "At Nool & Mal, made-to-order pieces start from about LKR 5,500 for a saree blouse, LKR 6,500 for a crochet top and LKR 8,900 for an everyday cotton frock. Occasion gowns are typically LKR 14,500 – 45,000 and bridal sets from LKR 58,000. Each design shows its starting price. Each design is made in its own fabric and colours cost nothing extra; extra details and rush dates are agreed on WhatsApp, and we send one final quotation before you pay anything.",
     home: true,
   },
   {

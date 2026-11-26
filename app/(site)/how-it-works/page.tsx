@@ -15,8 +15,8 @@ const img = (slug: string, view: string) => `/catalog/${slug}/${view}.webp`;
 export default async function HowItWorks() {
   const s = await loadSettings();
   const steps = [
-    ["Choose a design and make it yours", "Pick from the collection, then choose your colour and preferred fabric, and tell us how we'll get your measurements — at the studio, from your last visit, or your size from our chart.", img("navy-sequin-fan-party-dress", "front")],
-    ["See the starting price", "Each design shows its starting price. Colours cost nothing extra. Fabric, extra details and rush dates are talked through on WhatsApp, and Roshini sends you one final quotation.", img("lilac-ruffle-saree", "detail")],
+    ["Choose a design and make it yours", "Pick from the collection, then choose your colour and tell us how we'll get your measurements — at the studio, from your last visit, or your size from our chart.", img("navy-sequin-fan-party-dress", "front")],
+    ["See the starting price", "Each design shows its starting price. Colours cost nothing extra. Extra details and rush dates are talked through on WhatsApp, and Roshini sends you one final quotation.", img("lilac-ruffle-saree", "detail")],
     ["Get your design code", "Tap “Get quote” to save your design and receive a code like NM-7K4Q2. Your design link works on any device, so you can share it with family before you decide.", img("botanical-bow-shoulder-mini", "angle")],
     ["Send it on WhatsApp", "WhatsApp opens with your code and a summary ready to send. We reply with your quotation, usually within a day.", img("champagne-lace-high-neck-saree", "front")],
     ["Pay the advance and book a fitting", `Accept the quote, pay a ${s.advance_percent}% advance by bank transfer using your code as the reference, and upload the slip. Then book a measurement appointment at the studio. Measured with us before? We keep your measurements on file, so you don't need to come in again.`, img("cocoa-linen-peplum-top", "front")],

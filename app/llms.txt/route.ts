@@ -13,7 +13,7 @@ export async function GET() {
     "",
     "## Services",
     "- Made-to-order dresses, frocks, occasion gowns, bridal and lehenga sets, pre-draped sarees, saree blouses, hand-crocheted tops and kids' frocks.",
-    "- Online customiser: change colours per part of the garment, fabric, neckline, sleeves, length and details, showing the starting price. Colours cost nothing extra; fabric, details and rush dates are agreed in a final WhatsApp quotation.",
+    "- Online customiser: choose the colour (each design is made in its own fabric) and the neckline where offered, showing the starting price. Colours cost nothing extra; details and rush dates are agreed in a final WhatsApp quotation.",
     "- Custom requests from a photo or an Instagram/Pinterest link.",
     `- Based in ${site.studio.city}, Sri Lanka. Island-wide delivery or studio pickup.`,
     "",

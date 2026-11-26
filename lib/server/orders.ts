@@ -63,6 +63,8 @@ export async function createConfiguration(input: {
   const bundle = await getDesignBundle(input.slug);
   if (!bundle) throw new ServiceError("Design not found", 404);
   const catalog = await loadCatalog();
+  // each design is made in its one fabric
+  input = { ...input, selections: { ...input.selections, fabric: bundle.design.default_fabric } };
   const v = validateSelections(catalog, bundle.design, bundle.regions, input.selections);
   if (!v.ok) throw new ServiceError("Some choices aren't available", 422, v.errors);
   // Server is the source of truth for price. If the browser's figure differs
